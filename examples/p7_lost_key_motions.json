@@ -1,0 +1,201 @@
+{
+  "key_scan": {
+    "fps": 24,
+    "frames": 72,
+    "shoulder": {
+      "x": 140,
+      "y": 165
+    },
+    "rest_hand": {
+      "x": 212,
+      "y": 165
+    },
+    "upper_arm": 90,
+    "forearm": 80,
+    "initial_prop": {
+      "x": 270,
+      "y": 195
+    },
+    "grip_offset": {
+      "x": -16,
+      "y": 0
+    },
+    "bend": 1,
+    "actions": [
+      {
+        "kind": "wait",
+        "start": 0,
+        "end": 71
+      }
+    ]
+  },
+  "key_reach": {
+    "fps": 24,
+    "frames": 96,
+    "shoulder": {
+      "x": 140,
+      "y": 165
+    },
+    "rest_hand": {
+      "x": 212,
+      "y": 165
+    },
+    "upper_arm": 90,
+    "forearm": 80,
+    "initial_prop": {
+      "x": 270,
+      "y": 195
+    },
+    "grip_offset": {
+      "x": -16,
+      "y": 0
+    },
+    "bend": 1,
+    "actions": [
+      {
+        "kind": "reach",
+        "start": 0,
+        "end": 95,
+        "target": {
+          "x": 286,
+          "y": 195
+        }
+      }
+    ]
+  },
+  "key_hang": {
+    "fps": 24,
+    "frames": 120,
+    "shoulder": {
+      "x": 140,
+      "y": 165
+    },
+    "rest_hand": {
+      "x": 286,
+      "y": 195
+    },
+    "upper_arm": 90,
+    "forearm": 80,
+    "initial_prop": {
+      "x": 270,
+      "y": 195
+    },
+    "grip_offset": {
+      "x": -16,
+      "y": 0
+    },
+    "bend": 1,
+    "actions": [
+      {
+        "kind": "grab",
+        "start": 0,
+        "end": 7
+      },
+      {
+        "kind": "carry",
+        "start": 8,
+        "end": 63,
+        "target": {
+          "x": 227,
+          "y": 120
+        }
+      },
+      {
+        "kind": "place",
+        "start": 64,
+        "end": 119,
+        "target": {
+          "x": 237,
+          "y": 130
+        }
+      }
+    ]
+  },
+  "key_partner_wait": {
+    "fps": 24,
+    "frames": 96,
+    "shoulder": {
+      "x": 175,
+      "y": 185
+    },
+    "rest_hand": {
+      "x": 233,
+      "y": 185
+    },
+    "upper_arm": 70,
+    "forearm": 65,
+    "initial_prop": {
+      "x": 221,
+      "y": 130
+    },
+    "grip_offset": {
+      "x": -16,
+      "y": 0
+    },
+    "bend": 1,
+    "actions": [
+      {
+        "kind": "wait",
+        "start": 0,
+        "end": 95
+      }
+    ]
+  },
+  "key_partner_move": {
+    "fps": 24,
+    "frames": 120,
+    "shoulder": {
+      "x": 175,
+      "y": 185
+    },
+    "rest_hand": {
+      "x": 233,
+      "y": 185
+    },
+    "upper_arm": 70,
+    "forearm": 65,
+    "initial_prop": {
+      "x": 221,
+      "y": 130
+    },
+    "grip_offset": {
+      "x": -16,
+      "y": 0
+    },
+    "bend": 1,
+    "actions": [
+      {
+        "kind": "reach",
+        "start": 0,
+        "end": 23,
+        "target": {
+          "x": 237,
+          "y": 130
+        }
+      },
+      {
+        "kind": "grab",
+        "start": 24,
+        "end": 31
+      },
+      {
+        "kind": "carry",
+        "start": 32,
+        "end": 71,
+        "target": {
+          "x": 250,
+          "y": 155
+        }
+      },
+      {
+        "kind": "place",
+        "start": 72,
+        "end": 119,
+        "target": {
+          "x": 272,
+          "y": 178
+        }
+      }
+    ]
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "rigs": {
+    "baseline": {
+      "directory": "baseline"
+    },
+    "compact": {
+      "directory": "compact"
+    }
+  },
+  "backgrounds": {
+    "workshop_sunrise": {
+      "image": "backgrounds/workshop_sunrise.png"
+    },
+    "hallway_twilight": {
+      "image": "backgrounds/hallway_twilight.png"
+    }
+  },
+  "props": {
+    "brass_key": {
+      "image": "props/brass_key.png"
+    }
+  }
+}

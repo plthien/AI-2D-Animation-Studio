@@ -1,0 +1,173 @@
+{
+  "schema_version": "film.v2",
+  "fps": 24,
+  "width": 640,
+  "height": 480,
+  "shots": [
+    {
+      "shot_id": "search_workbench",
+      "duration_frames": 72,
+      "background_id": "workshop_sunrise",
+      "camera": {
+        "zoom": 0.9,
+        "pan_x": -8,
+        "pan_y": 0
+      },
+      "actors": [
+        {
+          "actor_id": "finder",
+          "rig_id": "baseline",
+          "motion_id": "key_scan",
+          "offset_x": 0,
+          "offset_y": 0,
+          "layer": 0
+        }
+      ],
+      "props": [
+        {
+          "prop_id": "brass_key",
+          "visual_id": "brass_key",
+          "owner_actor_id": "finder",
+          "layer": 6
+        }
+      ],
+      "narration": {
+        "text": "The workshop key has vanished. It is, of course, right there on the shelf.",
+        "wav": "shot_01.wav",
+        "start_frame": 6
+      }
+    },
+    {
+      "shot_id": "spot_the_key",
+      "duration_frames": 96,
+      "background_id": "workshop_sunrise",
+      "camera": {
+        "zoom": 1.13,
+        "pan_x": 20,
+        "pan_y": 12
+      },
+      "actors": [
+        {
+          "actor_id": "finder",
+          "rig_id": "baseline",
+          "motion_id": "key_reach",
+          "offset_x": 0,
+          "offset_y": 0,
+          "layer": 0
+        }
+      ],
+      "props": [
+        {
+          "prop_id": "brass_key",
+          "visual_id": "brass_key",
+          "owner_actor_id": "finder",
+          "layer": 6
+        }
+      ],
+      "narration": {
+        "text": "After an heroic investigation, our detective finally reaches for it.",
+        "wav": "shot_02.wav",
+        "start_frame": 8
+      }
+    },
+    {
+      "shot_id": "hang_the_key",
+      "duration_frames": 120,
+      "background_id": "workshop_sunrise",
+      "camera": {
+        "zoom": 1.05,
+        "pan_x": 0,
+        "pan_y": 8
+      },
+      "actors": [
+        {
+          "actor_id": "finder",
+          "rig_id": "baseline",
+          "motion_id": "key_hang",
+          "offset_x": 0,
+          "offset_y": 0,
+          "layer": 0
+        }
+      ],
+      "props": [
+        {
+          "prop_id": "brass_key",
+          "visual_id": "brass_key",
+          "owner_actor_id": "finder",
+          "layer": 6
+        }
+      ],
+      "narration": {
+        "text": "He picks it up and proudly hangs it on the hook, in plain sight.",
+        "wav": "shot_03.wav",
+        "start_frame": 8
+      }
+    },
+    {
+      "shot_id": "second_search",
+      "duration_frames": 96,
+      "background_id": "hallway_twilight",
+      "camera": {
+        "zoom": 0.95,
+        "pan_x": -5,
+        "pan_y": 0
+      },
+      "actors": [
+        {
+          "actor_id": "partner",
+          "rig_id": "compact",
+          "motion_id": "key_partner_wait",
+          "offset_x": 0,
+          "offset_y": 0,
+          "layer": 0
+        }
+      ],
+      "props": [
+        {
+          "prop_id": "brass_key",
+          "visual_id": "brass_key",
+          "owner_actor_id": "partner",
+          "layer": 6
+        }
+      ],
+      "narration": {
+        "text": "His friend arrives. Apparently nobody told her about the hook.",
+        "wav": "shot_04.wav",
+        "start_frame": 8
+      }
+    },
+    {
+      "shot_id": "key_moves_again",
+      "duration_frames": 120,
+      "background_id": "hallway_twilight",
+      "camera": {
+        "zoom": 1.08,
+        "pan_x": 15,
+        "pan_y": 9
+      },
+      "actors": [
+        {
+          "actor_id": "partner",
+          "rig_id": "compact",
+          "motion_id": "key_partner_move",
+          "offset_x": 0,
+          "offset_y": 0,
+          "layer": 0
+        }
+      ],
+      "props": [
+        {
+          "prop_id": "brass_key",
+          "visual_id": "brass_key",
+          "owner_actor_id": "partner",
+          "layer": 6
+        }
+      ],
+      "narration": {
+        "text": "She takes the key from the hook... and hides it on a different shelf.",
+        "wav": "shot_05.wav",
+        "start_frame": 6
+      }
+    }
+  ]
+}
