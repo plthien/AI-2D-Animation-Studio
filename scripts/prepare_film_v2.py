@@ -5,6 +5,7 @@ import json
 from pathlib import Path
 
 from studio.motion import MotionPlan, compile_motion
+from studio.retarget import RigProfile, validate_spine_profile
 from studio.film_v2 import FilmPlanV2, AssetCatalog, compile_film_v2
 
 
@@ -23,7 +24,20 @@ def prepare(plan_file: Path, catalog_file: Path, motion_file: Path, output_root:
         raise ValueError("All film motion clips must be supplied exactly once")
     clips={}
     for motion_id,rig_id in actors.items():
-        clip=compile_motion(MotionPlan.model_validate(definitions[motion_id]))
+        profile_dir=output_root/catalog.rigs[rig_id].directory
+        profile_path=profile_dir/"rig_profile.json"
+        skeleton_path=profile_dir/"skeleton.json"
+        if not profile_path.is_file() or not skeleton_path.is_file():
+            raise FileNotFoundError("Motion refers to unavailable Spine rig: "+rig_id)
+        profile=RigProfile.model_validate_json(profile_path.read_text(encoding="utf-8"))
+        validate_spine_profile(profile,json.loads(skeleton_path.read_text(encoding="utf-8")))
+        motion=MotionPlan.model_validate(definitions[motion_id])
+        if (abs(motion.upper_arm-profile.upper_arm)>0.01 or
+            abs(motion.forearm-profile.forearm)>0.01 or
+            abs(motion.shoulder.x-profile.shoulder.x)>0.01 or
+            abs(motion.shoulder.y-profile.shoulder.y)>0.01):
+            raise ValueError("Authored motion arm dimensions/pivot do not match Spine rig profile")
+        clip=compile_motion(motion)
         clip["rig_id"]=rig_id
         clips[motion_id]=clip
     compiled=compile_film_v2(film,catalog,clips)
