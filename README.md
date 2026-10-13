@@ -1,13 +1,10 @@
 # AI 2D Animation Studio
 
-Local-first AI + skeletal 2D animation production system.
+Local-first animation production prototype: manual ChatGPT/DeepSeek → G-Labs Webhook image generation → Genielabs Auto-Rig → Spine/PixiJS runtime → final FFmpeg.
 
-**Status: partial implementation, NOT a complete video generator.** See [implementation gates](docs/STATUS.md). A real Spine sample render and real G-Labs end-to-end run have not been verified.
+**Status:** [P0 foundation + actual Spine Player smoke PASS; P1 implementation complete but live Windows webhook gate pending](docs/STATUS.md). This repository is not yet a complete animation-video generator.
 
-## Selected flow
-
-ChatGPT/DeepSeek (manual JSON) → G-Labs Webhook (images) → Genielabs (parts/skeleton/presets) → Spine/PixiJS runtime → FFmpeg (final video).
-
-The current branch implements a Python backend foundation, manual handoff, G-Labs webhook adapter, and a Genielabs rig configuration adapter. Spine renderer, motion planner, voice and assembly require later phases.
-
-See [PowerShell setup](docs/RUNNING.md) and [implementation status](docs/STATUS.md).
+- [Implementation and known limitations](docs/STATUS.md)
+- [Acceptance checklist](docs/P0_P1_ACCEPTANCE.md)
+- [Run locally on Windows](docs/RUNNING.md)
+- [Draft PR #1](https://github.com/plthien/AI-2D-Animation-Studio/pull/1)
