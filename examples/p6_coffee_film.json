@@ -16,7 +16,7 @@
         "pan_y": 0
       },
       "narration": {
-        "text": "A quiet coffee break. What could possibly go wrong?",
+        "text": "A coffee cup sits close to the edge. Our hero reaches out.",
         "wav": "shot_01.wav",
         "start_frame": 8
       }
@@ -28,12 +28,12 @@
       "clip_in": 12,
       "clip_out": 14,
       "camera": {
-        "zoom": 1.25,
-        "pan_x": -35,
-        "pan_y": 25
+        "zoom": 1.15,
+        "pan_x": 20,
+        "pan_y": 15
       },
       "narration": {
-        "text": "The cup starts moving. Our hero notices just in time.",
+        "text": "Got it. Just before the disaster that never happened.",
         "wav": "shot_02.wav",
         "start_frame": 6
       }
@@ -50,7 +50,7 @@
         "pan_y": 0
       },
       "narration": {
-        "text": "A dramatic rescue. Two arm bones. One very lucky mug.",
+        "text": "And now, for no good reason, he raises it over his head.",
         "wav": "shot_03.wav",
         "start_frame": 6
       }
@@ -62,12 +62,12 @@
       "clip_in": 28,
       "clip_out": 31,
       "camera": {
-        "zoom": 1.5,
-        "pan_x": -35,
-        "pan_y": 35
+        "zoom": 1.35,
+        "pan_x": 50,
+        "pan_y": 20
       },
       "narration": {
-        "text": "For one terrifying moment, nobody breathes.",
+        "text": "He pauses, remembering the simple concept of a table.",
         "wav": "shot_04.wav",
         "start_frame": 8
       }
@@ -84,7 +84,7 @@
         "pan_y": 0
       },
       "narration": {
-        "text": "Back on the table. As if nothing ever happened.",
+        "text": "Carefully, the cup goes back where it belongs.",
         "wav": "shot_05.wav",
         "start_frame": 8
       }
