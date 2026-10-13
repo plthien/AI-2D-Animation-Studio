@@ -3,16 +3,17 @@ from __future__ import annotations
 import os
 from pathlib import Path
 from fastapi import FastAPI, HTTPException
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 from studio.glabs import GlabsClient, ImageRequest
-from studio.handoff import AnimationPlan, export_task
+from studio.handoff import AnimationPlan, export_task, export_motion_task
+from studio.motion import MotionPlan, MotionError, compile_motion
 
 app = FastAPI(title="AI 2D Animation Studio", version="0.1.0")
 
 
 class HandoffRequest(BaseModel):
     prompt: str
-    catalog: dict = {}
+    catalog: dict = Field(default_factory=dict)
 
 
 @app.get("/health")
@@ -45,3 +46,23 @@ async def image_generate(request: ImageRequest) -> dict:
 async def image_status(task_id: str) -> dict:
     async with GlabsClient.from_env() as client:
         return await client.status(task_id)
+
+
+@app.post("/handoff/motion/export")
+async def motion_export(request: HandoffRequest) -> dict:
+    try:
+        path = export_motion_task(
+            request.prompt, request.catalog,
+            Path(os.getenv("STUDIO_OUTPUT_ROOT", "outputs")) / "motion_task.txt",
+        )
+    except ValueError as exc:
+        raise HTTPException(status_code=422, detail=str(exc)) from exc
+    return {"path": str(path), "mode": "manual"}
+
+
+@app.post("/motion/compile")
+async def motion_compile(plan: MotionPlan) -> dict:
+    try:
+        return compile_motion(plan)
+    except MotionError as exc:
+        raise HTTPException(status_code=422, detail=str(exc)) from exc

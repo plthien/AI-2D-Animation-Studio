@@ -62,3 +62,39 @@ def export_task(prompt: str, catalog: dict, destination: Path) -> Path:
         encoding="utf-8",
     )
     return destination
+
+
+def export_motion_task(brief: str, rig: dict, destination: Path) -> Path:
+    """Create a copy/paste instruction for ChatGPT/DeepSeek without an LLM API."""
+    if not brief.strip():
+        raise ValueError("Motion brief cannot be empty")
+    destination.parent.mkdir(parents=True, exist_ok=True)
+    example = {
+        "fps": 24, "frames": 48,
+        "shoulder": {"x": 140, "y": 165},
+        "rest_hand": {"x": 212, "y": 165},
+        "upper_arm": 90, "forearm": 80,
+        "initial_prop": {"x": 270, "y": 195},
+        "bend": 1,
+        "actions": [
+            {"kind": "reach", "start": 0, "end": 11, "target": {"x": 270, "y": 195}},
+            {"kind": "grab", "start": 12, "end": 14},
+            {"kind": "place", "start": 15, "end": 47, "target": {"x": 300, "y": 199}},
+        ],
+    }
+    destination.write_text(
+        "You are a 2D motion director. Produce one JSON object only, no markdown. "
+        "Follow the P4.1 MotionPlan shape and keep the provided rig geometry. "
+        "Actions must be sorted, contiguous, nonoverlapping, start at frame 0 and end at frames-1. "
+        "Supported action kinds: reach (target required), grab (no target), "
+        "carry (target required), wait (no target), place (target required). "
+        "A grab needs hand and free prop to coincide within 1 px. "
+        "Carry and place require prior grab; reach while holding is forbidden; "
+        "end the shot without holding. All targets must be reachable by the two-link arm. "
+        "Do not invent assets, unsupported actions or nonexistent bones.\n\n"
+        "Creative request:\n" + brief + "\n\nRig limits and catalog:\n"
+        + json.dumps(rig, indent=2) + "\n\nSchema example (adapt coordinates and timing):\n"
+        + json.dumps(example, indent=2),
+        encoding="utf-8",
+    )
+    return destination

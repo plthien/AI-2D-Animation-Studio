@@ -149,3 +149,31 @@ def test_duplicate_shots():
     s=Shot(shot_id="S1",duration_frames=1)
     with pytest.raises(ValidationError):
         AnimationPlan(fps=24,shots=[s,s])
+
+
+def test_motion_prompt_export_and_validation(tmp_path):
+    from studio.handoff import export_motion_task
+    path=export_motion_task("Make the actor catch the cup",{"character_id":"test"},tmp_path/"prompts"/"motion_task.txt")
+    text=path.read_text()
+    assert "Make the actor catch the cup" in text
+    assert "character_id" in text
+    assert "frames-1" in text
+    with pytest.raises(ValueError,match="empty"):
+        export_motion_task("    ",{},tmp_path/"bad.txt")
+
+
+def test_motion_api_accepts_valid_plan_and_rejects_unreachable(tmp_path,monkeypatch):
+    from fastapi.testclient import TestClient
+    from studio.api import app
+    from tests.test_motion import BASE
+    monkeypatch.setenv("STUDIO_OUTPUT_ROOT",str(tmp_path))
+    client=TestClient(app)
+    prompt=client.post("/handoff/motion/export",json={"prompt":"Catch a cup","catalog":{}})
+    assert prompt.status_code==200
+    assert (tmp_path/"motion_task.txt").is_file()
+    assert client.post("/handoff/motion/export",json={"prompt":"  ","catalog":{}}).status_code==422
+    response=client.post("/motion/compile",json=BASE)
+    assert response.status_code==200 and len(response.json()["frames"])==5
+    bad={**BASE,"rest_hand":{"x":99,"y":99}}
+    response=client.post("/motion/compile",json=bad)
+    assert response.status_code==422 and "reach" in str(response.json())
