@@ -137,7 +137,8 @@ def test_missing_prior_actor_or_prop_still_valid():
     # Remove prop from the reaction shot, then remove that actor from comparison
     # by allowing an explicit jump cut; next shot starts with the same asset.
     plan.shots[3].props=[]
-    plan.shots[4].continuity_break=True
+    # The prop is absent in the previous shot: normal continuity validation
+    # must permit it to newly enter the next shot, without a forced jump-cut.
     compiled=compile_film_v2(plan,catalog,clips)
     assert len(compiled["frames"][384]["props"])==0
     assert compiled["frames"][528]["props"][0]["prop_id"]=="coffee_cup"
