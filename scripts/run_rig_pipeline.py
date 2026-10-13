@@ -37,16 +37,16 @@ def run(args: argparse.Namespace) -> None:
     parts=workspace/"parts"
     layout=workspace/"layout.json"
     config=workspace/"rig_config.json"
-    if args.from_stage<=1:
+    if args.from_stage<=1<=args.through_stage:
         produced=segment(upstream,atlas,parts)
         if not produced:
             raise ValueError("No parts segmented; inspect atlas background/threshold")
         print("PARTS:",len(produced))
-    if args.from_stage<=2:
+    if args.from_stage<=2<=args.through_stage:
         launch(upstream/"scripts"/"position_parts.py","--reference",str(reference),
                "--parts",str(parts),"--output",str(layout),
                "--debug",str(workspace/"debug"))
-    if args.from_stage<=3:
+    if args.from_stage<=3<=args.through_stage:
         for file in (layout,Path(args.semantic),Path(args.anchors)):
             if not file.is_file():
                 raise FileNotFoundError(f"Missing approved part mapping or anchor file: {file}")
@@ -71,4 +71,8 @@ if __name__=="__main__":
     parser.add_argument("--semantic",required=True,help="JSON part stem -> anatomical label")
     parser.add_argument("--anchors",required=True,help="JSON anatomical label -> {x,y} reference pixel")
     parser.add_argument("--from-stage",type=int,choices=(1,2,3),default=1)
-    run(parser.parse_args())
+    parser.add_argument("--through-stage",type=int,choices=(1,2,3),default=3)
+    opts=parser.parse_args()
+    if opts.from_stage>opts.through_stage:
+        parser.error("--from-stage must not exceed --through-stage")
+    run(opts)

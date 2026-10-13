@@ -29,6 +29,15 @@ PARENTS = {
     "right_foot": "right_shin",
 }
 PRESETS = frozenset({"idle", "walk", "run", "wave", "jump", "attack"})
+GENIELABS_BONE_NAMES = {
+    "left_forearm": "left-lower-arm", "right_forearm": "right-lower-arm",
+    "left_thigh": "left-upper-leg", "right_thigh": "right-upper-leg",
+    "left_shin": "left-lower-leg", "right_shin": "right-lower-leg",
+}
+
+
+def bone_name(semantic: str) -> str:
+    return GENIELABS_BONE_NAMES.get(semantic, semantic.replace("_", "-"))
 
 
 class RigError(ValueError):
@@ -82,9 +91,9 @@ def build_rig_config(layout: Mapping, semantic_map: Mapping[str, str], joint_anc
         px, py = anchors[name]
         parent = PARENTS.get(name, "root")
         base_x, base_y = anchors.get(parent, (width / 2, height))
-        bones.append({"name": name.replace("_", "-"), "parent": parent.replace("_", "-"),
+        bones.append({"name": bone_name(name), "parent": bone_name(parent),
                       "x": round(px - base_x, 3), "y": round(base_y - py, 3)})
-        slots.append({"name": stem, "bone": name.replace("_", "-"), "attachment": stem})
+        slots.append({"name": stem, "bone": bone_name(name), "attachment": stem})
         w, h = float(part["width"]), float(part["height"])
         if w <= 0 or h <= 0:
             raise RigError("Nonpositive sprite dimensions")

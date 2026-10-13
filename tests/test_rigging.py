@@ -48,3 +48,15 @@ def test_no_duplicate_head_and_root_attachment_alignment():
     assert names == ["root", "torso", "head"]
     assert len(config["slots"]) == 2
     assert config["attachments"]["face"]["y"] == 0
+
+
+def test_semantic_limb_names_match_real_genielabs_motion_presets():
+    from studio.rigging import bone_name
+    assert bone_name("left_forearm") == "left-lower-arm"
+    assert bone_name("right_forearm") == "right-lower-arm"
+    assert bone_name("left_thigh") == "left-upper-leg"
+    assert bone_name("right_thigh") == "right-upper-leg"
+    assert bone_name("left_shin") == "left-lower-leg"
+    assert bone_name("right_shin") == "right-lower-leg"
+    assert bone_name("left_upper_arm") == "left-upper-arm"
+    assert bone_name("root") == "root"

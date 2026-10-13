@@ -28,7 +28,7 @@ python scripts/run_rig_pipeline.py --genielabs vendor/spine-animation-ai --atlas
 python scripts/run_rig_pipeline.py --genielabs vendor/spine-animation-ai --atlas character/parts_atlas.png --reference character/reference.png --workspace character/rig --semantic character/semantic.json --anchors character/anchors.json --from-stage 3
 ```
 
-`--from-stage 1` will segment, position and attempt building rig; it FAILS CLOSED when semantic/anchors are not present. It is safe to run only stage 1+2 by providing dummy absent semantics, then review. Use `--from-stage 3` after approvals.
+`--from-stage 1` will segment, position and attempt building rig; use \`--through-stage 2\` to stop after OpenCV segmentation and positioning; the third stage requires reviewed semantics and anchors. Use `--from-stage 3` after approvals.
 
 Outputs `rig_config.json`, `skeleton.json`, `skeleton.atlas`, `skeleton.png`. Validate the resulting skeleton by loading it in the P0/P3 Spine runtime before marking asset ready.
 
