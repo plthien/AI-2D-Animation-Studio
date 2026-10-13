@@ -100,3 +100,27 @@ def export_motion_task(brief: str, rig: dict, destination: Path) -> Path:
         encoding="utf-8",
     )
     return destination
+
+
+def export_film_task(brief: str, catalog: dict, example: dict, destination: Path) -> Path:
+    """Copy/paste FilmPlan instruction for a manual AI director (no API)."""
+    if not brief.strip():
+        raise ValueError("Film brief cannot be empty")
+    destination.parent.mkdir(parents=True, exist_ok=True)
+    destination.write_text(
+        "Create one complete JSON object ONLY with schema_version film.v1. "
+        "There are no automatic ChatGPT/DeepSeek API calls. "
+        "Use ONLY available rig IDs and one-to-one sequential source clip ranges. "
+        "Shots are contiguous, each has a unique shot_id, duration_frames > 0, "
+        "rig_id, clip_in, clip_out, camera {zoom,pan_x,pan_y}, "
+        "narration {text,wav,start_frame}. 24 FPS, 640x480. "
+        "The entire source motion must be consumed exactly once by ordered shot ranges. "
+        "Narration WAV files must be supplied locally as 24kHz mono PCM16; "
+        "no words are generated from text automatically. The WAV must fit its shot. "
+        "Do not invent missing asset filenames or actor rigs.\n\n"
+        + "Creative brief:\n" + brief + "\n\nAvailable resources:\n"
+        + json.dumps(catalog,indent=2) + "\n\nStrict example structure:\n"
+        + json.dumps(example,indent=2),
+        encoding="utf-8",
+    )
+    return destination

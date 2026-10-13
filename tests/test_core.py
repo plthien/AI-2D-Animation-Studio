@@ -210,3 +210,24 @@ def test_world_retarget_endpoint_valid_and_unreachable():
     bad={**payload,"world_prop":{**WORLD,"initial":{"x":900,"y":195}}}
     rejected=client.post("/motion/world-retarget",json=bad)
     assert rejected.status_code==422 and "reach" in str(rejected.json())
+
+
+def test_manual_film_handoff_and_api_compile(tmp_path,monkeypatch):
+    from pathlib import Path
+    from fastapi.testclient import TestClient
+    from studio.api import app
+    from studio.handoff import export_film_task
+    from tests.test_film import ROOT,BASE,POSES
+    monkeypatch.setenv("STUDIO_OUTPUT_ROOT",str(tmp_path))
+    file=export_film_task("Five shot rescue",{"rigs":["baseline"]},BASE,tmp_path/"p"/"film.txt")
+    assert "Five shot rescue" in file.read_text()
+    with pytest.raises(ValueError,match="empty"):
+        export_film_task("   ",{},BASE,tmp_path/"bad.txt")
+    client=TestClient(app)
+    good=client.post("/handoff/film/export",json={"prompt":"Five-shot cafe story","catalog":{"rigs":["baseline"]}})
+    assert good.status_code==200 and (tmp_path/"film_task.txt").is_file()
+    assert client.post("/handoff/film/export",json={"prompt":" ","catalog":{}}).status_code==422
+    ok=client.post("/film/compile",json={"film":BASE,"clips":POSES})
+    assert ok.status_code==200 and ok.json()["total_frames"]==672
+    bad=client.post("/film/compile",json={"film":BASE,"clips":{}})
+    assert bad.status_code==422 and "No compiled" in str(bad.json())

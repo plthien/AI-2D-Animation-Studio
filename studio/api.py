@@ -5,10 +5,11 @@ from pathlib import Path
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel, Field
 from studio.glabs import GlabsClient, ImageRequest
-from studio.handoff import AnimationPlan, export_task, export_motion_task
+from studio.handoff import AnimationPlan, export_task, export_motion_task, export_film_task
 from studio.motion import MotionPlan, MotionError, compile_motion
 from studio.retarget import RigProfile, compile_retargeted
 from studio.world import WorldProp, compile_world_motion
+from studio.film import FilmPlan, FilmError, compile_film
 
 app = FastAPI(title="AI 2D Animation Studio", version="0.1.0")
 
@@ -96,3 +97,28 @@ async def motion_world_retarget(request: WorldRetargetRequest) -> dict:
         return compile_world_motion(request.plan, request.profile, request.skeleton, request.world_prop)
     except MotionError as exc:
         raise HTTPException(status_code=422, detail=str(exc)) from exc
+
+
+class FilmCompileRequest(BaseModel):
+    film: FilmPlan
+    clips: dict[str, dict]
+
+
+@app.post("/film/compile")
+async def film_compile(request: FilmCompileRequest) -> dict:
+    try:
+        return compile_film(request.film, request.clips)
+    except FilmError as exc:
+        raise HTTPException(status_code=422, detail=str(exc)) from exc
+
+
+@app.post("/handoff/film/export")
+async def film_export(request: HandoffRequest) -> dict:
+    import json
+    example = json.loads((Path(__file__).parents[1] / "examples/p6_coffee_film.json").read_text(encoding="utf-8"))
+    try:
+        path=export_film_task(request.prompt,request.catalog,example,
+            Path(os.getenv("STUDIO_OUTPUT_ROOT","outputs"))/"film_task.txt")
+        return {"mode":"manual","path":str(path)}
+    except ValueError as exc:
+        raise HTTPException(status_code=422,detail=str(exc)) from exc
