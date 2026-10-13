@@ -1,0 +1,98 @@
+name: P4.2 two-rig motion reuse
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - "studio/retarget.py"
+      - "scripts/compile_retarget.py"
+      - "scripts/p4_spine_fixture.py"
+      - "runtime/spine_contact*"
+      - ".github/workflows/p4-retarget-two-rigs.yml"
+      - "examples/p4_coffee_motion.json"
+jobs:
+  reuse:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Install tools
+        run: |
+          pip install -e .
+          cd runtime
+          npm install --no-audit --no-fund
+          npx playwright install --with-deps chromium
+          npx esbuild spine_contact_scene.mjs --bundle --format=esm --outfile=spine_contact_scene.bundle.js
+      - name: Fetch exact pinned Genielabs rig tools
+        run: |
+          mkdir -p vendor/genielabs/scripts
+          SHA=702b71689cac826efee942ee4564fef9560d6ef8
+          for script in build_spine_json.py make_atlas.py; do
+            curl -fsSL --retry 3 "https://raw.githubusercontent.com/GenielabsOpenSource/spine-animation-ai/$SHA/scripts/$script" -o vendor/genielabs/scripts/$script
+          done
+      - name: Build two independent rigs from one builder
+        run: |
+          for variant in baseline compact; do
+            python scripts/p4_spine_fixture.py --genielabs vendor/genielabs --out "outputs/p4_retarget/rig_$variant" --variant "$variant"
+            mkdir -p "runtime/fixtures/$variant"
+            cp "outputs/p4_retarget/rig_$variant/skeleton.json" "outputs/p4_retarget/rig_$variant/skeleton.atlas" "outputs/p4_retarget/rig_$variant/skeleton.png" "outputs/p4_retarget/rig_$variant/rig_profile.json" "runtime/fixtures/$variant/"
+            python scripts/compile_retarget.py examples/p4_coffee_motion.json "runtime/fixtures/$variant/rig_profile.json" "runtime/fixtures/$variant/skeleton.json" "runtime/fixtures/$variant/contact_frames.json"
+          done
+      - name: Audit identical action plan against different limb proportions
+        run: |
+          python - <<'PY'
+          import json, math
+          from pathlib import Path
+          base = Path("runtime/fixtures")
+          a = json.loads((base/"baseline/contact_frames.json").read_text())
+          b = json.loads((base/"compact/contact_frames.json").read_text())
+          assert a["duration_frames"] == b["duration_frames"] == 48
+          assert a["rig"]["upper_arm"] == 90 and a["rig"]["forearm"] == 80
+          assert b["rig"]["upper_arm"] == 70 and b["rig"]["forearm"] == 65
+          assert [p["phase"] for p in a["frames"]] == [p["phase"] for p in b["frames"]]
+          for aa,bb in zip(a["frames"],b["frames"]):
+            for axis in ("x","y"):
+              qa=(aa["hand"][axis]-a["rig"]["shoulder"][axis])/170
+              qb=(bb["hand"][axis]-b["rig"]["shoulder"][axis])/135
+              assert abs(qa-qb)<1e-8, (aa["frame"],axis,qa,qb)
+            for pose,clip in ((aa,a),(bb,b)):
+              if pose["prop_state"]=="held":
+                assert abs(pose["prop"]["x"]-pose["hand"]["x"]-clip["grip_offset"]["x"])<1e-8
+                assert abs(pose["prop"]["y"]-pose["hand"]["y"]-clip["grip_offset"]["y"])<1e-8
+          print("One original motion produces scale-consistent wrist paths for two rig profiles.")
+          PY
+      - name: Render real Spine bone motion for both rigs
+        run: |
+          node runtime/spine_contact_render.mjs baseline
+          node runtime/spine_contact_render.mjs compact
+      - name: Validate both output artifacts and encode MP4
+        run: |
+          sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg
+          for variant in baseline compact; do
+            ffmpeg -hide_banner -loglevel error -y -framerate 24 -i "outputs/p4_retarget/$variant/frames/frame_%06d.png" -c:v libx264 -pix_fmt yuv420p "outputs/p4_retarget/$variant/$variant.mp4"
+          done
+          python - <<'PY'
+          from pathlib import Path
+          import json
+          manifests=[]
+          for variant in ("baseline","compact"):
+            out=Path("outputs/p4_retarget")/variant
+            info=json.loads((out/"manifest.json").read_text())
+            assert info["rigId"]==variant and info["frames"]==48
+            assert info["maxWristError"]<=0.1 and info["deterministic"]
+            assert info["uniqueFrameImages"]>=15
+            assert len(list((out/"frames").glob("frame_*.png")))==48
+            assert (out/(variant+".mp4")).stat().st_size>1000
+            manifests.append(info)
+          assert manifests[0]["rigId"]!=manifests[1]["rigId"]
+          print("P4.2 real Spine retarget browser + MP4 gates PASS",manifests)
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: p4-2-two-rig-reuse-proof
+          path: outputs/p4_retarget/
