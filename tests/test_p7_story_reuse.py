@@ -42,7 +42,7 @@ def test_second_story_runs_without_change_to_shared_animation_engine():
     assert key["frames"][0]["props"][0]["visual_id"]=="brass_key"
     assert key["frames"][503]["actors"][0]["rig_id"]=="compact"
     assert [x["frame"] for x in key["frames"]]==list(range(504))
-    assert {f["background_id"] for f in key["frames"]}=={"workshop_sunrise","hallway_twilight"}
+    assert {f["background_id"] for f in key["frames"]}=={"workshop_sunrise","workshop_twilight"}
 
 
 def test_key_reach_grab_hang_and_second_actor_retrieval_are_continuous():

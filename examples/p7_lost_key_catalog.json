@@ -11,8 +11,8 @@
     "workshop_sunrise": {
       "image": "backgrounds/workshop_sunrise.png"
     },
-    "hallway_twilight": {
-      "image": "backgrounds/hallway_twilight.png"
+    "workshop_twilight": {
+      "image": "backgrounds/workshop_twilight.png"
     }
   },
   "props": {

@@ -84,7 +84,7 @@ jobs:
           from pathlib import Path
           specs=[
             ("coffee",28,672,6,{"cafe_morning","cafe_evening"},{"baseline","compact"},"coffee_28s.mp4"),
-            ("lost_key",21,504,5,{"workshop_sunrise","hallway_twilight"},{"baseline","compact"},"lost_key_21s.mp4")
+            ("lost_key",21,504,5,{"workshop_sunrise","workshop_twilight"},{"baseline","compact"},"lost_key_21s.mp4")
           ]
           results=[]
           for story,duration,frames,motion_count,bgs,rigs,name in specs:

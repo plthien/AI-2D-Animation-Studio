@@ -106,7 +106,7 @@
     {
       "shot_id": "second_search",
       "duration_frames": 96,
-      "background_id": "hallway_twilight",
+      "background_id": "workshop_twilight",
       "camera": {
         "zoom": 0.95,
         "pan_x": -5,
@@ -131,7 +131,7 @@
         }
       ],
       "narration": {
-        "text": "His friend arrives. Apparently nobody told her about the hook.",
+        "text": "By evening, his friend arrives at the same workshop. The key is right on the hook.",
         "wav": "shot_04.wav",
         "start_frame": 8
       }
@@ -139,7 +139,7 @@
     {
       "shot_id": "key_moves_again",
       "duration_frames": 120,
-      "background_id": "hallway_twilight",
+      "background_id": "workshop_twilight",
       "camera": {
         "zoom": 1.08,
         "pan_x": 15,
