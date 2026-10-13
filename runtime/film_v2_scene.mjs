@@ -50,16 +50,24 @@ try {
   ];
   await Assets.load(aliases);
 
-  for(const [id,rig] of Object.entries(rigs)){
-    const actor=Spine.from({skeleton:'rig_json_'+id,atlas:'rig_atlas_'+id,autoUpdate:false});
-    actor.state.clearTracks();
-    actor.visible=false;
-    stage.addChild(actor);
-    rig.actor=actor;
-    rig.upper=actor.skeleton.findBone(rig.profile.bones.upper_arm);
-    rig.lower=actor.skeleton.findBone(rig.profile.bones.forearm);
-    rig.hand=actor.skeleton.findBone(rig.profile.bones.hand);
-    if(!rig.upper||!rig.lower||!rig.hand)throw Error('Spine rig missing arm bones: '+id);
+  // Actor *instances* are keyed by actor ID + rig, not by rig ID.
+  // Two different actors may share a single cached rig asset in the same shot.
+  const instances={};
+  for(const frame of timeline.frames){
+    for(const track of frame.actors){
+      const key=track.actor_id+'::'+track.rig_id;
+      if(instances[key])continue;
+      const rig=rigs[track.rig_id];
+      if(!rig)throw Error('Missing rig for actor instance');
+      const actor=Spine.from({skeleton:'rig_json_'+track.rig_id,
+                              atlas:'rig_atlas_'+track.rig_id,autoUpdate:false});
+      actor.state.clearTracks();actor.visible=false;stage.addChild(actor);
+      const upper=actor.skeleton.findBone(rig.profile.bones.upper_arm);
+      const lower=actor.skeleton.findBone(rig.profile.bones.forearm);
+      const hand=actor.skeleton.findBone(rig.profile.bones.hand);
+      if(!upper||!lower||!hand)throw Error('Spine rig missing arm bones: '+track.rig_id);
+      instances[key]={actor,upper,lower,hand};
+    }
   }
   for(const id of Object.keys(timeline.assets.backgrounds)){
     const sprite=new Sprite(Assets.get('background_'+id));
@@ -95,7 +103,7 @@ try {
     if(!Number.isSafeInteger(frameIndex)||frameIndex<0||frameIndex>=timeline.total_frames)
       throw Error('Invalid film frame index');
     const frame=timeline.frames[frameIndex];
-    for(const rig of Object.values(rigs))rig.actor.visible=false;
+    for(const instance of Object.values(instances))instance.actor.visible=false;
     for(const background of Object.values(backgrounds))background.visible=false;
     for(const prop of Object.values(props))prop.visible=false;
     if(!backgrounds[frame.background_id])throw Error('Unknown rendered background');
@@ -104,25 +112,26 @@ try {
     const actors={};
     for(const assignment of frame.actors){
       const rig=rigs[assignment.rig_id],clip=motions[assignment.motion_id];
+      const instance=instances[assignment.actor_id+'::'+assignment.rig_id];
       if(!rig||!clip||clip.rig_id!==assignment.rig_id)
         throw Error('Unknown or mismatched actor asset');
       const pose=clip.frames[assignment.pose_frame];
       if(!pose||pose.frame!==assignment.pose_frame)throw Error('Motion clip frame gap');
-      const actor=rig.actor,profile=rig.profile;
+      const actor=instance.actor,profile=rig.profile;
       actor.skeleton.setToSetupPose();actor.state.clearTracks();
       const shoulder=toSpine(pose.shoulder,profile);
       const elbow=toSpine(pose.elbow,profile);
       const wrist=toSpine(pose.hand,profile);
       const upperAngle=angle(shoulder,elbow),lowerAngle=angle(elbow,wrist);
-      rig.upper.rotation=upperAngle;
-      rig.lower.rotation=lowerAngle-upperAngle;
+      instance.upper.rotation=upperAngle;
+      instance.lower.rotation=lowerAngle-upperAngle;
       actor.update(0);
       actor.position.set(profile.actor_origin.x+assignment.offset_x,
                          profile.actor_origin.y+assignment.offset_y);
       actor.zIndex=assignment.layer;
       actor.visible=true;
-      const actual={x:rig.hand.worldX+profile.actor_origin.x+assignment.offset_x,
-        y:rig.hand.worldY+profile.actor_origin.y+assignment.offset_y};
+      const actual={x:instance.hand.worldX+profile.actor_origin.x+assignment.offset_x,
+        y:instance.hand.worldY+profile.actor_origin.y+assignment.offset_y};
       const planned={x:pose.hand.x+assignment.offset_x,
         y:pose.hand.y+assignment.offset_y};
       if(distance(actual,planned)>0.1)throw Error('Actual Spine wrist drift at frame '+frameIndex);
