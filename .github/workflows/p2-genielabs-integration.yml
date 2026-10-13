@@ -64,6 +64,7 @@ jobs:
           cd ..
           node runtime/smoke.mjs
           cp outputs/p0_spine_frame.png outputs/p2_fixture/generated_rig_browser.png
+          python scripts/check_render_nonblank.py outputs/p2_fixture/generated_rig_browser.png
       - uses: actions/upload-artifact@v4
         if: always()
         with:

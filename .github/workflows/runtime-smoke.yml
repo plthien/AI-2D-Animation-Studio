@@ -29,6 +29,10 @@ jobs:
           npx playwright install --with-deps chromium
       - name: Render real Spine sample
         run: node runtime/smoke.mjs
+      - name: Pixel QC (reject visually empty screenshot)
+        run: |
+          pip install Pillow
+          python scripts/check_render_nonblank.py outputs/p0_spine_frame.png
       - uses: actions/upload-artifact@v4
         if: always()
         with:
