@@ -105,12 +105,12 @@ jobs:
           assert tracks["video"]["codec_name"]=="h264" and tracks["audio"]["codec_name"]=="aac"
           assert abs(float(meta["format"]["duration"])-28)<0.06
           manifest=json.loads(Path("outputs/p6_v2/video_manifest.json").read_text())
-          assert len(manifest["independentMotions"])==5
+          assert len(manifest["independentMotions"])==6
           assert len(manifest["rigs"])==2
           assert len(manifest["backgrounds"])==2
           assert manifest["replayStable"]
           assert Path(p).stat().st_size>15000
-          print("P6 V2: actual CLI + 5 distinct clips + 2 rigs + 2 backgrounds + 28s MP4 PASS")
+          print("P6 V2: actual CLI + 6 independent clips + 2 simultaneous actors in final shots + 2 rigs + 2 backgrounds + 28s MP4 PASS")
           PY
       - uses: actions/upload-artifact@v4
         if: always()
