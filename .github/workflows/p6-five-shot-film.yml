@@ -1,0 +1,94 @@
+name: P5 P6 28s multi-shot narrated-timeline film
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - "studio/film.py"
+      - "studio/voice.py"
+      - "tests/test_film.py"
+      - "tests/test_voice.py"
+      - "scripts/compile_film.py"
+      - "scripts/assemble_voice.py"
+      - "scripts/p6_fixture_voice.py"
+      - "runtime/film*"
+      - "examples/p6_coffee_film.json"
+      - ".github/workflows/p6-five-shot-film.yml"
+jobs:
+  film:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Install renderer and Python dependencies
+        run: |
+          pip install -e .
+          cd runtime
+          npm install --no-audit --no-fund
+          npx playwright install --with-deps chromium
+          npx esbuild film_scene.mjs --bundle --format=esm --outfile=film_scene.bundle.js
+      - name: Obtain pinned upstream Genielabs rigging implementation
+        run: |
+          mkdir -p vendor/genielabs/scripts
+          SHA=702b71689cac826efee942ee4564fef9560d6ef8
+          for name in build_spine_json.py make_atlas.py; do
+            curl -fsSL --retry 3 "https://raw.githubusercontent.com/GenielabsOpenSource/spine-animation-ai/$SHA/scripts/$name" -o "vendor/genielabs/scripts/$name"
+          done
+      - name: Produce actual Spine rig and compiled 5-shot frame timeline
+        run: |
+          python scripts/p4_spine_fixture.py --genielabs vendor/genielabs --out outputs/p6_demo/rig --variant baseline
+          mkdir -p runtime/fixtures/baseline
+          cp outputs/p6_demo/rig/skeleton.json outputs/p6_demo/rig/skeleton.atlas outputs/p6_demo/rig/skeleton.png outputs/p6_demo/rig/rig_profile.json runtime/fixtures/baseline/
+          python scripts/compile_world.py examples/p4_coffee_motion.json runtime/fixtures/baseline/rig_profile.json runtime/fixtures/baseline/skeleton.json examples/p4_world_cup.json runtime/fixtures/baseline/contact_frames.json
+          python scripts/compile_film.py examples/p6_coffee_film.json runtime/fixtures/baseline/contact_frames.json runtime/fixtures/film_timeline.json
+      - name: Assemble sample-exact WAV with explicit synthetic signal fixture
+        run: |
+          python scripts/p6_fixture_voice.py
+          python scripts/assemble_voice.py runtime/fixtures/film_timeline.json outputs/p6_demo/voices outputs/p6_demo/narration.wav outputs/p6_demo/audio_manifest.json
+          python - <<'PY'
+          import json,wave
+          audio=json.load(open("outputs/p6_demo/audio_manifest.json"))
+          movie=json.load(open("runtime/fixtures/film_timeline.json"))
+          assert movie["total_frames"]==672 and len(movie["shots"])==5
+          assert audio["sample_count"]==672000 and audio["duration_seconds"]==28
+          assert len(audio["segments"])==5
+          with wave.open("outputs/p6_demo/narration.wav","rb") as w:
+            assert w.getnframes()==672000 and w.getframerate()==24000
+          print("P6 5-shot timeline/voice frame/sample map: PASS")
+          PY
+      - name: Render actual 672 frame Spine/PixiJS movie and verify replay
+        run: node runtime/film_render.mjs
+      - name: FFmpeg video/audio assembly and ffprobe QC
+        run: |
+          sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg
+          ffmpeg -hide_banner -loglevel error -y -framerate 24 -i outputs/p6_demo/frames/frame_%06d.png -i outputs/p6_demo/narration.wav -map 0:v:0 -map 1:a:0 -c:v libx264 -preset veryfast -crf 23 -pix_fmt yuv420p -c:a aac -b:a 96k outputs/p6_demo/p6_coffee_28s_synthetic_audio.mp4
+          python - <<'PY'
+          import json,subprocess
+          from pathlib import Path
+          p="outputs/p6_demo/p6_coffee_28s_synthetic_audio.mp4"
+          info=json.loads(subprocess.check_output(["ffprobe","-v","error","-count_frames","-show_entries","format=duration:stream=codec_type,codec_name,width,height,avg_frame_rate,nb_read_frames","-of","json",p]))
+          tracks={t["codec_type"]:t for t in info["streams"]}
+          assert set(tracks)=={"video","audio"},tracks
+          assert tracks["video"]["codec_name"]=="h264"
+          assert tracks["video"]["width"]==640 and tracks["video"]["height"]==480
+          assert tracks["video"]["nb_read_frames"]=="672"
+          assert tracks["video"]["avg_frame_rate"]=="24/1"
+          assert tracks["audio"]["codec_name"]=="aac"
+          assert abs(float(info["format"]["duration"])-28)<0.06
+          assert Path(p).stat().st_size>10000
+          print("P6 MP4 28s / 672 frames / H.264 + AAC / 5 shots: PASS")
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: p6-five-shot-28s-film-synthetic-voice
+          path: |
+            outputs/p6_demo/*.mp4
+            outputs/p6_demo/*.json
+            outputs/p6_demo/previews/*.png
+            runtime/fixtures/film_timeline.json
