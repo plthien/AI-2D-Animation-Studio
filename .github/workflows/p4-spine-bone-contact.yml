@@ -1,0 +1,55 @@
+name: P4 actual Spine bone contact
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - "scripts/p4_spine_fixture.py"
+      - "runtime/spine_contact*"
+      - ".github/workflows/p4-spine-bone-contact.yml"
+      - "studio/rigging.py"
+      - "studio/motion.py"
+jobs:
+  real-spine-contact:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Install tools
+        run: |
+          pip install -e .
+          cd runtime
+          npm install --no-audit --no-fund
+          npx playwright install --with-deps chromium
+          npx esbuild spine_contact_scene.mjs --bundle --format=esm --outfile=spine_contact_scene.bundle.js
+      - name: Fetch pinned Genielabs source
+        run: |
+          mkdir -p vendor/genielabs/scripts
+          SHA=702b71689cac826efee942ee4564fef9560d6ef8
+          for script in build_spine_json.py make_atlas.py; do
+            curl -fsSL --retry 3 "https://raw.githubusercontent.com/GenielabsOpenSource/spine-animation-ai/$SHA/scripts/$script" -o vendor/genielabs/scripts/$script
+          done
+      - name: Create five-part Spine rig and contact motion
+        run: |
+          python scripts/p4_spine_fixture.py --genielabs vendor/genielabs --out outputs/p4_spine_rig
+          mkdir -p runtime/fixtures
+          cp outputs/p4_spine_rig/skeleton.json outputs/p4_spine_rig/skeleton.atlas outputs/p4_spine_rig/skeleton.png runtime/fixtures/
+          python scripts/compile_motion.py examples/p4_coffee_motion.json runtime/fixtures/contact_frames.json
+      - name: Browser Spine Bone IK contact test
+        run: node runtime/spine_contact_render.mjs
+      - name: Create actual-Spine-rig MP4
+        run: |
+          sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg
+          ffmpeg -hide_banner -loglevel error -y -framerate 24 -i outputs/p4_spine_video/frames/frame_%06d.png -c:v libx264 -pix_fmt yuv420p outputs/p4_spine_video/spine_bone_contact.mp4
+          ffprobe -v error -show_entries stream=nb_frames,width,height,duration -of json outputs/p4_spine_video/spine_bone_contact.mp4
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: p4-actual-spine-bone-contact
+          path: |
+            outputs/p4_spine_video/
+            outputs/p4_spine_rig/
