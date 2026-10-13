@@ -7,6 +7,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import shutil
 import subprocess
 from pathlib import Path
 
@@ -16,7 +17,7 @@ from studio.voice import assemble_file
 
 
 def run(plan: Path, catalog: Path, motions: Path, voices: Path,
-        output: Path) -> None:
+        output: Path, workspace: Path | None = None) -> None:
     root=Path(__file__).resolve().parents[1]
     fixtures=root/"runtime"/"fixtures"
     assets=AssetCatalog.model_validate_json(catalog.read_text(encoding="utf-8"))
@@ -33,8 +34,11 @@ def run(plan: Path, catalog: Path, motions: Path, voices: Path,
         if shot.narration is not None and not (voices/shot.narration.wav).is_file():
             raise FileNotFoundError(f"Missing voice for shot {shot.shot_id}")
     prepare(plan,catalog,motions,fixtures)
-    temp=root/"outputs"/"p6_v2"
+    temp=workspace.resolve() if workspace is not None else root/"outputs"/"p6_v2"
     temp.mkdir(parents=True,exist_ok=True)
+    # Shorter subsequent films must never inherit frames from previous renders.
+    shutil.rmtree(temp/"frames",ignore_errors=True)
+    shutil.rmtree(temp/"previews",ignore_errors=True)
     assemble_file(fixtures/"film_timeline.json",voices,temp/"narration.wav",
                   temp/"audio_manifest.json")
     subprocess.run(["npm","run","build:film-v2"],cwd=root/"runtime",check=True)
@@ -66,5 +70,7 @@ if __name__=="__main__":
     parser.add_argument("--motions",type=Path,required=True)
     parser.add_argument("--voices",type=Path,required=True)
     parser.add_argument("--output",type=Path,required=True)
+    parser.add_argument("--workspace",type=Path,default=None,
+                        help="Dedicated intermediate frame/audio directory per film")
     args=parser.parse_args()
-    run(args.plan,args.catalog,args.motions,args.voices,args.output)
+    run(args.plan,args.catalog,args.motions,args.voices,args.output,args.workspace)
