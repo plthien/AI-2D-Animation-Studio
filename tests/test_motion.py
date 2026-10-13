@@ -53,6 +53,7 @@ def test_contact_sequence_and_geometry(tmp_path):
     {"actions":[{"kind":"wait","start":0,"end":4,"target":{"x":1,"y":1}}]},
     {"actions":[{"kind":"reach","start":0,"end":4}]},
     {"actions":[{"kind":"wait","start":0,"end":-1}]},
+    {"actions":[{"kind":"wait","start":2,"end":1}]},
 ])
 def test_invalid_plan(patch):
     with pytest.raises(ValidationError):
