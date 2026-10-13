@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import json
 from pathlib import Path
+from typing import Literal
 
 from pydantic import BaseModel, ConfigDict, Field, FiniteFloat, model_validator
 
@@ -30,7 +31,7 @@ class BoneRoles(BaseModel):
 
 class RigProfile(BaseModel):
     model_config = ConfigDict(extra="forbid")
-    schema_version: str = "1.0"
+    schema_version: Literal["1.0"] = "1.0"
     rig_id: str = Field(min_length=1)
     bones: BoneRoles
     actor_origin: Point
@@ -53,6 +54,11 @@ def validate_spine_profile(profile: RigProfile, skeleton: dict) -> None:
         raise MotionError("RigProfile limb lengths do not match Spine joints")
     if abs(float(lower.get("y", 0))) > 0.01 or abs(float(hand.get("y", 0))) > 0.01:
         raise MotionError("RigProfile requires zero-offset straight setup arm chain")
+    if any(abs(float(bone.get("rotation", 0))) > 0.01 or
+           abs(float(bone.get("scaleX", 1)) - 1) > 0.01 or
+           abs(float(bone.get("scaleY", 1)) - 1) > 0.01
+           for bone in (upper, lower, hand)):
+        raise MotionError("RigProfile requires neutral setup rotations and unit bone scales")
 
 
 def retarget_motion(source: MotionPlan, profile: RigProfile) -> MotionPlan:

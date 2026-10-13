@@ -7,6 +7,7 @@ from pydantic import BaseModel, Field
 from studio.glabs import GlabsClient, ImageRequest
 from studio.handoff import AnimationPlan, export_task, export_motion_task
 from studio.motion import MotionPlan, MotionError, compile_motion
+from studio.retarget import RigProfile, compile_retargeted
 
 app = FastAPI(title="AI 2D Animation Studio", version="0.1.0")
 
@@ -64,5 +65,20 @@ async def motion_export(request: HandoffRequest) -> dict:
 async def motion_compile(plan: MotionPlan) -> dict:
     try:
         return compile_motion(plan)
+    except MotionError as exc:
+        raise HTTPException(status_code=422, detail=str(exc)) from exc
+
+
+class RetargetRequest(BaseModel):
+    plan: MotionPlan
+    profile: RigProfile
+    skeleton: dict
+
+
+@app.post("/motion/retarget")
+async def motion_retarget(request: RetargetRequest) -> dict:
+    """Retarget one manually authored plan to a verified rig profile."""
+    try:
+        return compile_retargeted(request.plan, request.profile, request.skeleton)
     except MotionError as exc:
         raise HTTPException(status_code=422, detail=str(exc)) from exc

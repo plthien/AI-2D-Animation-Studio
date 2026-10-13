@@ -70,6 +70,8 @@ def test_roundtrip_profile_file(tmp_path):
     (BASE,{"bones":[SKELETON["bones"][0],{**SKELETON["bones"][1],"parent":"root"},SKELETON["bones"][2]]},"hierarchy"),
     (BASE,{"bones":[SKELETON["bones"][0],{**SKELETON["bones"][1],"x":89},SKELETON["bones"][2]]},"lengths"),
     (BASE,{"bones":[SKELETON["bones"][0],{**SKELETON["bones"][1],"y":1},SKELETON["bones"][2]]},"zero-offset"),
+    (BASE,{"bones":[SKELETON["bones"][0],{**SKELETON["bones"][1],"rotation":5},SKELETON["bones"][2]]},"neutral setup"),
+    (BASE,{"bones":[SKELETON["bones"][0],{**SKELETON["bones"][1],"scaleX":0.8},SKELETON["bones"][2]]},"neutral setup"),
 ])
 def test_reject_mismatched_actual_rig(rig,skeleton,error):
     with pytest.raises(MotionError,match=error):
@@ -89,6 +91,7 @@ def test_unreachable_nonuniform_proportions_fail_closed():
     {"bones":{"upper_arm":"a","forearm":"a","hand":"b"}},
     {"rig_id":""},
     {"forearm":0},
+    {"schema_version":"2.0"},
 ])
 def test_invalid_profile(invalid):
     with pytest.raises(ValidationError):

@@ -177,3 +177,18 @@ def test_motion_api_accepts_valid_plan_and_rejects_unreachable(tmp_path,monkeypa
     bad={**BASE,"rest_hand":{"x":99,"y":99}}
     response=client.post("/motion/compile",json=bad)
     assert response.status_code==422 and "reach" in str(response.json())
+
+
+def test_retarget_endpoint_and_fail_closed():
+    from fastapi.testclient import TestClient
+    from studio.api import app
+    from tests.test_retarget import BASE, SKELETON, SOURCE
+    client=TestClient(app)
+    payload={"plan":SOURCE,"profile":BASE,"skeleton":SKELETON}
+    good=client.post("/motion/retarget",json=payload)
+    assert good.status_code==200
+    assert good.json()["rig"]["rig_id"]=="baseline"
+    assert len(good.json()["frames"])==5
+    broken={**payload,"skeleton":{"bones":[]}}
+    bad=client.post("/motion/retarget",json=broken)
+    assert bad.status_code==422 and "missing" in str(bad.json())
