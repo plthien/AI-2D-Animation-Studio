@@ -1,0 +1,9 @@
+# P5/P6 v2: independent authored shots
+
+Each shot in `film.v2` contains its own `duration_frames`, `background_id`, `camera`, `actors[{actor_id,rig_id,motion_id,offset_x,offset_y,layer}]`, `props[{prop_id,visual_id,owner_actor_id,layer}]`, and optional `narration`. All references MUST be declared in the external `AssetCatalog`, and each referenced motion has exactly one pose per shot frame (no global 48-frame re-timing). Two different Spine rigs can be used in one film, and the renderer uses actual Spine arm bones from their `rig_profile.json`. The optional `continuity_break` must explicitly acknowledge a jump-cut when the same actor or object reappears discontinuously in adjacent shots.
+
+Sample is exactly 672 frames (28 seconds) across five shots. Its five motion IDs are `hero_wait`, `hero_reach`, `hero_rescue`, `friend_watch`, `friend_fix`; two distinct synthetic rig assets, two distinct PNG backgrounds and one reusable prop image. The hero reaches/moves the cup; the friend reacts and moves it again. Source motion durations are 96/144/144/144/144 frames. Existing P4 IK/contact engine compiles each motion *independently*. No G-Labs image generation or Kokoro speech is required for CI.
+
+`python scripts/prepare_film_v2.py examples/p6_v2_film.json examples/p6_v2_catalog.json examples/p6_v2_motions.json runtime/fixtures` emits exact-frame `film_timeline.json` and `film_motions.json`; it fails closed on missing assets, mismatched rig IDs, motion frames, prop discontinuities or actor wrist jumps at shot boundaries. Production callers provide their own asset PNGs and real spoken PCM16 24kHz WAVs.
+
+This V2 pipeline is intentionally distinct from legacy `film.v1`, which is retained for compatibility and regression tests. The demo is a functional multi-shot integration proof using synthetic assets, not finished film art or genuine speech.

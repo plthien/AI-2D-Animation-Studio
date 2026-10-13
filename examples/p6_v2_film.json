@@ -1,0 +1,173 @@
+{
+  "schema_version": "film.v2",
+  "fps": 24,
+  "width": 640,
+  "height": 480,
+  "shots": [
+    {
+      "shot_id": "morning_pause",
+      "duration_frames": 96,
+      "background_id": "cafe_morning",
+      "camera": {
+        "zoom": 0.9,
+        "pan_x": 0,
+        "pan_y": 0
+      },
+      "actors": [
+        {
+          "actor_id": "hero",
+          "rig_id": "baseline",
+          "motion_id": "hero_wait",
+          "offset_x": 0,
+          "offset_y": 0,
+          "layer": 0
+        }
+      ],
+      "props": [
+        {
+          "prop_id": "coffee_cup",
+          "visual_id": "red_mug",
+          "owner_actor_id": "hero",
+          "layer": 5
+        }
+      ],
+      "narration": {
+        "text": "A quiet morning. The coffee cup is getting dangerously close to the edge.",
+        "wav": "shot_01.wav",
+        "start_frame": 8
+      }
+    },
+    {
+      "shot_id": "hero_reaches",
+      "duration_frames": 144,
+      "background_id": "cafe_morning",
+      "camera": {
+        "zoom": 1.12,
+        "pan_x": 26,
+        "pan_y": 16
+      },
+      "actors": [
+        {
+          "actor_id": "hero",
+          "rig_id": "baseline",
+          "motion_id": "hero_reach",
+          "offset_x": 0,
+          "offset_y": 0,
+          "layer": 0
+        }
+      ],
+      "props": [
+        {
+          "prop_id": "coffee_cup",
+          "visual_id": "red_mug",
+          "owner_actor_id": "hero",
+          "layer": 5
+        }
+      ],
+      "narration": {
+        "text": "One hand reaches out. Slowly, as if this were a major rescue operation.",
+        "wav": "shot_02.wav",
+        "start_frame": 6
+      }
+    },
+    {
+      "shot_id": "hero_moves_cup",
+      "duration_frames": 144,
+      "background_id": "cafe_morning",
+      "camera": {
+        "zoom": 1.07,
+        "pan_x": 0,
+        "pan_y": 10
+      },
+      "actors": [
+        {
+          "actor_id": "hero",
+          "rig_id": "baseline",
+          "motion_id": "hero_rescue",
+          "offset_x": 0,
+          "offset_y": 0,
+          "layer": 0
+        }
+      ],
+      "props": [
+        {
+          "prop_id": "coffee_cup",
+          "visual_id": "red_mug",
+          "owner_actor_id": "hero",
+          "layer": 5
+        }
+      ],
+      "narration": {
+        "text": "He lifts the cup, shows off for a second, and sets it back down.",
+        "wav": "shot_03.wav",
+        "start_frame": 6
+      }
+    },
+    {
+      "shot_id": "friend_reacts",
+      "duration_frames": 144,
+      "background_id": "cafe_evening",
+      "camera": {
+        "zoom": 0.94,
+        "pan_x": -10,
+        "pan_y": 0
+      },
+      "actors": [
+        {
+          "actor_id": "friend",
+          "rig_id": "compact",
+          "motion_id": "friend_watch",
+          "offset_x": 0,
+          "offset_y": 0,
+          "layer": 0
+        }
+      ],
+      "props": [
+        {
+          "prop_id": "coffee_cup",
+          "visual_id": "red_mug",
+          "owner_actor_id": "friend",
+          "layer": 5
+        }
+      ],
+      "narration": {
+        "text": "Then his friend arrives and looks at the very same cup.",
+        "wav": "shot_04.wav",
+        "start_frame": 8
+      }
+    },
+    {
+      "shot_id": "friend_moves_cup",
+      "duration_frames": 144,
+      "background_id": "cafe_evening",
+      "camera": {
+        "zoom": 1.06,
+        "pan_x": 10,
+        "pan_y": 4
+      },
+      "actors": [
+        {
+          "actor_id": "friend",
+          "rig_id": "compact",
+          "motion_id": "friend_fix",
+          "offset_x": 0,
+          "offset_y": 0,
+          "layer": 0
+        }
+      ],
+      "props": [
+        {
+          "prop_id": "coffee_cup",
+          "visual_id": "red_mug",
+          "owner_actor_id": "friend",
+          "layer": 5
+        }
+      ],
+      "narration": {
+        "text": "Another careful rescue. This time the cup gets a safer place.",
+        "wav": "shot_05.wav",
+        "start_frame": 8
+      }
+    }
+  ]
+}

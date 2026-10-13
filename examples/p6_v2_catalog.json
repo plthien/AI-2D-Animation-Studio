@@ -1,0 +1,23 @@
+{
+  "rigs": {
+    "baseline": {
+      "directory": "baseline"
+    },
+    "compact": {
+      "directory": "compact"
+    }
+  },
+  "backgrounds": {
+    "cafe_morning": {
+      "image": "backgrounds/cafe_morning.png"
+    },
+    "cafe_evening": {
+      "image": "backgrounds/cafe_evening.png"
+    }
+  },
+  "props": {
+    "red_mug": {
+      "image": "props/red_mug.png"
+    }
+  }
+}
