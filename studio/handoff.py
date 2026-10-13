@@ -80,7 +80,7 @@ def export_motion_task(brief: str, rig: dict, destination: Path) -> Path:
         "actions": [
             {"kind": "reach", "start": 0, "end": 11, "target": {"x": 286, "y": 195}},
             {"kind": "grab", "start": 12, "end": 14},
-            {"kind": "place", "start": 15, "end": 47, "target": {"x": 316, "y": 195}},
+            {"kind": "place", "start": 15, "end": 47, "target": {"x": 302, "y": 195}},
         ],
     }
     destination.write_text(
