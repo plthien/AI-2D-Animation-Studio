@@ -192,3 +192,21 @@ def test_retarget_endpoint_and_fail_closed():
     broken={**payload,"skeleton":{"bones":[]}}
     bad=client.post("/motion/retarget",json=broken)
     assert bad.status_code==422 and "missing" in str(bad.json())
+
+
+def test_world_retarget_endpoint_valid_and_unreachable():
+    from fastapi.testclient import TestClient
+    from pathlib import Path
+    from studio.api import app
+    from tests.test_retarget import BASE, SKELETON
+    from tests.test_world import WORLD
+    source=json.loads((Path(__file__).parents[1]/"examples/p4_coffee_motion.json").read_text())
+    payload={"plan":source,"profile":BASE,"skeleton":SKELETON,"world_prop":WORLD}
+    client=TestClient(app)
+    accepted=client.post("/motion/world-retarget",json=payload)
+    assert accepted.status_code==200
+    assert accepted.json()["retarget"]["mode"]=="world_fixed_prop"
+    assert accepted.json()["frames"][0]["prop"]=={"x":270.0,"y":195.0}
+    bad={**payload,"world_prop":{**WORLD,"initial":{"x":900,"y":195}}}
+    rejected=client.post("/motion/world-retarget",json=bad)
+    assert rejected.status_code==422 and "reach" in str(rejected.json())

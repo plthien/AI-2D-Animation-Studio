@@ -8,6 +8,7 @@ from studio.glabs import GlabsClient, ImageRequest
 from studio.handoff import AnimationPlan, export_task, export_motion_task
 from studio.motion import MotionPlan, MotionError, compile_motion
 from studio.retarget import RigProfile, compile_retargeted
+from studio.world import WorldProp, compile_world_motion
 
 app = FastAPI(title="AI 2D Animation Studio", version="0.1.0")
 
@@ -80,5 +81,18 @@ async def motion_retarget(request: RetargetRequest) -> dict:
     """Retarget one manually authored plan to a verified rig profile."""
     try:
         return compile_retargeted(request.plan, request.profile, request.skeleton)
+    except MotionError as exc:
+        raise HTTPException(status_code=422, detail=str(exc)) from exc
+
+
+class WorldRetargetRequest(RetargetRequest):
+    world_prop: WorldProp
+
+
+@app.post("/motion/world-retarget")
+async def motion_world_retarget(request: WorldRetargetRequest) -> dict:
+    """One stationary world prop target shared across different rig profiles."""
+    try:
+        return compile_world_motion(request.plan, request.profile, request.skeleton, request.world_prop)
     except MotionError as exc:
         raise HTTPException(status_code=422, detail=str(exc)) from exc
