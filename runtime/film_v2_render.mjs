@@ -5,7 +5,8 @@ import { spawn } from 'node:child_process';
 import { mkdir, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 
-const port=18773,out='outputs/p6_v2';
+const port=18773,out=process.argv[2]??'outputs/p6_v2';
+const assertDemo=process.argv.includes('--assert-demo');
 await mkdir(out+'/frames',{recursive:true});
 await mkdir(out+'/previews',{recursive:true});
 const server=spawn('python',['-m','http.server',String(port),'--directory','runtime'],{stdio:'ignore'});
@@ -26,8 +27,11 @@ try {
     timeline:window.__FILM_V2_TIMELINE__}));
   if(!state.ready)throw Error('Film v2 failed to initialize: '+state.error);
   const timeline=state.timeline;
-  if(timeline.total_frames!==672 || timeline.shots.length!==5)
-    throw Error('P6 V2 acceptance requires 5 shots / 672 frames');
+  if(!Number.isSafeInteger(timeline.total_frames)||timeline.total_frames<1)
+    throw Error('Invalid compiled film duration');
+  await page.setViewportSize({width:timeline.width,height:timeline.height});
+  if(assertDemo&&(timeline.total_frames!==672||timeline.shots.length!==5))
+    throw Error('P6 V2 acceptance demo requires 5 shots / 672 frames');
   const counts={},motions=new Set(),rigIds=new Set(),backgrounds=new Set();
   const previewIndices=new Set(timeline.shots.flatMap(s=>[s.start,s.end_exclusive-1]));
   const hashes=new Map();
@@ -51,9 +55,11 @@ try {
     if(createHash('sha256').update(png).digest('hex')!==hash)
       throw Error('V2 frame is not replay-stable: '+i);
   }
-  if(Object.keys(counts).length!==5 || motions.size<5 || rigIds.size<2 || backgrounds.size<2)
-    throw Error('V2 still resembles a single-clip/single-asset demo');
-  const report={fps:24,totalFrames:timeline.total_frames,duration:timeline.total_frames/24,
+  if(assertDemo&&(Object.keys(counts).length!==5||motions.size<5||
+       rigIds.size<2||backgrounds.size<2))
+    throw Error('Acceptance demo must contain five independent shots and distinct assets');
+  const report={fps:timeline.fps,width:timeline.width,height:timeline.height,
+    totalFrames:timeline.total_frames,duration:timeline.total_frames/timeline.fps,
     shots:counts,independentMotions:[...motions],rigs:[...rigIds],backgrounds:[...backgrounds],
     replayStable:true,frameHashes:Object.fromEntries(hashes)};
   await writeFile(out+'/video_manifest.json',JSON.stringify(report,null,2));

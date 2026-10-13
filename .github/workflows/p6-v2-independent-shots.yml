@@ -80,7 +80,7 @@ jobs:
           print("P6 audio alignment: 672000 PCM samples / 28s PASS")
           PY
       - name: Render full 5-shot / 672-frame film with actual Spine bones
-        run: node runtime/film_v2_render.mjs
+        run: node runtime/film_v2_render.mjs outputs/p6_v2 --assert-demo
       - name: Encode final H264/AAC movie and inspect video/audio metadata
         run: |
           sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg

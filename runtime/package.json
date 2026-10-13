@@ -6,7 +6,8 @@
     "smoke": "node smoke.mjs",
     "build": "esbuild deterministic.mjs --bundle --format=esm --outfile=deterministic.bundle.js",
     "smoke:fixed": "node fixed_smoke.mjs",
-    "build:contact": "esbuild contact_scene.mjs --bundle --format=esm --outfile=contact_scene.bundle.js"
+    "build:contact": "esbuild contact_scene.mjs --bundle --format=esm --outfile=contact_scene.bundle.js",
+    "build:film-v2": "esbuild film_v2_scene.mjs --bundle --format=esm --outfile=film_v2_scene.bundle.js"
   },
   "dependencies": {
     "@esotericsoftware/spine-pixi-v8": "4.2.120",
