@@ -1,0 +1,93 @@
+{
+  "schema_version": "film.v1",
+  "fps": 24,
+  "width": 640,
+  "height": 480,
+  "shots": [
+    {
+      "shot_id": "establish_cafe",
+      "duration_frames": 96,
+      "rig_id": "baseline",
+      "clip_in": 0,
+      "clip_out": 11,
+      "camera": {
+        "zoom": 0.9,
+        "pan_x": 0,
+        "pan_y": 0
+      },
+      "narration": {
+        "text": "A quiet coffee break. What could possibly go wrong?",
+        "wav": "shot_01.wav",
+        "start_frame": 8
+      }
+    },
+    {
+      "shot_id": "notice_cup",
+      "duration_frames": 144,
+      "rig_id": "baseline",
+      "clip_in": 12,
+      "clip_out": 14,
+      "camera": {
+        "zoom": 1.25,
+        "pan_x": -35,
+        "pan_y": 25
+      },
+      "narration": {
+        "text": "The cup starts moving. Our hero notices just in time.",
+        "wav": "shot_02.wav",
+        "start_frame": 6
+      }
+    },
+    {
+      "shot_id": "save_the_cup",
+      "duration_frames": 144,
+      "rig_id": "baseline",
+      "clip_in": 15,
+      "clip_out": 27,
+      "camera": {
+        "zoom": 1.12,
+        "pan_x": 0,
+        "pan_y": 0
+      },
+      "narration": {
+        "text": "A dramatic rescue. Two arm bones. One very lucky mug.",
+        "wav": "shot_03.wav",
+        "start_frame": 6
+      }
+    },
+    {
+      "shot_id": "awkward_pause",
+      "duration_frames": 144,
+      "rig_id": "baseline",
+      "clip_in": 28,
+      "clip_out": 31,
+      "camera": {
+        "zoom": 1.5,
+        "pan_x": -35,
+        "pan_y": 35
+      },
+      "narration": {
+        "text": "For one terrifying moment, nobody breathes.",
+        "wav": "shot_04.wav",
+        "start_frame": 8
+      }
+    },
+    {
+      "shot_id": "cup_returns",
+      "duration_frames": 144,
+      "rig_id": "baseline",
+      "clip_in": 32,
+      "clip_out": 47,
+      "camera": {
+        "zoom": 1,
+        "pan_x": 0,
+        "pan_y": 0
+      },
+      "narration": {
+        "text": "Back on the table. As if nothing ever happened.",
+        "wav": "shot_05.wav",
+        "start_frame": 8
+      }
+    }
+  ]
+}
