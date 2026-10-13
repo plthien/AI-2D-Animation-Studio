@@ -8,9 +8,19 @@ import { Spine } from '@esotericsoftware/spine-pixi-v8';
 window.__CONTACT_SPINE_READY__ = false;
 window.__CONTACT_SPINE_ERROR__ = null;
 try {
-  const data = await fetch('./fixtures/contact_frames.json');
+  const variant=new URLSearchParams(window.location.search).get('rig');
+  if(variant!==null && !['baseline','compact'].includes(variant)) throw Error('Unknown rig variant');
+  const folder=variant===null?'./fixtures/':'./fixtures/'+variant+'/';
+  const data = await fetch(folder+'contact_frames.json');
   if(!data.ok) throw Error('Missing compiled P4 motion frames');
   const clip = await data.json();
+  const profile = variant===null
+    ? {rig_id:'legacy',bones:{upper_arm:'left-upper-arm',forearm:'left-lower-arm',hand:'left-hand'},
+       actor_origin:{x:320,y:480},shoulder:{x:140,y:165}}
+    : await (await fetch(folder+'rig_profile.json')).json();
+  if(variant!==null && (clip.rig?.rig_id!==variant || profile.rig_id!==variant)) {
+    throw Error('Rig profile and retarget clip identity mismatch');
+  }
   if(clip.schema_version!=='p4.1' || clip.duration_frames!==clip.frames.length) throw Error('Invalid motion plan');
   const app = new Application();
   await app.init({width:640,height:480,backgroundColor:0xe7dfce,antialias:false,
@@ -18,11 +28,11 @@ try {
   app.ticker.stop();
   document.querySelector('#app').appendChild(app.canvas);
 
-  Assets.add({alias:'p4skeleton',src:'./fixtures/skeleton.json'});
-  Assets.add({alias:'p4atlas',src:'./fixtures/skeleton.atlas'});
+  Assets.add({alias:'p4skeleton',src:folder+'skeleton.json'});
+  Assets.add({alias:'p4atlas',src:folder+'skeleton.atlas'});
   await Assets.load(['p4skeleton','p4atlas']);
   const actor = Spine.from({skeleton:'p4skeleton',atlas:'p4atlas',autoUpdate:false});
-  actor.position.set(320,480);
+  actor.position.set(profile.actor_origin.x,profile.actor_origin.y);
   actor.scale.set(1);
   actor.state.clearTracks();
   app.stage.addChild(actor);
@@ -45,15 +55,15 @@ try {
   const stateLabel = new Text({text:'',style:{fontFamily:'Arial',fontSize:13,fill:0x354251}});
   stateLabel.position.set(12,435);app.stage.addChild(stateLabel);
 
-  const upper=actor.skeleton.findBone('left-upper-arm');
-  const lower=actor.skeleton.findBone('left-lower-arm');
-  const wrist=actor.skeleton.findBone('left-hand');
+  const upper=actor.skeleton.findBone(profile.bones.upper_arm);
+  const lower=actor.skeleton.findBone(profile.bones.forearm);
+  const wrist=actor.skeleton.findBone(profile.bones.hand);
   const torso=actor.skeleton.findBone('torso');
   if(!upper||!lower||!wrist||!torso) throw Error('Genielabs Spine rig missing required arm bones');
   // Pixel screen x to Spine skeleton x: root lies at screen x=320.
   // Pixel screen y to Spine world y: root lies at screen y=480, positive Y up.
-  const pixelToSpine=(p)=>({x:p.x-320,y:480-p.y});
-  const spineToPixel=(p)=>({x:p.worldX+320,y:480+p.worldY}); // Spine-Pixi v8 uses y-down bone worldY
+  const pixelToSpine=(p)=>({x:p.x-profile.actor_origin.x,y:profile.actor_origin.y-p.y});
+  const spineToPixel=(p)=>({x:p.worldX+profile.actor_origin.x,y:profile.actor_origin.y+p.worldY}); // Spine-Pixi v8 worldY is y-down
   const angle=(p,q)=>Math.atan2(q.y-p.y,q.x-p.x)*180/Math.PI;
   const mismatch=(a,b)=>Math.hypot(a.x-b.x,a.y-b.y);
   const drawFrame=(frame)=>{
@@ -93,6 +103,7 @@ try {
   };
   window.__SPINE_CONTACT_FRAME__=drawFrame;
   window.__SPINE_CONTACT_ACTOR__=actor;
+  window.__SPINE_CONTACT_PROFILE__=profile;
   window.__SPINE_CONTACT_CLIP__=clip;
   drawFrame(0);
   window.__CONTACT_SPINE_READY__=true;

@@ -6,7 +6,9 @@ import { mkdir, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 
 const port=18769;
-const out='outputs/p4_spine_video';
+const variant=process.argv[2] ?? null;
+if(variant!==null && !['baseline','compact'].includes(variant)) throw Error('Invalid variant');
+const out=variant===null?'outputs/p4_spine_video':'outputs/p4_retarget/'+variant;
 await mkdir(out+'/frames',{recursive:true});
 const server=spawn('python',['-m','http.server',String(port),'--directory','runtime'],{stdio:'ignore'});
 async function ready(){
@@ -22,7 +24,7 @@ try{
   await ready();
   browser=await chromium.launch({headless:true,args:['--use-gl=angle','--use-angle=swiftshader']});
   const page=await browser.newPage({viewport:{width:640,height:480},deviceScaleFactor:1});
-  await page.goto('http://127.0.0.1:'+port+'/spine_contact_scene.html',{waitUntil:'domcontentloaded',timeout:30000});
+  await page.goto('http://127.0.0.1:'+port+'/spine_contact_scene.html'+(variant===null?'':'?rig='+variant),{waitUntil:'domcontentloaded',timeout:30000});
   await page.waitForFunction(()=>window.__CONTACT_SPINE_READY__||window.__CONTACT_SPINE_ERROR__,null,{timeout:45000});
   const state=await page.evaluate(()=>({ready:window.__CONTACT_SPINE_READY__,error:window.__CONTACT_SPINE_ERROR__}));
   if(!state.ready)throw Error('Spine rig contact adapter failed: '+state.error);
@@ -45,7 +47,7 @@ try{
     const png=await canvas.screenshot();
     if(createHash('sha256').update(png).digest('hex')!==hashes[i])throw Error('Spine replay mismatch at '+i);
   }
-  const manifest={frames:48,fps:24,rigSource:'Genielabs build_spine_json.py + make_atlas.py',
+  const manifest={frames:48,fps:24,rigId:variant??'legacy',rigSource:'Genielabs build_spine_json.py + make_atlas.py',
     boneChain:['left-upper-arm','left-lower-arm','left-hand'],maxWristError,
     uniqueFrameImages:new Set(hashes).size,deterministic:true,
     restatedLimitations:'5 synthetic parts, no full humanoid, no automatic rigging from AI image'};

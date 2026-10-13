@@ -15,7 +15,7 @@ from PIL import Image, ImageDraw
 from studio.rigging import build_rig_config, run_genielabs_builder
 
 
-def make_parts(parts: Path) -> dict:
+def make_parts(parts: Path, variant: str = "baseline") -> dict:
     parts.mkdir(parents=True, exist_ok=True)
     sizes = {
         "torso": (72, 112),
@@ -32,6 +32,16 @@ def make_parts(parts: Path) -> dict:
         "torso": (105, 170), "head": (92, 76), "upper_arm": (136, 152),
         "forearm": (225, 154), "hand": (300, 151),
     }
+    if variant == "compact":
+        sizes = {
+            "torso": (64, 102), "head": (76, 75),
+            "upper_arm": (78, 25), "forearm": (70, 23), "hand": (27, 27),
+        }
+        positions = {
+            "torso": (143, 194), "head": (129, 95),
+            "upper_arm": (171, 172), "forearm": (239, 174),
+            "hand": (298, 171),
+        }
     colors = {
         "torso": "#e4a052", "head": "#344c61", "upper_arm": "#405d76",
         "forearm": "#4c728f", "hand": "#344c61",
@@ -62,12 +72,12 @@ def make_parts(parts: Path) -> dict:
     }, mapping
 
 
-def produce(upstream: Path, output: Path) -> None:
+def produce(upstream: Path, output: Path, variant: str = "baseline") -> None:
     script = upstream / "scripts" / "make_atlas.py"
     if not script.is_file():
         raise FileNotFoundError(f"Genielabs atlas packer missing: {script}")
     parts = output / "parts"
-    layout, semantic = make_parts(parts)
+    layout, semantic = make_parts(parts, variant)
     anchors = {
         "torso": {"x": 140, "y": 210},
         "head": {"x": 135, "y": 110},
@@ -75,12 +85,22 @@ def produce(upstream: Path, output: Path) -> None:
         "left_forearm": {"x": 230, "y": 165},
         "left_hand": {"x": 310, "y": 165},
     }
+    if variant == "compact":
+        anchors = {
+            "torso": {"x": 175, "y": 230},
+            "head": {"x": 168, "y": 133},
+            "left_upper_arm": {"x": 175, "y": 185},
+            "left_forearm": {"x": 245, "y": 185},
+            "left_hand": {"x": 310, "y": 185},
+        }
+    upper_length = anchors["left_forearm"]["x"] - anchors["left_upper_arm"]["x"]
+    forearm_length = anchors["left_hand"]["x"] - anchors["left_forearm"]["x"]
     config = build_rig_config(layout, semantic, anchors, ["idle", "wave"])
     for bone in config["bones"]:
         if bone["name"] == "left-upper-arm":
-            bone["length"] = 90
+            bone["length"] = upper_length
         elif bone["name"] == "left-lower-arm":
-            bone["length"] = 80
+            bone["length"] = forearm_length
     output.mkdir(parents=True, exist_ok=True)
     (output / "layout.json").write_text(json.dumps(layout, indent=2))
     (output / "semantic.json").write_text(json.dumps(semantic, indent=2))
@@ -98,14 +118,26 @@ def produce(upstream: Path, output: Path) -> None:
             raise ValueError(f"Expected multi-part bone missing: {key}")
     if bones["left-lower-arm"]["parent"] != "left-upper-arm" or bones["left-hand"]["parent"] != "left-lower-arm":
         raise ValueError("Incorrect arm chain parentage")
-    if bones["left-lower-arm"]["x"] != 90 or bones["left-hand"]["x"] != 80:
-        raise ValueError("Arm chain bone lengths/pivots do not match motion plan")
-    print(f"Genielabs 5-part Spine rig ready in {output}")
+    if bones["left-lower-arm"]["x"] != upper_length or bones["left-hand"]["x"] != forearm_length:
+        raise ValueError("Arm chain bone lengths/pivots do not match rig profile")
+    profile = {
+        "schema_version": "1.0",
+        "rig_id": variant,
+        "bones": {"upper_arm": "left-upper-arm", "forearm": "left-lower-arm", "hand": "left-hand"},
+        "actor_origin": {"x": 320, "y": 480},
+        "shoulder": anchors["left_upper_arm"],
+        "upper_arm": upper_length,
+        "forearm": forearm_length,
+        "grip_offset": {"x": -16, "y": 0},
+    }
+    (output / "rig_profile.json").write_text(json.dumps(profile, indent=2))
+    print(f"Genielabs 5-part Spine rig ready: {variant} in {output}")
 
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--genielabs", type=Path, required=True)
     parser.add_argument("--out", type=Path, default=Path("outputs/p4_spine_rig"))
+    parser.add_argument("--variant", choices=("baseline", "compact"), default="baseline")
     opts = parser.parse_args()
-    produce(opts.genielabs, opts.out)
+    produce(opts.genielabs, opts.out, opts.variant)
