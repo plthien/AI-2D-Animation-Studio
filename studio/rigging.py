@@ -59,7 +59,7 @@ def build_rig_config(layout: Mapping, semantic_map: Mapping[str, str], joint_anc
     if any(a not in PRESETS for a in animations):
         raise RigError("Unknown animation preset")
 
-    ordered = [name for name in ("torso", "head", *PARENTS.keys()) if name in labels]
+    ordered = [name for name in ("torso", *PARENTS.keys()) if name in labels]
     by_label = {semantic_map[stem]: (stem, part) for stem, part in parts.items()}
     anchors: dict[str, tuple[float, float]] = {}
     for name in ordered:

@@ -39,3 +39,12 @@ def test_invalid_rig_rejected(layout,labels,anchors,animations):
 def test_builder_requires_inputs(tmp_path):
     with pytest.raises(FileNotFoundError):
         run_genielabs_builder(tmp_path,tmp_path/"missing.json",tmp_path/"output.json")
+
+
+def test_no_duplicate_head_and_root_attachment_alignment():
+    config = build_rig_config(LAYOUT, LABELS, ANCHORS, ["idle"])
+    names = [bone["name"] for bone in config["bones"]]
+    assert len(names) == len(set(names))
+    assert names == ["root", "torso", "head"]
+    assert len(config["slots"]) == 2
+    assert config["attachments"]["face"]["y"] == 0
