@@ -51,6 +51,19 @@ jobs:
           assert (root/"skeleton.atlas").is_file()
           print("P2 synthetic rig contract passed",names,list(rig["animations"]))
           PY
+      - name: Render newly generated P2 rig in actual Spine Player
+        run: |
+          mkdir -p runtime/fixtures
+          cp outputs/p2_fixture/rig/skeleton.json runtime/fixtures/sombrero.json
+          cp outputs/p2_fixture/rig/skeleton.atlas runtime/fixtures/sombrero.atlas
+          cp outputs/p2_fixture/rig/skeleton.png runtime/fixtures/skeleton.png
+          cp outputs/p2_fixture/rig/skeleton.png runtime/fixtures/sombrero.png
+          cd runtime
+          npm install --no-audit --no-fund
+          npx playwright install --with-deps chromium
+          cd ..
+          node runtime/smoke.mjs
+          cp outputs/p0_spine_frame.png outputs/p2_fixture/generated_rig_browser.png
       - uses: actions/upload-artifact@v4
         if: always()
         with:
