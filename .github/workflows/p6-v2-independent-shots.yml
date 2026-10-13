@@ -79,14 +79,19 @@ jobs:
             assert wav.getnframes()==672000 and wav.getframerate()==24000
           print("P6 audio alignment: 672000 PCM samples / 28s PASS")
           PY
-      - name: Render full 5-shot / 672-frame film with actual Spine bones
-        run: node runtime/film_v2_render.mjs outputs/p6_v2 --assert-demo
-      - name: Encode final H264/AAC movie and inspect video/audio metadata
+      - name: Validate reproducible end-to-end LOCAL user CLI (not CI-only internal glue)
         run: |
           sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg
-          ffmpeg -hide_banner -loglevel error -y -framerate 24 -i outputs/p6_v2/frames/frame_%06d.png -i outputs/p6_v2/narration.wav -map 0:v:0 -map 1:a:0 -c:v libx264 -preset veryfast -crf 23 -pix_fmt yuv420p -c:a aac -b:a 96k outputs/p6_v2/five_independent_shots_28s.mp4
+          python scripts/run_film_v2.py \
+            --plan examples/p6_v2_film.json \
+            --catalog examples/p6_v2_catalog.json \
+            --motions examples/p6_v2_motions.json \
+            --voices outputs/p6_demo/voices \
+            --output outputs/p6_v2/five_independent_shots_28s.mp4
+      - name: FFprobe final film and assert independent-asset manifest
+        run: |
           python - <<'PY'
-          import subprocess,json
+          import json,subprocess
           from pathlib import Path
           p="outputs/p6_v2/five_independent_shots_28s.mp4"
           meta=json.loads(subprocess.check_output(["ffprobe","-v","error","-count_frames","-show_entries","format=duration:stream=codec_type,codec_name,width,height,avg_frame_rate,nb_read_frames","-of","json",p]))
@@ -97,8 +102,13 @@ jobs:
           assert tracks["video"]["width"]==640 and tracks["video"]["height"]==480
           assert tracks["video"]["codec_name"]=="h264" and tracks["audio"]["codec_name"]=="aac"
           assert abs(float(meta["format"]["duration"])-28)<0.06
+          manifest=json.loads(Path("outputs/p6_v2/video_manifest.json").read_text())
+          assert len(manifest["independentMotions"])==5
+          assert len(manifest["rigs"])==2
+          assert len(manifest["backgrounds"])==2
+          assert manifest["replayStable"]
           assert Path(p).stat().st_size>15000
-          print("P6 V2 DONE: 5 independent shots, 2 rigs, 2 backgrounds, 672 frames, 28s H264/AAC")
+          print("P6 V2: actual CLI + 5 distinct clips + 2 rigs + 2 backgrounds + 28s MP4 PASS")
           PY
       - uses: actions/upload-artifact@v4
         if: always()
