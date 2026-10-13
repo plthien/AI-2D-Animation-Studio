@@ -120,6 +120,14 @@
           "offset_x": 0,
           "offset_y": 0,
           "layer": 0
+        },
+        {
+          "actor_id": "spectator",
+          "rig_id": "baseline",
+          "motion_id": "spectator_wait",
+          "offset_x": 265,
+          "offset_y": 0,
+          "layer": -1
         }
       ],
       "props": [
@@ -153,6 +161,14 @@
           "offset_x": 0,
           "offset_y": 0,
           "layer": 0
+        },
+        {
+          "actor_id": "spectator",
+          "rig_id": "baseline",
+          "motion_id": "spectator_wait",
+          "offset_x": 265,
+          "offset_y": 0,
+          "layer": -1
         }
       ],
       "props": [

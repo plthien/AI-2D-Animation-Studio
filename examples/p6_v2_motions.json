@@ -197,5 +197,35 @@
         }
       }
     ]
+  },
+  "spectator_wait": {
+    "fps": 24,
+    "frames": 144,
+    "shoulder": {
+      "x": 140,
+      "y": 165
+    },
+    "rest_hand": {
+      "x": 212,
+      "y": 165
+    },
+    "upper_arm": 90,
+    "forearm": 80,
+    "initial_prop": {
+      "x": 286,
+      "y": 195
+    },
+    "grip_offset": {
+      "x": -16,
+      "y": 0
+    },
+    "bend": 1,
+    "actions": [
+      {
+        "kind": "wait",
+        "start": 0,
+        "end": 143
+      }
+    ]
   }
 }

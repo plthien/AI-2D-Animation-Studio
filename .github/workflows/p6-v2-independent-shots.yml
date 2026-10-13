@@ -55,8 +55,10 @@ jobs:
           motions=json.loads((root/"film_motions.json").read_text())
           assert timeline["total_frames"]==672 and len(timeline["shots"])==5
           assert [s["start"] for s in timeline["shots"]]==[0,96,240,384,528]
-          assert len(motions)==5
+          assert len(motions)==6
           assert len({s["motion_ids"][0] for s in timeline["shots"]})==5
+          assert len(timeline["frames"][384]["actors"])==2
+          assert len(timeline["frames"][528]["actors"])==2
           assert {a["rig_id"] for f in timeline["frames"] for a in f["actors"]}=={"baseline","compact"}
           assert {f["background_id"] for f in timeline["frames"]}=={"cafe_morning","cafe_evening"}
           for shot in timeline["shots"]:

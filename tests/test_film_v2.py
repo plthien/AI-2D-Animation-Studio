@@ -38,6 +38,9 @@ def test_real_five_shot_plan_and_file(tmp_path):
     assert [s["start"] for s in film["shots"]]==[0,96,240,384,528]
     assert [s["end_exclusive"] for s in film["shots"]]==[96,240,384,528,672]
     assert len({s["motion_ids"][0] for s in film["shots"]})==5
+    assert len({m for shot in film["shots"] for m in shot["motion_ids"]})==6
+    assert len(film["frames"][384]["actors"])==2
+    assert len(film["frames"][528]["actors"])==2
     assert {f["background_id"] for f in film["frames"]}=={"cafe_morning","cafe_evening"}
     assert {a["rig_id"] for f in film["frames"] for a in f["actors"]}=={"baseline","compact"}
     assert [n["absolute_frame"] for n in film["narration"]]==[8,102,246,392,536]
