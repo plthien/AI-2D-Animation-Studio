@@ -27,4 +27,4 @@ ffmpeg -framerate 24 -i outputs/p4/frames/frame_%06d.png -c:v libx264 -pix_fmt y
 
 GitHub workflow `P4 IK prop-contact video smoke` compiles the example, checks bone lengths/contact on every frame, replays selected frames to verify pixel hashes and creates a **2-second 640x480 MP4**.
 
-**This is a diagnostic procedural puppet, not yet a Genielabs/Spine bone-retargeted rig.** Spine bone adaptation, actor movement/rotation, second actor, inverse contact offsets (grip point vs prop center), grounding/foot planting and collision avoidance remain P4 backlog. The clip is a functional test, not publishable video.
+**This is a diagnostic procedural puppet, not yet a Genielabs/Spine bone-retargeted rig.** Spine bone adaptation, actor movement/rotation, second actor, inverse contact offsets (grip point vs prop center), grounding/foot planting and collision avoidance remain P4 backlog. The clip is a functional test, not publishable video. End-point of the place action is the table surface at screen x=300, y=199.

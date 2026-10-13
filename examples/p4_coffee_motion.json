@@ -12,6 +12,6 @@
     {"kind": "grab", "start": 12, "end": 14},
     {"kind": "carry", "start": 15, "end": 27, "target": {"x": 205, "y": 110}},
     {"kind": "wait", "start": 28, "end": 31},
-    {"kind": "place", "start": 32, "end": 47, "target": {"x": 250, "y": 207}}
+    {"kind": "place", "start": 32, "end": 47, "target": {"x": 300, "y": 199}}
   ]
 }

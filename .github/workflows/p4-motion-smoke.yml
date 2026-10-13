@@ -35,7 +35,7 @@ jobs:
           f=json.load(open("runtime/fixtures/contact_frames.json"))["frames"]
           assert len(f)==48
           assert f[12]["prop_state"]=="held" and f[-1]["prop_state"]=="free"
-          assert f[47]["prop"]=={"x":250.0,"y":207.0}
+          assert f[47]["prop"]=={"x":300.0,"y":199.0}
           for pose in f:
               if pose["prop_state"]=="held":
                   assert pose["prop"]==pose["hand"]
@@ -46,6 +46,8 @@ jobs:
           PY
       - name: Render 48 deterministic PNG frames
         run: node runtime/contact_render.mjs
+      - name: Install FFmpeg
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg
       - name: Encode short MP4 through FFmpeg
         run: |
           ffmpeg -hide_banner -loglevel error -y -framerate 24 -i outputs/p4/frames/frame_%06d.png -c:v libx264 -pix_fmt yuv420p outputs/p4/p4_coffee_contact.mp4
