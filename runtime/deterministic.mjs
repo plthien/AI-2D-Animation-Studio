@@ -18,15 +18,23 @@ try {
   actor.position.set(320,430);
   actor.scale.set(0.44);
   app.stage.addChild(actor);
-  const setFrame=(frame) => {
-    if(!Number.isSafeInteger(frame)||frame<0||frame>2400) throw Error('frame out of bound');
+  let currentFrame = -1;
+  const reset=()=>{
     actor.state.clearTracks();
     actor.skeleton.setToSetupPose();
     actor.state.setAnimation(0,'idle',true);
     actor.update(0);
-    for(let i=0;i<frame;i++) actor.update(1/fps);
+    currentFrame=0;
+  };
+  const setFrame=(frame) => {
+    if(!Number.isSafeInteger(frame)||frame<0||frame>2400) throw Error('frame out of bound');
+    if(currentFrame<0||frame<currentFrame) reset();
+    while(currentFrame<frame) {
+      actor.update(1/fps);
+      currentFrame++;
+    }
     app.render();
-    return frame;
+    return currentFrame;
   };
   window.__RENDER_FRAME__=setFrame;
   window.__SPINE_ACTOR__=actor;
