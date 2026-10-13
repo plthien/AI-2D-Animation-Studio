@@ -1,23 +1,34 @@
-# Implementation status — self-review, 2026-10-13
+# AI 2D Animation Studio — Status and self-review (2026-10-13)
 
-## Verified CI evidence
-- Python checks: [run 38395974624](https://github.com/plthien/AI-2D-Animation-Studio/actions/runs/38395974624) **PASS**, 57 unit tests, first-party measured 100% statement and branch coverage (226 statements, 72 branches, 0 misses/partials). Test scope excludes API entrypoint/launch path and third-party packages by design.
-- Spine runtime smoke: [run 38395980638](https://github.com/plthien/AI-2D-Animation-Studio/actions/runs/38395980638) **PASS**, browser loaded upstream Genielabs Sombrero Spine 4.2 JSON/atlas PNG using the real Spine Player, saw canvas readiness, generated screenshot artifact `p0-spine-browser-render` (67 KB). This is a runtime compatibility smoke, **not** full fixed-frame renderer/animation quality validation.
-- G-Labs mock contract tests: PASS as part of Python checks. Real G-Labs MAX Windows app connection **NOT VERIFIED**.
+## Verified CI on this branch
 
-## Phase gates
-| Phase | State | Evidence / blocker |
+| Evidence | Workflow | Result |
 |---|---|---|
-| P0 repository + initial Spine sample | **PASS for foundation + Spine player smoke** | Python CI green, actual Spine browser screenshot artifact; deterministic per-frame render remains P3 |
-| P1 G-Labs webhook | **IMPLEMENTED, LIVE GATE PENDING** | Webhook client and local opt-in smoke CLI; requires user-local Windows MAX app and API key |
-| P2 Genielabs auto-rig | Partial | Semantic rig adapter unit-tested, but no real novel character rig reviewed |
-| P3–P4 | Not done | Deterministic frame renderer and advanced contacts |
-| P5 | Partial | Manual AI JSON handoff only |
-| P6–P7 | Not done | No end-to-end video or reuse benchmark |
+| P0 Spine 4.2 sample browser + nonblank pixel QC | [run 38400800013](https://github.com/plthien/AI-2D-Animation-Studio/actions/runs/38400800013) | PASS |
+| P2 pinned Genielabs source, real OpenCV segmentation, SIFT/template placement, skeleton/atlas, new rig loads/render nonblank in browser | [run 38400800269](https://github.com/plthien/AI-2D-Animation-Studio/actions/runs/38400800269) | PASS |
+| P3 official Spine 4.2.120 + PixiJS 8.21.0, fixed-step, seek replay hashes, export 24 PNG frames + manifest | [run 38400800247](https://github.com/plthien/AI-2D-Animation-Studio/actions/runs/38400800247) | PASS |
+| Python tests with configured 100% C0/C1 | [run 38400800184](https://github.com/plthien/AI-2D-Animation-Studio/actions/runs/38400800184) | PASS |
 
-## Review findings
-1. P0 test loads **external upstream fixture and CDN Spine runtime**; network outages could fail smoke. Later pin/download dependencies.
-2. P1 image generation intentionally never auto-retries POST to avoid double quota charges. Live validation requires one real generation.
-3. P1 result downloader validates URL origin, path and image signature; it does not yet validate full image pixel decoding / persist request metadata.
-4. `studio/api.py` and `studio/__main__.py` are not counted in coverage target; add API route tests in a later hardening increment.
-5. Current app is NOT a completed video generator; no user GitHub secrets or model service access have been committed.
+Coverage includes `studio/glabs.py`, `studio/handoff.py`, `studio/rigging.py` and package init. Entry point/API module and third-party dependencies are excluded by current measurement scope; do not claim universal application coverage. Browser/integration checks are separate from UT.
+
+## Implementation state
+
+- **P0: PASS** for initial runtime and project foundation; now validates nonblank screenshot rather than merely receiving `ready` callback.
+- **P1: code implemented; LIVE G-Labs gate deliberately deferred by user.** Real webhook is unavailable in this environment.
+- **P2: PASS for technical synthetic 2-part rig, NOT for production-quality AI-generated full-body character.** Real upstream script pinned SHA `702b71689cac826efee942ee4564fef9560d6ef8`; internal OpenCV and atlas generation invoked without Gemini API. Manual anatomical semantic map and joint anchors remain required.
+- **P3: PASS for 640x480 / 24-frame single-Spine-actor deterministic export.** The 1920x1080 multi-actor/layers/camera renderer and final FFmpeg MP4 integration are not complete; these are outstanding acceptance requirements.
+- **P4: not implemented** (IK/contact/prop state).
+- **P5: partial** manual handoff schema only.
+- **P6/P7: not implemented**.
+
+## Self-review discoveries and fixes
+
+1. `build_rig_config` previously added the head twice. Fixed by canonical parent-first ordering and regression tests.
+2. Genielabs presets target `left-lower-arm`, `left-upper-leg`, `left-lower-leg` bone names, not direct hyphenation of our anatomical labels. Added mapping and regression checks.
+3. Chromium occasionally navigated before fixture HTTP server had opened port; added explicit readiness polling in three scripts.
+4. Spine Player sometimes signaled ready but had not painted a character. Added screenshot pixel polling plus nonblank QC in P0 and newly generated P2 rig smoke.
+5. P3 frame seeking now advances sequentially without quadratic replay; backwards seek resets pose/state for deterministic evaluation.
+6. CI running real Genielabs sample uses a synthetic 2-part figure and **does not guarantee articulated locomotion**. Before claim of production rig quality, test a 14-part humanoid and inspect motion/attachment seams.
+7. G-Labs mock tests pass but are not equivalent to a real authenticated Windows MAX webhook run.
+
+This PR remains **draft** intentionally. No user-specific API keys or downloaded generated images are committed.
