@@ -52,6 +52,7 @@ class MotionPlan(BaseModel):
     upper_arm: FiniteFloat = Field(gt=0)
     forearm: FiniteFloat = Field(gt=0)
     initial_prop: Point
+    grip_offset: Point = Field(default_factory=lambda: Point(x=0, y=0))
     bend: Literal[-1, 1] = 1
     actions: list[MotionAction] = Field(min_length=1)
 
@@ -94,8 +95,8 @@ def compile_motion(plan: MotionPlan) -> dict:
 
     for action in plan.actions:
         if action.kind == "grab":
-            if held or hypot(hand.x - prop.x, hand.y - prop.y) > 1.0:
-                raise MotionError("Grab requires an unheld prop at the wrist")
+            if held or hypot(hand.x + plan.grip_offset.x - prop.x, hand.y + plan.grip_offset.y - prop.y) > 1.0:
+                raise MotionError("Grab requires the prop grip socket to coincide with the wrist")
             held = True
         elif action.kind in ("carry", "place") and not held:
             raise MotionError("Cannot carry/place a prop without grabbing it")
@@ -109,7 +110,8 @@ def compile_motion(plan: MotionPlan) -> dict:
                 hand = interpolate(origin, action.target, fraction)
             elbow = solve_two_bone(plan.shoulder, hand, plan.upper_arm, plan.forearm, plan.bend)
             if held:
-                prop = hand
+                prop = Point(x=hand.x + plan.grip_offset.x,
+                             y=hand.y + plan.grip_offset.y)
             if action.kind == "place" and frame == action.end:
                 held = False
             frames.append({
@@ -128,6 +130,7 @@ def compile_motion(plan: MotionPlan) -> dict:
         "schema_version": "p4.1",
         "fps": plan.fps,
         "duration_frames": plan.frames,
+        "grip_offset": plan.grip_offset.model_dump(),
         "frames": frames,
     }
 

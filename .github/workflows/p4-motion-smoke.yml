@@ -32,13 +32,16 @@ jobs:
           python scripts/compile_motion.py examples/p4_coffee_motion.json runtime/fixtures/contact_frames.json
           python - <<'PY'
           import json, math
-          f=json.load(open("runtime/fixtures/contact_frames.json"))["frames"]
+          clip=json.load(open("runtime/fixtures/contact_frames.json"))
+          f=clip["frames"]
+          offset=clip["grip_offset"]
           assert len(f)==48
           assert f[12]["prop_state"]=="held" and f[-1]["prop_state"]=="free"
-          assert f[47]["prop"]=={"x":300.0,"y":199.0}
+          assert f[47]["prop"]=={"x":300.0,"y":195.0}
           for pose in f:
               if pose["prop_state"]=="held":
-                  assert pose["prop"]==pose["hand"]
+                  assert abs(pose["prop"]["x"]-pose["hand"]["x"]-offset["x"])<1e-9
+                  assert abs(pose["prop"]["y"]-pose["hand"]["y"]-offset["y"])<1e-9
               shoulder=pose["shoulder"]; elbow=pose["elbow"]; hand=pose["hand"]
               assert abs(math.dist(shoulder.values(),elbow.values())-90)<0.0001
               assert abs(math.dist(elbow.values(),hand.values())-80)<0.0001

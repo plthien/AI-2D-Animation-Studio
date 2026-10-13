@@ -28,3 +28,7 @@ ffmpeg -framerate 24 -i outputs/p4/frames/frame_%06d.png -c:v libx264 -pix_fmt y
 GitHub workflow `P4 IK prop-contact video smoke` compiles the example, checks bone lengths/contact on every frame, replays selected frames to verify pixel hashes and creates a **2-second 640x480 MP4**.
 
 **This is a diagnostic procedural puppet, not yet a Genielabs/Spine bone-retargeted rig.** Spine bone adaptation, actor movement/rotation, second actor, inverse contact offsets (grip point vs prop center), grounding/foot planting and collision avoidance remain P4 backlog. The clip is a functional test, not publishable video. End-point of the place action is the table surface at screen x=300, y=199.
+
+## Grip socket / contact offset
+
+A `grip_offset: {x,y}` field (default 0,0) expresses the prop center in screen pixels relative to the wrist when held. The coffee example uses `{-16,0}` so the wrist contacts the handle rather than the mug center. The grip offset is held fixed in screen space (no prop rotation yet); the release state uses the last physical prop position. The Spine browser integration compares actual wrist bone + offset against the prop position for all held frames.

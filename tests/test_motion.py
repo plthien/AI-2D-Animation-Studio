@@ -93,3 +93,20 @@ def test_one_frame_move_and_opposite_bend():
     assert poses[0]["hand"]=={"x":8.0,"y":3.0}
     assert poses[-1]["prop_state"]=="free"
     assert interpolate(Point(x=0,y=0),Point(x=10,y=10),0.5)==Point(x=5,y=5)
+
+
+def test_grip_socket_offset_maintains_true_contact():
+    script=plan(
+        initial_prop={"x":8,"y":3},
+        grip_offset={"x":-2,"y":0},
+        actions=[
+            {"kind":"reach","start":0,"end":1,"target":{"x":10,"y":3}},
+            {"kind":"grab","start":2,"end":2},
+            {"kind":"place","start":3,"end":4,"target":{"x":9,"y":1}},
+        ],
+    )
+    result=compile_motion(script)
+    assert result["grip_offset"]=={"x":-2,"y":0}
+    assert result["frames"][2]["prop"]=={"x":8.0,"y":3.0}
+    assert result["frames"][3]["prop"]["x"]==pytest.approx(result["frames"][3]["hand"]["x"]-2)
+    assert result["frames"][4]["prop"]=={"x":7.0,"y":1.0}

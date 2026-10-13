@@ -80,7 +80,8 @@ try {
         ' shoulder='+shoulderErr+' elbow='+elbowErr+' wrist='+wristErr+
         ' actual='+JSON.stringify({actualShoulder,actualElbow,actualWrist}));
     }
-    if(pose.prop_state==='held'&&mismatch(pose.prop,actualWrist)>0.001) {
+    const socket={x:actualWrist.x+clip.grip_offset.x,y:actualWrist.y+clip.grip_offset.y};
+    if(pose.prop_state==='held'&&mismatch(pose.prop,socket)>0.001) {
       throw Error('Prop contact drift on real Spine wrist at frame '+frame);
     }
     prop.position.set(pose.prop.x,pose.prop.y);

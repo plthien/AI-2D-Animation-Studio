@@ -75,11 +75,12 @@ def export_motion_task(brief: str, rig: dict, destination: Path) -> Path:
         "rest_hand": {"x": 212, "y": 165},
         "upper_arm": 90, "forearm": 80,
         "initial_prop": {"x": 270, "y": 195},
+        "grip_offset": {"x": -16, "y": 0},
         "bend": 1,
         "actions": [
-            {"kind": "reach", "start": 0, "end": 11, "target": {"x": 270, "y": 195}},
+            {"kind": "reach", "start": 0, "end": 11, "target": {"x": 286, "y": 195}},
             {"kind": "grab", "start": 12, "end": 14},
-            {"kind": "place", "start": 15, "end": 47, "target": {"x": 300, "y": 199}},
+            {"kind": "place", "start": 15, "end": 47, "target": {"x": 316, "y": 195}},
         ],
     }
     destination.write_text(
@@ -88,7 +89,8 @@ def export_motion_task(brief: str, rig: dict, destination: Path) -> Path:
         "Actions must be sorted, contiguous, nonoverlapping, start at frame 0 and end at frames-1. "
         "Supported action kinds: reach (target required), grab (no target), "
         "carry (target required), wait (no target), place (target required). "
-        "A grab needs hand and free prop to coincide within 1 px. "
+        "The grip point is the wrist; held prop center equals wrist plus grip_offset. "
+        "A grab needs free prop center and wrist+grip_offset to coincide within 1 px. "
         "Carry and place require prior grab; reach while holding is forbidden; "
         "end the shot without holding. All targets must be reachable by the two-link arm. "
         "Do not invent assets, unsupported actions or nonexistent bones.\n\n"
