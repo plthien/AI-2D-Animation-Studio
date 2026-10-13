@@ -3,9 +3,16 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "smoke": "node smoke.mjs"
+    "smoke": "node smoke.mjs",
+    "build": "esbuild deterministic.mjs --bundle --format=esm --outfile=deterministic.bundle.js",
+    "smoke:fixed": "node fixed_smoke.mjs"
   },
   "dependencies": {
-    "playwright": "^1.56.0"
+    "@esotericsoftware/spine-pixi-v8": "4.2.120",
+    "pixi.js": "8.21.0",
+    "playwright": "1.56.1"
+  },
+  "devDependencies": {
+    "esbuild": "0.25.12"
   }
 }

@@ -1,0 +1,37 @@
+name: P3 Spine fixed-step frame smoke
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - "runtime/**"
+      - ".github/workflows/p3-frame-smoke.yml"
+jobs:
+  fixed-step:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Prepare Genielabs fixture
+        run: |
+          mkdir -p runtime/fixtures
+          for name in sombrero.json sombrero.atlas sombrero.png; do
+            curl -fsSL --retry 3 "https://raw.githubusercontent.com/GenielabsOpenSource/spine-animation-ai/main/examples/sombrero/$name" -o "runtime/fixtures/$name"
+          done
+      - name: Install runtime dependencies and browser
+        run: |
+          cd runtime
+          npm install --no-audit --no-fund
+          npx playwright install --with-deps chromium
+          npm run build
+      - name: Browser fixed-frame reproducibility
+        run: node runtime/fixed_smoke.mjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: p3-fixed-frame-proof
+          path: outputs/p3/
