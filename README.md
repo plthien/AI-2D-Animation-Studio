@@ -1,21 +1,16 @@
 # AI 2D Animation Studio
 
-Local-first prototype: **manual ChatGPT/DeepSeek planning → G-Labs Webhook image generation → Genielabs auto-rig → Spine/PixiJS frame rendering → later FFmpeg assembly**.
+Local-first prototype: **ChatGPT/DeepSeek manual planning → G-Labs Webhook images → Genielabs Auto-Rig → Spine/PixiJS animation → FFmpeg video**.
 
-## Current status
+## Verified technical milestones
 
-- **P0**: real Spine 4.2 sample browser smoke with nonblank pixel QC — PASS.
-- **P1**: G-Labs webhook client implemented; real Windows-local live test deferred at user's request.
-- **P2**: Genielabs atlas-to-rig pipeline runs on synthetic parts, with new skeleton loading in Spine — technical smoke PASS; full-body character QC pending.
-- **P3**: fixed-step Spine/PixiJS runtime exports verified 24-frame PNG sequence — small-scale smoke PASS; full multi-layer renderer pending.
-- **P4–P7**: not implemented, except basic manual AI JSON handoff.
+- **P0:** Spine 4.2 browser runtime can render a nonblank character.
+- **P1:** G-Labs Webhook adapter implemented; live Windows/MAX request deferred at user's direction.
+- **P2:** Genielabs atlas segmentation/positioning/skeleton/atlas can produce and render a new synthetic 2-part rig.
+- **P3:** fixed-step PixiJS + Spine renderer exports reproducible 24-frame sequences.
+- **P4 (partial):** analytic two-bone IK and prop-contact state compiler produces 48 PNG frames and a short 2-second MP4 from a PixiJS *diagnostic puppet*, **not yet a Spine-rigged actor**.
+- **P5 (partial):** manually export ChatGPT/DeepSeek motion brief, then validate/compile the JSON locally with FastAPI; no LLM API.
 
-**This repo does not yet produce a complete narrated animation video.**
+**Not yet a full idea-to-animation production system:** Spine bone retargeting, full character visuals, multi-actor scenes, voice assembly and reuse test are outstanding.
 
-## Docs
-
-- [Implementation evidence and self-review](docs/STATUS.md)
-- [Genielabs rig setup](docs/P2_RIGGING.md)
-- [Frame renderer](docs/P3_RENDERER.md)
-- [Local setup](docs/RUNNING.md)
-- [Draft implementation PR #1](https://github.com/plthien/AI-2D-Animation-Studio/pull/1)
+See [CI evidence and status](docs/STATUS.md), [P4 self-review](docs/P4_SELF_REVIEW.md), [P4 local demo commands](docs/P4_MOTION.md), and [Draft PR #1](https://github.com/plthien/AI-2D-Animation-Studio/pull/1).
