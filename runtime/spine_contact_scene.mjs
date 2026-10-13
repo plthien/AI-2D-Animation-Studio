@@ -90,11 +90,22 @@ try {
         ' shoulder='+shoulderErr+' elbow='+elbowErr+' wrist='+wristErr+
         ' actual='+JSON.stringify({actualShoulder,actualElbow,actualWrist}));
     }
-    const socket={x:actualWrist.x+clip.grip_offset.x,y:actualWrist.y+clip.grip_offset.y};
+    const propAngle=pose.prop_rotation_deg ?? 0;
+    const rad=propAngle*Math.PI/180;
+    const dx=clip.grip_offset.x*Math.cos(rad)-clip.grip_offset.y*Math.sin(rad);
+    const dy=clip.grip_offset.x*Math.sin(rad)+clip.grip_offset.y*Math.cos(rad);
+    const socket={x:actualWrist.x+dx,y:actualWrist.y+dy};
+    if(clip.world && frame===0 && mismatch(pose.prop,clip.world.initial)>0.001) {
+      throw Error('World prop initial anchor moved');
+    }
+    if(clip.world && frame===clip.frames.length-1 && mismatch(pose.prop,clip.world.destination)>0.001) {
+      throw Error('World prop destination moved');
+    }
     if(pose.prop_state==='held'&&mismatch(pose.prop,socket)>0.001) {
       throw Error('Prop contact drift on real Spine wrist at frame '+frame);
     }
     prop.position.set(pose.prop.x,pose.prop.y);
+    prop.rotation=propAngle*Math.PI/180;
     stateLabel.text='FRAME '+String(frame).padStart(3,'0')+' | '+pose.phase+
       ' | PROP '+pose.prop_state+' | WRIST ERROR '+wristErr.toFixed(4)+'px';
     app.render();

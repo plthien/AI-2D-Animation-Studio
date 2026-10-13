@@ -8,9 +8,9 @@ from __future__ import annotations
 
 from math import cos, radians, sin
 
-from pydantic import BaseModel, ConfigDict, Field, FiniteFloat, model_validator
+from pydantic import BaseModel, ConfigDict, Field, FiniteFloat
 
-from studio.motion import MotionAction, MotionError, MotionPlan, Point, compile_motion, interpolate
+from studio.motion import MotionError, MotionPlan, Point, compile_motion
 from studio.retarget import RigProfile, validate_spine_profile
 
 
@@ -46,8 +46,6 @@ def compile_world_motion(source: MotionPlan, profile: RigProfile, skeleton: dict
         raise MotionError("World contact requires one reach, grab, final place")
     if not (kinds.index("reach") < kinds.index("grab") < kinds.index("place")):
         raise MotionError("World contact action order invalid")
-    if any(k not in ("reach", "grab", "carry", "wait", "place") for k in kinds):
-        raise MotionError("Unsupported world contact action")
 
     ratio = (profile.upper_arm + profile.forearm) / (source.upper_arm + source.forearm)
     rest = Point(x=profile.shoulder.x + (source.rest_hand.x - source.shoulder.x) * ratio,
