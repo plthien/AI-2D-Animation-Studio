@@ -1,0 +1,108 @@
+name: P4.3 world-fixed prop two-rig contact
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - "studio/world.py"
+      - "studio/retarget.py"
+      - "tests/test_world.py"
+      - "scripts/compile_world.py"
+      - "scripts/p4_spine_fixture.py"
+      - "runtime/spine_contact*"
+      - "examples/p4_world_cup.json"
+      - ".github/workflows/p4-world-contact.yml"
+jobs:
+  fixed-prop:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Install dependencies and build browser scene
+        run: |
+          pip install -e .
+          cd runtime
+          npm install --no-audit --no-fund
+          npx playwright install --with-deps chromium
+          npx esbuild spine_contact_scene.mjs --bundle --format=esm --outfile=spine_contact_scene.bundle.js
+      - name: Fetch pinned Genielabs source
+        run: |
+          mkdir -p vendor/genielabs/scripts
+          SHA=702b71689cac826efee942ee4564fef9560d6ef8
+          for script in build_spine_json.py make_atlas.py; do
+            curl -fsSL --retry 3 "https://raw.githubusercontent.com/GenielabsOpenSource/spine-animation-ai/$SHA/scripts/$script" -o "vendor/genielabs/scripts/$script"
+          done
+      - name: Build both actual Spine rigs and compile shared world motion
+        run: |
+          for variant in baseline compact; do
+            python scripts/p4_spine_fixture.py --genielabs vendor/genielabs --out "outputs/p4_world/rig_$variant" --variant "$variant"
+            mkdir -p "runtime/fixtures/$variant"
+            cp "outputs/p4_world/rig_$variant/skeleton.json" "outputs/p4_world/rig_$variant/skeleton.atlas" "outputs/p4_world/rig_$variant/skeleton.png" "outputs/p4_world/rig_$variant/rig_profile.json" "runtime/fixtures/$variant/"
+            python scripts/compile_world.py examples/p4_coffee_motion.json "runtime/fixtures/$variant/rig_profile.json" "runtime/fixtures/$variant/skeleton.json" examples/p4_world_cup.json "runtime/fixtures/$variant/contact_frames.json"
+          done
+      - name: Assert both rigs interact with ONE unchanged cup at fixed world anchors
+        run: |
+          python - <<'PY'
+          import json, math
+          from pathlib import Path
+          base=Path("runtime/fixtures")
+          clips=[]
+          for variant in ("baseline","compact"):
+            c=json.loads((base/variant/"contact_frames.json").read_text())
+            assert c["retarget"]["mode"]=="world_fixed_prop"
+            assert c["world"]["prop_id"]=="coffee-cup"
+            assert len(c["frames"])==48
+            assert c["frames"][0]["prop"]=={"x":270.0,"y":195.0}
+            assert c["frames"][12]["prop"]=={"x":270.0,"y":195.0}
+            last=c["frames"][-1]["prop"]
+            assert math.dist(tuple(last.values()),(286,195))<0.001
+            assert c["frames"][27]["prop_rotation_deg"]==25
+            assert c["frames"][47]["prop_rotation_deg"]==0
+            for pose in c["frames"]:
+              if pose["prop_state"]=="held":
+                theta=math.radians(pose["prop_rotation_deg"])
+                offset=c["grip_offset"]
+                dx=offset["x"]*math.cos(theta)-offset["y"]*math.sin(theta)
+                dy=offset["x"]*math.sin(theta)+offset["y"]*math.cos(theta)
+                assert abs(pose["prop"]["x"]-pose["hand"]["x"]-dx)<1e-8
+                assert abs(pose["prop"]["y"]-pose["hand"]["y"]-dy)<1e-8
+            clips.append(c)
+          assert clips[0]["rig"]["upper_arm"]==90
+          assert clips[1]["rig"]["upper_arm"]==70
+          assert clips[0]["frames"][11]["hand"]==clips[1]["frames"][11]["hand"]
+          assert clips[0]["frames"][0]["hand"]!=clips[1]["frames"][0]["hand"]
+          print("P4.3 fixed WORLD cup anchors, rotated socket and dual-rig IK: PASS")
+          PY
+      - name: Render 48 frames using REAL Spine bones for both rigs
+        run: |
+          node runtime/spine_contact_render.mjs baseline
+          node runtime/spine_contact_render.mjs compact
+          mv outputs/p4_retarget/baseline outputs/p4_world/baseline
+          mv outputs/p4_retarget/compact outputs/p4_world/compact
+      - name: Encode both videos and check reproducibility manifests
+        run: |
+          sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg
+          for variant in baseline compact; do
+            ffmpeg -hide_banner -loglevel error -y -framerate 24 -i "outputs/p4_world/$variant/frames/frame_%06d.png" -c:v libx264 -pix_fmt yuv420p "outputs/p4_world/$variant/world_$variant.mp4"
+          done
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          for variant in ("baseline","compact"):
+            out=Path("outputs/p4_world")/variant
+            manifest=json.loads((out/"manifest.json").read_text())
+            assert manifest["rigId"]==variant and manifest["frames"]==48
+            assert manifest["maxWristError"]<0.1 and manifest["deterministic"]
+            assert manifest["uniqueFrameImages"]>=15
+            assert (out/("world_"+variant+".mp4")).stat().st_size>1000
+          print("P4.3 two fixed-world Spine MP4 files: PASS")
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: p4-3-world-fixed-two-rig-proof
+          path: outputs/p4_world/

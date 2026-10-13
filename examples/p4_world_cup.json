@@ -1,0 +1,9 @@
+{
+  "prop_id": "coffee-cup",
+  "initial": {"x": 270, "y": 195},
+  "destination": {"x": 286, "y": 195},
+  "grip_offset": {"x": -16, "y": 0},
+  "initial_angle_deg": 0,
+  "carry_angle_deg": 25,
+  "final_angle_deg": 0
+}
