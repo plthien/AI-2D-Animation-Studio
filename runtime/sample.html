@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"/><title>Spine 4.2 P0 Runtime Proof</title>
+<link rel="stylesheet" href="https://unpkg.com/@esotericsoftware/spine-player@4.2.*/dist/spine-player.css">
+<script src="https://unpkg.com/@esotericsoftware/spine-player@4.2.*/dist/iife/spine-player.js"></script>
+<style>html,body{margin:0;width:100%;height:100%;background:#202735}#player{width:640px;height:480px}#status{color:white;font:14px sans-serif}</style>
+</head><body><div id="player"></div><div id="status">loading</div><script>
+window.__SPINE_READY__ = false;
+window.__SPINE_ERROR__ = null;
+(async () => {
+ try {
+  const sources=['sombrero.json','sombrero.atlas','sombrero.png'];
+  for (const name of sources) {
+   const response=await fetch('./fixtures/'+name);
+   if(!response.ok) throw new Error('fixture '+name+' '+response.status);
+  }
+  if(!window.spine || !window.spine.SpinePlayer) throw new Error('Spine Player script unavailable');
+  const player=new window.spine.SpinePlayer('player', {
+    jsonUrl:'./fixtures/sombrero.json',
+    atlasUrl:'./fixtures/sombrero.atlas',
+    animation:'idle',
+    backgroundColor:'#202735',
+    showControls:false,
+    success:function() { window.__SPINE_READY__=true;document.getElementById('status').textContent='ready'; },
+    error:function(_,message) { window.__SPINE_ERROR__=String(message);document.getElementById('status').textContent=String(message); }
+  });
+  window.__PLAYER__=player;
+ } catch(e) {window.__SPINE_ERROR__=String(e);document.getElementById('status').textContent=String(e);}
+})();
+</script></body></html>

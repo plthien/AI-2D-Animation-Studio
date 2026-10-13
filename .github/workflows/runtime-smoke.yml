@@ -1,0 +1,36 @@
+name: P0 Spine browser smoke
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - "runtime/**"
+      - ".github/workflows/runtime-smoke.yml"
+jobs:
+  spine:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Fetch upstream sample fixture
+        run: |
+          mkdir -p runtime/fixtures
+          for name in sombrero.json sombrero.atlas sombrero.png; do
+            curl -fsSL --retry 3 "https://raw.githubusercontent.com/GenielabsOpenSource/spine-animation-ai/main/examples/sombrero/$name" -o "runtime/fixtures/$name"
+          done
+      - name: Install Playwright
+        run: |
+          cd runtime
+          npm install --no-audit --no-fund
+          npx playwright install --with-deps chromium
+      - name: Render real Spine sample
+        run: node runtime/smoke.mjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: p0-spine-browser-render
+          path: outputs/p0_spine_frame.png

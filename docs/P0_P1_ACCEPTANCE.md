@@ -1,20 +1,11 @@
-# P0 / P1 acceptance record
+# P0/P1 gate ledger
 
-## P0 — foundation and actual Spine runtime proof
-- [x] Source structure and local Python backend
-- [x] Manual ChatGPT/DeepSeek JSON export/validate
-- [ ] Spine 4.2 sample with atlas loads into an actual browser runtime
-- [ ] Real deterministic screenshot `p0_spine_frame.png` uploaded to CI artifact
-- [ ] Runtime controls and no broken attachments verified
-- [ ] 100% C0 + C1 measured by GitHub Actions (see latest run)
+- [x] Python scaffold and tests implemented
+- [x] Browser Spine 4.2 sample smoke runner and GitHub Actions workflow implemented
+- [ ] **P0** browser workflow succeeded and screenshot artifact independently inspected
+- [ ] **P0** Python C0 and C1 both 100% on current code
+- [x] **P1** asynchronous G-Labs webhook client and mock contract tests implemented
+- [x] **P1** explicit opt-in local smoke command available
+- [ ] **P1** REAL Windows-local MAX webhook health check, create, status, download completed
 
-## P1 — live G-Labs image generation
-- [x] Asynchronous POST task, polling, cancel; transport isolation tests
-- [x] Safe destination file write and result URL validation
-- [ ] Windows desktop G-Labs MAX webhook started and reachable
-- [ ] `GET /api/health` succeeds
-- [ ] Real `POST /api/image/generate` returns 202 with task id
-- [ ] Terminal status yields at least one downloadable image
-- [ ] Open/check actual PNG/JPEG and store source prompt, model and task id
-
-Never mark a live gate as passed based on mocked HTTP calls. No user's G-Labs secrets should go into GitHub Actions. The P1 live gate requires an authenticated Windows-local environment.
+Run locally: `python scripts/glabs_live_smoke.py --run-live --output outputs/glabs-smoke.png` with `GLABS_API_KEY` in environment and running G-Labs. Do NOT submit secrets to GitHub. No unit tests are substitutes for real browser/render/webhook integration.
