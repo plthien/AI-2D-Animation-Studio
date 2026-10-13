@@ -7,11 +7,10 @@ from __future__ import annotations
 
 import argparse
 import json
-import shutil
 import subprocess
 from pathlib import Path
 
-from scripts.prepare_film_v2 import prepare
+from prepare_film_v2 import prepare
 from studio.film_v2 import AssetCatalog, FilmPlanV2
 from studio.voice import assemble_file
 
