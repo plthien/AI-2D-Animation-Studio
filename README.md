@@ -1,18 +1,17 @@
 # AI 2D Animation Studio
 
-Local-first proof-of-concept: **ChatGPT/DeepSeek manual director → G-Labs Webhook images → Genielabs Auto-Rig → Spine/PixiJS animation → FFmpeg video**.
+Local-first project: **ChatGPT/DeepSeek manual director → G-Labs webhook images → Genielabs Auto-Rig → Spine/PixiJS animation → FFmpeg**.
 
-## Verified milestones
+## Current technical proof
 
-- **P0** browser Spine runtime: PASS.
-- **P1** G-Labs Webhook client: implemented, live Windows/MAX test deferred by user.
-- **P2** real Genielabs auto-rig scripts: synthetic asset generation and Spine browser checks PASS (not yet full AI character).
-- **P3** fixed-step Spine/PixiJS frame renderer: PASS (single rig/short sequence).
-- **P4** IK/reach/grab/prop contact on actual Genielabs-generated Spine bone chain: PASS five-part prototype.
-- **P4.2** same 48-frame action JSON retargeted to **two distinct Genielabs Spine rigs (90/80px vs 70/65px arm segments)**: PASS for actor-local world restaging, with two independently generated MP4 outputs and wrist/contact validation.
-- **P5** manual director + local `/motion/retarget` endpoint: partial.
-- **P6–P7** full narrated 28s story and second-story reuse: not implemented.
+- P0: browser Spine 4.2 sample renders.
+- P1: G-Labs webhook client implemented, live Windows/MAX test deferred.
+- P2: Genielabs atlas, rig, position technical smoke on synthetic sample.
+- P3: reproducible Spine fixed-frame rendering.
+- P4: actual Spine bone two-link IK, grip socket, MP4 proof with synthetic five-part character.
+- P4.2: one director action JSON retargets to two different limb geometries.
+- **P4.3:** both separately rigged synthetic actors reach the **same world-space coffee cup positions**, rotate it with an orientation-aware hand socket and return it to an identical final location; verified in two 2-second Spine MP4s. No per-character action script.
+- P5: partial manual ChatGPT/DeepSeek prompt/JSON local API, including `POST /motion/world-retarget`; no LLM API calls.
+- P6/P7: full narrated 28-second production and independent second story remain open.
 
-**Current video demos are 2 seconds and use five-part synthetic characters. They are not finished publishable animation.**
-
-Read [P4.2 self review](docs/P4_2_SELF_REVIEW.md), [rig retarget technical contract](docs/P4_RETARGETING.md), [overall status](docs/STATUS.md) and [PR #1](https://github.com/plthien/AI-2D-Animation-Studio/pull/1).
+**Not a finished automated idea-to-video application.** See [P4.3 evidence/self-review](docs/P4_3_SELF_REVIEW.md), [overall status](docs/STATUS.md), and [Draft PR #1](https://github.com/plthien/AI-2D-Animation-Studio/pull/1).
