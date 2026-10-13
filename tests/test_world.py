@@ -72,3 +72,19 @@ def test_world_unreachable_and_endpoint_fail_closed():
     # An invalid schema is rejected at the manual-AI boundary.
     with pytest.raises(ValidationError):
         WorldProp.model_validate({**WORLD,"prop_id":""})
+
+
+def test_world_rejects_wrong_release_anchor(monkeypatch):
+    import studio.world as module
+    source=MotionPlan.model_validate(json.loads(
+        (__import__("pathlib").Path(__file__).parents[1]/"examples/p4_coffee_motion.json").read_text()))
+    original=module.compile_motion
+
+    def corrupted(plan):
+        output=original(plan)
+        output["frames"][-1]["hand"]["x"]+=2
+        return output
+
+    monkeypatch.setattr(module,"compile_motion",corrupted)
+    with pytest.raises(MotionError,match="Released prop"):
+        compile_world_motion(source,RigProfile.model_validate(BASE),SKELETON,WorldProp.model_validate(WORLD))
