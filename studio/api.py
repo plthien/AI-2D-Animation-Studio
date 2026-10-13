@@ -5,11 +5,12 @@ from pathlib import Path
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel, Field
 from studio.glabs import GlabsClient, ImageRequest
-from studio.handoff import AnimationPlan, export_task, export_motion_task, export_film_task
+from studio.handoff import AnimationPlan, export_task, export_motion_task, export_film_task, export_film_v2_task
 from studio.motion import MotionPlan, MotionError, compile_motion
 from studio.retarget import RigProfile, compile_retargeted
 from studio.world import WorldProp, compile_world_motion
 from studio.film import FilmPlan, FilmError, compile_film
+from studio.film_v2 import FilmPlanV2, AssetCatalog, compile_film_v2
 
 app = FastAPI(title="AI 2D Animation Studio", version="0.1.0")
 
@@ -120,5 +121,32 @@ async def film_export(request: HandoffRequest) -> dict:
         path=export_film_task(request.prompt,request.catalog,example,
             Path(os.getenv("STUDIO_OUTPUT_ROOT","outputs"))/"film_task.txt")
         return {"mode":"manual","path":str(path)}
+    except ValueError as exc:
+        raise HTTPException(status_code=422,detail=str(exc)) from exc
+
+
+class FilmV2CompileRequest(BaseModel):
+    film: FilmPlanV2
+    catalog: AssetCatalog
+    motions: dict[str, dict]
+
+
+@app.post("/film/v2/compile")
+async def film_v2_compile(request: FilmV2CompileRequest) -> dict:
+    try:
+        return compile_film_v2(request.film, request.catalog, request.motions)
+    except FilmError as exc:
+        raise HTTPException(status_code=422, detail=str(exc)) from exc
+
+
+@app.post("/handoff/film/v2/export")
+async def film_v2_export(request: HandoffRequest) -> dict:
+    import json
+    example=json.loads((Path(__file__).parents[1]/"examples/p6_v2_film.json").read_text(encoding="utf-8"))
+    try:
+        path=export_film_v2_task(
+            request.prompt, request.catalog, example,
+            Path(os.getenv("STUDIO_OUTPUT_ROOT","outputs"))/"film_v2_task.txt")
+        return {"mode":"manual","schema_version":"film.v2","path":str(path)}
     except ValueError as exc:
         raise HTTPException(status_code=422,detail=str(exc)) from exc

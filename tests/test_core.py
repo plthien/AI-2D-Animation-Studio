@@ -231,3 +231,28 @@ def test_manual_film_handoff_and_api_compile(tmp_path,monkeypatch):
     assert ok.status_code==200 and ok.json()["total_frames"]==672
     bad=client.post("/film/compile",json={"film":BASE,"clips":{}})
     assert bad.status_code==422 and "No compiled" in str(bad.json())
+
+
+def test_film_v2_manual_handoff_and_compilation_routes(tmp_path,monkeypatch):
+    from fastapi.testclient import TestClient
+    from studio.api import app
+    from studio.handoff import export_film_v2_task
+    from tests.test_film_v2 import PLAN,CATALOG,data
+    monkeypatch.setenv("STUDIO_OUTPUT_ROOT",str(tmp_path))
+    path=export_film_v2_task("Create a second character rescue scene",
+        CATALOG,PLAN,tmp_path/"tasks"/"film_v2.txt")
+    assert "independent motion_id" in path.read_text()
+    with pytest.raises(ValueError,match="empty"):
+        export_film_v2_task("  ",CATALOG,PLAN,tmp_path/"bad.txt")
+    client=TestClient(app)
+    result=client.post("/handoff/film/v2/export",
+        json={"prompt":"Create five separate shots","catalog":CATALOG})
+    assert result.status_code==200
+    assert (tmp_path/"film_v2_task.txt").is_file()
+    assert client.post("/handoff/film/v2/export",
+        json={"prompt":" ","catalog":CATALOG}).status_code==422
+    _,_,clips=data()
+    valid=client.post("/film/v2/compile",json={"film":PLAN,"catalog":CATALOG,"motions":clips})
+    assert valid.status_code==200 and valid.json()["total_frames"]==672
+    bad=client.post("/film/v2/compile",json={"film":PLAN,"catalog":CATALOG,"motions":{}})
+    assert bad.status_code==422 and "No motion" in str(bad.json())

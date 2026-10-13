@@ -124,3 +124,31 @@ def export_film_task(brief: str, catalog: dict, example: dict, destination: Path
         encoding="utf-8",
     )
     return destination
+
+
+def export_film_v2_task(brief: str, catalog: dict, example: dict, destination: Path) -> Path:
+    """AI director copy/paste contract; each shot has its own motion and assets."""
+    if not brief.strip():
+        raise ValueError("Film v2 creative brief cannot be empty")
+    destination.parent.mkdir(parents=True, exist_ok=True)
+    destination.write_text(
+        "Write one VALID film.v2 director JSON object only, no markdown. "
+        "Specify independent motion_id for every shot and actor. Each motion clip "
+        "must have exactly duration_frames poses; do NOT stretch or reuse a short "
+        "source animation to fill unrelated shot durations. Choose background_id, "
+        "rig_id and prop visual_id exclusively from the supplied asset catalog. "
+        "Use shot_id, duration_frames, background_id, camera, actors, props and "
+        "optional narration {text,wav,start_frame}. Provide explicit continuity_break "
+        "for any intentional cut where a shared actor wrist or prop center jumps. "
+        "Maintain actor and prop continuity across normal cuts. Each prop needs an "
+        "owner_actor_id; one active prop per actor. Timebase: 24 FPS. "
+        "Provide a separate named MotionPlan definition for every motion_id. "
+        "MotionPlan actions: reach/grab/carry/wait/place; physical arm length and "
+        "grip position must remain reachable. A separate WAV file, not the text, "
+        "provides any narration. No external LLM API is used.\n\n"
+        + "Creative brief:\n" + brief
+        + "\n\nAvailable catalog:\n" + json.dumps(catalog,indent=2)
+        + "\n\nExample film.v2 director plan:\n" + json.dumps(example,indent=2),
+        encoding="utf-8",
+    )
+    return destination
