@@ -53,7 +53,7 @@ try {
   // Pixel screen x to Spine skeleton x: root lies at screen x=320.
   // Pixel screen y to Spine world y: root lies at screen y=480, positive Y up.
   const pixelToSpine=(p)=>({x:p.x-320,y:480-p.y});
-  const spineToPixel=(p)=>({x:p.worldX+320,y:480-p.worldY});
+  const spineToPixel=(p)=>({x:p.worldX+320,y:480+p.worldY}); // Spine-Pixi v8 uses y-down bone worldY
   const angle=(p,q)=>Math.atan2(q.y-p.y,q.x-p.x)*180/Math.PI;
   const mismatch=(a,b)=>Math.hypot(a.x-b.x,a.y-b.y);
   const drawFrame=(frame)=>{
