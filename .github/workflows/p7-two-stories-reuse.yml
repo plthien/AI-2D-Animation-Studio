@@ -1,0 +1,137 @@
+name: P7 reuse proof two different stories
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - "examples/p7_lost_key_*"
+      - "scripts/p7_lost_key_fixture_assets.py"
+      - "scripts/run_film_v2.py"
+      - "tests/test_p7_story_reuse.py"
+      - ".github/workflows/p7-two-stories-reuse.yml"
+      - "studio/film_v2.py"
+      - "runtime/film_v2*"
+jobs:
+  two-stories:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Install shared implementation only once
+        run: |
+          pip install -e ".[test]"
+          cd runtime
+          npm install --no-audit --no-fund
+          npx playwright install --with-deps chromium
+          cd ..
+          sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg
+      - name: Reuse pinned Genielabs baseline and compact rigs unchanged
+        run: |
+          mkdir -p vendor/genielabs/scripts
+          SHA=702b71689cac826efee942ee4564fef9560d6ef8
+          for script in build_spine_json.py make_atlas.py; do
+            curl -fsSL --retry 3 "https://raw.githubusercontent.com/GenielabsOpenSource/spine-animation-ai/$SHA/scripts/$script" -o "vendor/genielabs/scripts/$script"
+          done
+          for variant in baseline compact; do
+            python scripts/p4_spine_fixture.py --genielabs vendor/genielabs --out "outputs/p7/shared_rigs/$variant" --variant "$variant"
+            mkdir -p "runtime/fixtures/$variant"
+            cp "outputs/p7/shared_rigs/$variant/skeleton.json" "outputs/p7/shared_rigs/$variant/skeleton.atlas" "outputs/p7/shared_rigs/$variant/skeleton.png" "outputs/p7/shared_rigs/$variant/rig_profile.json" "runtime/fixtures/$variant/"
+          done
+      - name: Prepare different source images and per-film test audio
+        run: |
+          python scripts/p6_v2_fixture_assets.py
+          python scripts/p7_lost_key_fixture_assets.py
+          python - <<'PY'
+          from pathlib import Path
+          from scripts.p6_fixture_voice import main
+          main(Path("outputs/p7/coffee/voices"))
+          main(Path("outputs/p7/lost_key/voices"))
+          print("Audio files are synthetic tones, NOT generated Kokoro narration")
+          PY
+      - name: Compile both FilmPlan documents through the same core; run P7 invariants
+        run: |
+          python -m pytest -q tests/test_p7_story_reuse.py
+          sha256sum studio/film_v2.py studio/motion.py studio/voice.py runtime/film_v2_scene.mjs runtime/film_v2_render.mjs scripts/run_film_v2.py > outputs/p7/shared_engine_before.sha256
+      - name: Story A regression — coffee film, unchanged JSON and renderer
+        run: |
+          python scripts/run_film_v2.py \
+            --plan examples/p6_v2_film.json \
+            --catalog examples/p6_v2_catalog.json \
+            --motions examples/p6_v2_motions.json \
+            --voices outputs/p7/coffee/voices \
+            --workspace outputs/p7/coffee/workspace \
+            --output outputs/p7/coffee/coffee_28s.mp4
+      - name: Story B generalization — Lost Key, no animation source changes
+        run: |
+          python scripts/run_film_v2.py \
+            --plan examples/p7_lost_key_film.json \
+            --catalog examples/p7_lost_key_catalog.json \
+            --motions examples/p7_lost_key_motions.json \
+            --voices outputs/p7/lost_key/voices \
+            --workspace outputs/p7/lost_key/workspace \
+            --output outputs/p7/lost_key/lost_key_21s.mp4
+      - name: Audit both independent videos, motion reuse and clean workspaces
+        run: |
+          sha256sum -c outputs/p7/shared_engine_before.sha256
+          git diff --exit-code -- studio runtime scripts
+          python - <<'PY'
+          import json, subprocess, hashlib
+          from pathlib import Path
+          specs=[
+            ("coffee",28,672,6,{"cafe_morning","cafe_evening"},{"baseline","compact"},"coffee_28s.mp4"),
+            ("lost_key",21,504,5,{"workshop_sunrise","hallway_twilight"},{"baseline","compact"},"lost_key_21s.mp4")
+          ]
+          results=[]
+          for story,duration,frames,motion_count,bgs,rigs,name in specs:
+            base=Path("outputs/p7")/story
+            video=base/name
+            meta=json.loads(subprocess.check_output([
+              "ffprobe","-v","error","-count_frames","-show_entries",
+              "format=duration:stream=codec_type,codec_name,width,height,avg_frame_rate,nb_read_frames",
+              "-of","json",str(video)],text=True))
+            streams={s["codec_type"]:s for s in meta["streams"]}
+            assert set(streams)=={"video","audio"}
+            assert streams["video"]["codec_name"]=="h264"
+            assert streams["audio"]["codec_name"]=="aac"
+            assert streams["video"]["width"]==640 and streams["video"]["height"]==480
+            assert streams["video"]["avg_frame_rate"]=="24/1"
+            assert int(streams["video"]["nb_read_frames"])==frames
+            assert abs(float(meta["format"]["duration"])-duration)<.06
+            report=json.loads((base/"workspace"/"video_manifest.json").read_text())
+            assert report["totalFrames"]==frames and report["replayStable"]
+            assert len(report["shots"])==5
+            assert len(report["independentMotions"])==motion_count
+            assert set(report["backgrounds"])==bgs
+            assert set(report["rigs"])==rigs
+            assert len(list((base/"workspace"/"frames").glob("frame_*.png")))==frames
+            assert len(list((base/"workspace"/"previews").glob("frame_*.png")))==10
+            assert video.stat().st_size>15000
+            assert len((base/"workspace"/"audio_manifest.json").read_text())>0
+            results.append({"story":story,"duration_seconds":duration,"frames":frames,
+              "video_sha256":hashlib.sha256(video.read_bytes()).hexdigest(),
+              "motion_clips":motion_count,"backgrounds":sorted(bgs),"rigs":sorted(rigs),
+              "audio":"synthetic_non_speech_test_fixture"})
+          assert results[0]["video_sha256"]!=results[1]["video_sha256"]
+          Path("outputs/p7/p7_reuse_acceptance.json").write_text(json.dumps({
+            "p7_status":"PASS","same_core_sha256":True,"separate_workspaces":True,
+            "actual_spine_browser_renders":True,"stories":results},indent=2))
+          print(json.dumps(results,indent=2))
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: p7-two-stories-spine-reuse-proof
+          path: |
+            outputs/p7/p7_reuse_acceptance.json
+            outputs/p7/shared_engine_before.sha256
+            outputs/p7/coffee/*.mp4
+            outputs/p7/lost_key/*.mp4
+            outputs/p7/coffee/workspace/video_manifest.json
+            outputs/p7/lost_key/workspace/video_manifest.json
+            outputs/p7/coffee/workspace/previews/*.png
+            outputs/p7/lost_key/workspace/previews/*.png
