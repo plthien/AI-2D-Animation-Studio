@@ -5,8 +5,22 @@ import { mkdir } from 'node:fs/promises';
 const port = 18765;
 await mkdir('outputs', {recursive:true});
 const server=spawn('python',['-m','http.server',String(port),'--directory','runtime'],{stdio:'ignore'});
+async function waitForLocalServer() {
+  const url='http://127.0.0.1:'+port+'/';
+  for(let attempt=0;attempt<80;attempt++) {
+    if(server.exitCode!==null) throw Error('Fixture server exited: '+server.exitCode);
+    try {
+      const response=await fetch(url);
+      if(response.ok) return;
+    }catch (_) { /* Still booting. */ }
+    await new Promise(resolve=>setTimeout(resolve,100));
+  }
+  throw Error('Fixture HTTP server not ready after 8 seconds');
+}
+
 let browser;
 try {
+ await waitForLocalServer();
  browser=await chromium.launch({headless:true});
  const page=await browser.newPage({viewport:{width:640,height:520}});
  await page.goto('http://127.0.0.1:'+port+'/sample.html',{waitUntil:'domcontentloaded',timeout:30000});
