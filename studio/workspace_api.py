@@ -19,6 +19,7 @@ import wave
 from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime, timezone
 from pathlib import Path
+from urllib.parse import urlparse
 
 from fastapi import APIRouter, HTTPException, UploadFile, File
 from fastapi.responses import FileResponse
@@ -388,6 +389,9 @@ class GlabsAssetSubmit(BaseModel):
 
 @router.get("/provider/glabs")
 async def glabs_readiness() -> dict:
+    base = os.environ.get("GLABS_BASE_URL", "http://127.0.0.1:8765")
+    if urlparse(base).hostname not in {"localhost", "127.0.0.1"}:
+        return {"configured": False, "reachable": False, "message": "G-Labs origin must be localhost"}
     if not os.environ.get("GLABS_API_KEY"):
         return {"configured": False, "reachable": False, "message": "GLABS_API_KEY not configured in backend environment"}
     try:
@@ -417,10 +421,12 @@ async def glabs_generate_for_project(project_id: str, request: GlabsAssetSubmit)
             continue
         if prior.get("asset_path") == request.asset_path and prior.get("status") in {"pending", "running"}:
             raise HTTPException(409, "An image generation for this asset is already active")
+    if urlparse(os.environ.get("GLABS_BASE_URL", "http://127.0.0.1:8765")).hostname not in {"localhost", "127.0.0.1"}:
+        raise HTTPException(422, "G-Labs webhook must be local; refusing to send credentials remotely")
     try:
         image_request = ImageRequest(prompt=request.prompt, model=request.model, aspect_ratio=request.aspect_ratio)
         async with GlabsClient.from_env() as client:
-            task_id = await client.submit(image_request)
+            task_id = (await client.submit(image_request)).lower()
     except Exception as exc:
         raise HTTPException(503, "G-Labs submission failed. Check local MAX webhook and backend credentials.") from exc
     record = {"task_id": task_id, "asset_path": request.asset_path,
