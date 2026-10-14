@@ -1,0 +1,53 @@
+name: UI cockpit build and real browser/API smoke
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - "frontend/**"
+      - "studio/workspace_api.py"
+      - "studio/api.py"
+      - "tests/test_workspace_api.py"
+      - "runtime/ui_cockpit_smoke.mjs"
+      - ".github/workflows/ui-cockpit.yml"
+jobs:
+  cockpit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Python local API and project validations
+        run: |
+          pip install -e ".[test]"
+          python -m pytest -q tests/test_workspace_api.py
+      - name: Build React TypeScript cockpit
+        run: |
+          cd frontend
+          npm install --no-audit --no-fund
+          npm run build
+      - name: Run local Python server + test actual browser UI
+        run: |
+          cd runtime
+          npm install --no-audit --no-fund
+          npx playwright install --with-deps chromium
+          cd ..
+          export STUDIO_PROJECTS_ROOT="$RUNNER_TEMP/ui-projects"
+          python -m studio > /tmp/studio_ui.log 2>&1 &
+          for i in $(seq 1 40); do
+            if curl -fsS http://127.0.0.1:8000/health >/dev/null; then break; fi
+            sleep .5
+          done
+          curl -fsS http://127.0.0.1:8000/health
+          node runtime/ui_cockpit_smoke.mjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: studio-ui-browser-cockpit
+          path: |
+            outputs/ui/cockpit.png
+            frontend/dist/index.html
