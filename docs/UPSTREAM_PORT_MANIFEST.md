@@ -44,11 +44,11 @@ P0 modules were rewritten to honor the new 32-hex prefixed IDs, animation-specif
 | `app/repositories/core.py` | `a43418e15dd0e6c6aae92709bb557decfb846cfcf169002485c36cb042e91fa9` | Imports YTB SceneAsset and other legacy domain models; a fresh `ArtifactRepository` and `ProjectRepository` were written instead. |
 | `app/modules/platform/artifact_loader.py` | `e828b8c5e01ecd98b03121efb2b933d1499d834386705b04ee1c66636bd10eac` | Imports YTB `/v4` script timing validation and old artifact enums; excluded. |
 
-The upstream `requirements.txt` and `package.json` were inspected. Python dependency versions in this branch follow its pinned neutral baseline where available. React/MUI/React Query baseline versions follow its manifest; Vite is fixed to 5.4.21 and router to a security-patched 7.18.4. `package-lock.json` is newly generated for this product and does not copy the upstream lockfile.
+The upstream `requirements.txt` and `package.json` were inspected. Python dependency versions in this branch follow its pinned neutral baseline where available. React/MUI/React Query baseline versions follow its manifest; Vite is intentionally upgraded to 6.4.3 to remove published development-server advisories and router is fixed to a security-patched 7.18.4. `package-lock.json` is newly generated for this product and does not copy the upstream lockfile.
 
 | Source path | Source SHA-256 | Target path | Decision | Note |
 |---|---|---|---|---|
 | `requirements.txt` | `783c3e6479df0f501c3534adc60b221d2b896341e8841e2d501293eed42aa3e6` | `requirements.txt` | REWRITTEN | Retains pinned FastAPI/Pydantic/SQLAlchemy/Alembic/httpx/pytest/jsonschema baseline; adds `python-dotenv` for `.env` loading. |
-| `package.json` | `ebd8bbb9deb220fa9400c2343b481ccd88f162f29fc81836750d39d27407d063` | `package.json` | REWRITTEN | Retains React 18/MUI 5/React Query 5/Vite 5 baseline; drops unused YTB packages and the development server script. |
+| `package.json` | `ebd8bbb9deb220fa9400c2343b481ccd88f162f29fc81836750d39d27407d063` | `package.json` | REWRITTEN | Retains React 18/MUI 5/React Query 5; upgrades Vite to the reviewed 6.4.3 security patch and drops unused YTB packages and the development server script. |
 
 The P0 Channels and Projects API/service logic is authored against the new P0 plan and Master Spec; no YTB channel/project routes or repositories were imported because those bind to the upstream model registry and old database schema.

@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import Generic, TypeVar
 
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import BaseModel, ConfigDict, Field, JsonValue
 
 
 class StrictModel(BaseModel):
@@ -19,6 +19,11 @@ class ChannelCreate(StrictModel):
     language: str = Field(min_length=1, max_length=32)
     niche: str = Field(min_length=1, max_length=200)
     audience: str = Field(min_length=1, max_length=200)
+
+
+class ChannelDNAUpdate(StrictModel):
+    dna: dict[str, JsonValue]
+    expected_current_artifact_id: str | None = Field(pattern=r"^art_[0-9a-f]{32}$")
 
 
 class ProjectCreate(StrictModel):
@@ -52,7 +57,7 @@ class ChannelResponse(StrictModel):
 
 
 class ChannelDNAResponse(StrictModel):
-    dna: dict | None
+    dna: dict[str, JsonValue] | None
     artifact_id: str | None
     visual_style_hash: str | None
     performance_style_hash: str | None
@@ -117,7 +122,7 @@ class ErrorBody(StrictModel):
     code: str
     message: str
     retryable: bool
-    details: dict
+    details: dict[str, JsonValue]
 
 
 class ErrorEnvelope(StrictModel):

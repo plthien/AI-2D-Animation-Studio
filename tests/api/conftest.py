@@ -12,7 +12,9 @@ from app.main import app
 
 
 @pytest.fixture
-def client(tmp_path):
+def client(tmp_path, monkeypatch):
+    artifact_root = tmp_path / "artifacts"
+    monkeypatch.setenv("ARTIFACT_ROOT", str(artifact_root))
     engine = make_engine(f"sqlite:///{(tmp_path / 'api.db').as_posix()}")
     Base.metadata.create_all(engine)
     def override_db():
@@ -20,6 +22,8 @@ def client(tmp_path):
             yield session
     app.dependency_overrides[get_db] = override_db
     test_client = TestClient(app)
+    test_client.p0_engine = engine
+    test_client.p0_artifact_root = artifact_root
     yield test_client
     app.dependency_overrides.clear()
     engine.dispose()

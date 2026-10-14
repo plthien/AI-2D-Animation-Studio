@@ -46,7 +46,7 @@ Stage 7 order is **render shot previews → generate/align voice → reconcile e
 |---|---:|---|
 | Python | 3.12.x | `venv`; pin libraries from YTB baseline unless changed intentionally |
 | Node | 22.x | package-lock committed; `npm ci` |
-| Frontend | React 18 + TS + Vite 5 + MUI 5 + React Query 5 | transplant compatible YTB shell |
+| Frontend | React 18 + TS + Vite 6.4.3 + MUI 5 + React Query 5 | transplant compatible YTB shell with security-patched build tooling |
 | Backend | FastAPI 0.115, Pydantic 2, SQLAlchemy 2, Alembic | start from YTB pinned package versions |
 | Animation renderer | PixiJS 8 **minimum 8.16** + official `@esotericsoftware/spine-pixi-v8` **4.2.x** | exact installed patch versions committed in lockfile during P4; `Spine.from` v4.2 |
 | Authoritative rig wire format | Spine JSON 4.2, atlas single page RGBA8888 | reject mismatched major.minor |
@@ -63,7 +63,7 @@ Stage 7 order is **render shot previews → generate/align voice → reconcile e
 | World/render scalar | 100 pixels per world meter at zoom=1 | pinned in scene camera contract |
 | P0 default render host | loopback `127.0.0.1` | separate worker execution |
 
-**Versions note:** Spine official documentation requires runtime data/editor major.minor matching and PixiJS 8.16+ for spine-pixi-v8. Do not mix 4.2 skeleton JSON with 4.3 runtime. Lock the exact compatible patch in P4 (no unpinned `latest` dependency). Official source: https://en.esotericsoftware.com/spine-pixi.
+**Versions note:** Spine official documentation requires runtime data/editor major.minor matching and PixiJS 8.16+ for spine-pixi-v8. Do not mix 4.2 skeleton JSON with 4.3 runtime. Lock the exact compatible patch in P4 (no unpinned `latest` dependency). Official source: https://en.esotericsoftware.com/spine-pixi. P0 pins Vite 6.4.3 because the inherited Vite 5.4.21 dependency graph contains published development-server advisories; this reviewed build-tool exception preserves the React 18 shell and Node 22 runtime contract.
 
 ## 1. Source-code transplant contract (YTB main → target)
 
@@ -447,7 +447,7 @@ All routes under `/api/v1`. JSON responses in success `{data:<payload>}` except 
 | `GET /channels` | pagination `page,page_size` | channel cards + total |
 | `POST /channels` | `name,language,niche,audience` | created Channel |
 | `GET /channels/{id}` | — | Channel |
-| `PUT /channels/{id}/dna` | `dna` JSON | validate/save new ChannelDNA artifact revision |
+| `PUT /channels/{id}/dna` | `dna` JSON, required `expected_current_artifact_id` (`null` for first revision or exact current `art_<32hex>`) | validate/save new ChannelDNA artifact revision with optimistic concurrency; mismatch returns 409 `CHANNEL_DNA_STALE_REVISION` and the current artifact ID |
 | `GET /channels/{id}/dna` | — | current DNA and hash |
 | `POST /projects` | `channel_id,name,description` | created project |
 | `GET /projects?channel_id=` | pagination | project cards |
@@ -495,6 +495,8 @@ All routes under `/api/v1`. JSON responses in success `{data:<payload>}` except 
 | `GET /projects/{id}/qc` | — | current QC report including manual gates |
 
 `stage` allowed for authoring route: `topic_ideas`, `script`, `shot_plan`. Director uses dedicated route alias but invokes same reservation engine. Request/response Pydantic models in `app/api/schemas/*`, React client types generated from OpenAPI; no manually inconsistent duplicate TS definitions. Every endpoint needs success, validation failure, 404 and stale conflict tests. Never use GET to invoke compilation or paid image synthesis.
+
+P0 ChannelDNA writes are intentionally revision guarded: clients MUST first read `GET /channels/{id}/dna` and send its `artifact_id` as `expected_current_artifact_id`; creation sends explicit `null`. The server never auto-retries a stale edit or substitutes the latest revision.
 
 ## 13. UI exact flow and controls (P0/P1/P2/P4/P6/P10)
 

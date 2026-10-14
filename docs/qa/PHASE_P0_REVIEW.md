@@ -1,57 +1,80 @@
-# P0 Foundation — Self Review
+# P0 Foundation — Remediation Self Review
 
 **Phase:** P0 — Foundation
-**Base SHA:** `7f63b95ae26942064aeba91ecc9e612e1582687c` (`main`)
+
+**Base SHA:** `7f63b95ae26942064aeba91ecc9e612e1582687c` (`origin/main`)
+
 **Upstream SHA:** `393d0eb5516ac8bb8455f859b79bfc64388b128e` (`plthien/ytb-ai-studio`)
-**Feature branch:** `feat/p0-foundation`
-**Verdict:** **BLOCKED** — P0 implementation and runtime smoke checks pass, but the pinned Vite 5 dependency has current npm advisories (one high, one moderate). Master Spec/package baseline requires the Vite 5 line; upgrading it to the available fix would cross a major version and needs a specification/dependency decision.
 
-## Scope and traceability
+**Feature branch / PR:** `feat/p0-foundation` / PR #2
 
-| Work order | Requirement and implementation | Evidence |
-|---|---|---|
-| P0.01 Dependency lock and bootstrap | Pinned Python/npm dependencies, environment template, ignored local data, Windows setup/start scripts, local-first README. | `setup.bat`, `start.bat`, `requirements.txt`, `package.json`, `package-lock.json`, `.env.example`, `.gitignore`, `README.md`; `tests/platform/test_bootstrap_files.py`; Node 22/npm 11, Python 3.12 verified. Direct `setup.bat` completed with exit code 0, installing 142 packages and building the UI. Direct `start.bat` smoke returned HTTP 200 from `/health` with disposable database/artifact paths. |
-| P0.02 Core transplant | Rewritten neutral core/config/SQLite/artifact/job primitives with source provenance. | `app/core/`, `app/db/`, `app/infrastructure/sqlite.py`, `app/repositories/`, `app/services/`, `app/platform/jobs/`; `docs/UPSTREAM_PORT_MANIFEST.md`; Python tests. No source file copied byte-for-byte. |
-| P0.03 New schema | Static initial Alembic migration creates the 14 required product tables; SQLite connections enable WAL and foreign keys. | `app/db/models.py`, `migrations/versions/0001_initial.py`, `tests/platform/test_migration.py`, `tests/platform/test_models.py`; fresh migration and `alembic check` pass. Product-table count 14; `foreign_keys=1`, `journal_mode=wal`. |
-| P0.04 Platform application | FastAPI health, channel/ChannelDNA, project and stage states, jobs/artifact projections, shared-origin static UI serving. | `app/main.py`, `app/api/`, `app/modules/platform/`; API tests; live HTTP smoke passed for health, channel create, ChannelDNA v2, project creation, stage gating, `/` and SPA route hosting, and unknown API 404. |
-| P0.05 Frontend | React/MUI shell and channel/project/studio/jobs/settings pages use backend API; seven workflow stages are data-driven and downstream actions remain blocked. | `src/`; `tests/frontend/workflow.test.mjs`; `npm test` (2 passed); `npm run build` passed. |
-| P0.06 Isolation | Runtime import scanner rejects legacy Scene/Beat/Genielabs/prototype references. | `tests/platform/test_no_legacy_imports.py`; included in 16 passing Python tests. |
+**Environment:** Windows 11 x64, Python 3.12.10, Node v22.14.0, npm 11.21.0
 
-## Environment and observed checks
+**Final acceptance:** **PASS — no remaining BLOCKER or HIGH finding. Do not merge automatically.**
 
-- Windows 11 x64 (`Windows_NT 10.0.26200`), Python 3.12.10, Node v22.14.0, npm 11.21.0.
-- `python tools/validate_contract_pack.py` — PASS: 19 schema/example pairs and animation-specific assertions.
-- `python tools/test_animation_contract_semantics.py` — PASS: 30 assertions.
-- `python tools/test_cross_phase_contracts.py` — PASS: 19 assertions.
-- `python tools/validate_agent_pack.py` — PASS: 1 AGENTS file, 9 skills, 5 rules and references.
-- `python tools/validate_implementation_pack.py` — PASS: 12 phase plans and references.
-- `python -m pytest tests/platform tests/api -q` — PASS: 16 passed, one Starlette deprecation warning.
-- `npm ci` — PASS: 142 packages added; npm reported 2 vulnerabilities (1 moderate, 1 high).
-- `npm test` — PASS: 2 passed.
-- `npm run build` — PASS: TypeScript and Vite 5.4.21 production build; 1,173 modules transformed.
-- `python -m alembic upgrade head` against disposable `workspace/p0_final_gate.sqlite` — PASS.
-- `python -m alembic check` — PASS: no new upgrade operations detected.
-- Fresh DB inspection — PASS: 14 product tables, SQLite foreign keys enabled on app connections, WAL mode.
-- Live disposable-server HTTP smoke — PASS: health, channel create, valid ChannelDNA v2, project creation, exact seven-stage order and authoring-only readiness, static root/SPA hosting, and unknown API 404.
-- `cmd.exe /d /c call "<repo>\setup.bat"` — PASS, exit code 0; printed the optional FFmpeg readiness notice and `Setup complete`.
-- `start.bat` — PASS: started the loopback app; `/health` returned `{"data":{"status":"ok","schema_version":"1"}}`. The smoke used disposable `workspace/p0_startbat_smoke.sqlite` and artifact paths; the test server was stopped afterward.
-- `git diff --check` — PASS (only a Git line-ending normalization warning for README).
-- `npm audit --json` — **BLOCKING FINDING**: Vite 5.4.21 is within advisories GHSA-fx2h-pf6j-xcff (high) and GHSA-67mh-4wv8-2f99 (moderate via esbuild); npm reports Vite 8.3.4 as the available fix, a breaking major upgrade. The supported app launch path builds with Vite and serves static output through FastAPI; it does not start the Vite development server. This reduces exposure in the shipped runtime path but does not clear the dependency audit gate.
+## Remediation traceability
 
-## Self-review findings and limits
+| Fix | Implementation | Regression and acceptance evidence | Result |
+|---|---|---|---|
+| H1 artifact transaction/CAS | `app/repositories/artifacts.py` now stages and fsyncs attempt-owned bytes, opens an isolated connection, issues `BEGIN IMMEDIATE` before reads, validates project/channel/parents/stage-kind/head, performs guarded CAS, preserves committed bytes after response loss, and reconciles only old unreferenced artifact directories. It never commits or rolls back the caller session. | `tests/platform/test_artifacts.py`: pending caller transaction, five two-writer races, immutable winner bytes, loser cleanup, invalid/cross-project/cross-channel parents, duplicate parents, stage-kind domain, suffix/symlink/source-mutation rejection, four precommit faults, DB constraint mapping, postcommit reconciliation, referenced-byte preservation. Focused run: `19 passed`; full Python run below: `39 passed`. | PASS |
+| H2 ChannelDNA revision | Master §12 and P0.04 first received the narrow required `expected_current_artifact_id` amendment. `ChannelDNARepository` publishes immutable `channel_dna.v2` revisions under an isolated `BEGIN IMMEDIATE` transaction, returns actionable stale 409, retains history, computes three separate hashes and invalidates only affected stage authority. | API tests cover required/null/exact/stale revisions, malformed and duplicate JSON, unexpected fields, wrong identity, two-writer race, historical bytes, versions `[1,2]`, precommit fault rollback, GET/read-after-write, all three hash domains and performance-only stage invalidation. API run: `14 passed`. | PASS |
+| H3 Vite/esbuild security | Master §0.3/version note, P0.01 and the upstream manifest document the reviewed Vite 6.4.3 exception. Lockfile resolves Vite 6.4.3 → esbuild 0.25.12 with plugin-react 4.7.0. Supported startup builds static assets and FastAPI serves them; it does not launch the advisory-affected Vite development server. | `npm ci` exit 0; `npm ls` confirms exact graph; live `npm audit --json` exit 0 with 0 info/low/moderate/high/critical findings; Vite production build passed. Sanitized raw audit: `workspace/npm-audit.json` (ignored local evidence). | PASS |
+| M2 ChannelDNA UI | `ChannelDNAImport` provides keyboard-accessible paste/upload and save, current revision and three hashes, local JSON errors, canonical backend schema errors, explicit revision CAS and actionable stale reload. Successful publication invalidates list and project-detail queries so authoring readiness refreshes. | Browser test exercises bad JSON, invalid schema 422, valid save, displayed immutable revision, readiness refresh, reload persistence and stale 409 after an external competing revision. | PASS |
+| M3 OpenAPI types | Deterministic `tools/export_openapi.py` emits `openapi.json`; pinned openapi-typescript 7.13.0 emits `src/api/generated.ts`. Frontend DTOs, envelopes, pagination, errors and DNA request use generated schemas. Python compares committed OpenAPI to `app.openapi()`; npm test regenerates in memory and fails on TS drift. | `tests/api/test_openapi_contract.py`; `npm run generate:api-types`; `npm test` reports generated types match; TypeScript production build passed. | PASS |
+| M1 real browser proof | Pinned Playwright 1.55.1 launches Chromium 140 against FastAPI with a disposable DB/artifact root. The runner waits on `/health`, uses loopback only and terminates the process tree on Windows. | `npm run test:e2e`: `1 passed`. Scenario creates channel/project, verifies all seven ordered stages blocked, imports DNA through UI, verifies authoring ready and six blocked, reloads, checks no fake P1+ actions, validates error states and stale conflict. | PASS |
 
-- The full ChannelDNA v2 schema and semantic validation are used; v1 is rejected. Visual and performance hashes are independently computed and tested.
-- Stage readiness is derived from valid approved DNA; only authoring becomes ready. No generation, rigging, motion or render success is claimed in P0.
-- Channel/project ownership, immutable artifact bytes, expected-head CAS, traversal handling, malformed/duplicate JSON and downstream stage blocking have unit/API coverage.
-- Upstream modules coupled to legacy SceneAsset or v4 timing are excluded and recorded in the port manifest.
-- A browser screenshot/manual visual review was not required for this phase; no rig, motion or renderer is implemented.
-- The supported startup script opens the local browser after launching the server; the app's root/SPA response was verified with the separate live HTTP smoke. No screenshot artifact was captured.
-- No live provider, Spine runtime, media render, paid task, or future phase acceptance is claimed or applicable to P0.
+## Exact final commands and results
 
-## Changed-file scope
+| Command | Result |
+|---|---|
+| `.venv\Scripts\python.exe tools\validate_contract_pack.py` | exit 0 — PASS 19 schema/example pairs |
+| `.venv\Scripts\python.exe tools\test_animation_contract_semantics.py` | exit 0 — PASS 30 assertions |
+| `.venv\Scripts\python.exe tools\test_cross_phase_contracts.py` | exit 0 — PASS 19 assertions |
+| `.venv\Scripts\python.exe tools\validate_agent_pack.py` | exit 0 — PASS 1 AGENTS + 9 skills + 5 rules |
+| `.venv\Scripts\python.exe tools\validate_implementation_pack.py` | exit 0 — PASS 12 phase plans |
+| `.venv\Scripts\python.exe -m pytest tests\platform tests\api -q` | exit 0 — 39 passed, one Starlette deprecation warning |
+| disposable `alembic upgrade head` | exit 0 — fresh migration applied |
+| disposable `alembic check` | exit 0 — no new upgrade operations |
+| `.venv\Scripts\python.exe -m tools.check_database_gate` | 14 product tables; `foreign_keys=1`; `journal_mode=wal` |
+| `npm ci` | exit 0 — 174 packages installed, audit summary 0 vulnerabilities |
+| `npm audit --json` | exit 0 — 0 vulnerabilities at every severity |
+| `npm ls vite esbuild @vitejs/plugin-react openapi-typescript @playwright/test` | exit 0 — Vite 6.4.3, esbuild 0.25.12, plugin-react 4.7.0, generator 7.13.0, Playwright 1.55.1 |
+| `npm test` | exit 0 — 3 source tests passed and generated API types matched |
+| `npm run build` | exit 0 — Vite 6.4.3, 1,172 modules transformed |
+| `npm run test:e2e` | exit 0 — 1 Chromium test passed |
+| `cmd.exe /d /c .\setup.bat` | exit 0 — pinned Python/npm install and production build completed |
+| `start.bat`, `/health`, live channel/DNA/project API smoke | exit 0 / HTTP success — 7 stages returned `ready,blocked,blocked,blocked,blocked,blocked,blocked`; disposable server stopped afterward |
+| `git diff --check` | exit 0 — no whitespace errors; Git emitted only Windows line-ending notices |
 
-P0 application, migrations, UI, bootstrap/configuration, tests, provenance manifest, README and this review report. No unrelated phase implementation is included. See the branch diff for the exact file list.
+The `py -3.12` launcher command is unavailable on this machine (`No installed Python found`). Every Python gate used the repository virtual environment, whose interpreter reports Python 3.12.10. This is an invocation limitation, not a version substitution.
+
+## Browser evidence
+
+- Screenshot: `workspace/e2e-evidence/p0-studio-ready.png` (ignored local/CI artifact; contains synthetic test data only).
+- SHA-256: `FBFD46D9BF9749DE105D42E25408E9DDD699AF58D790EE4522AD48BD709C5CBB`.
+- Visible state: real Studio page after reload, seven stages in required order, authoring `ready`, remaining six `blocked`.
+- Playwright trace/screenshot-on-failure output is isolated under ignored `workspace/playwright`.
+
+## Database and ownership review
+
+- Fresh migration contains exactly the 14 required product tables; no migration rewrite or destructive user-DB operation was introduced.
+- Artifact and DNA publishers use separate transaction ownership and transactional CAS. Concurrent losers cannot update heads, retain attempt bytes or become an untyped 500.
+- ChannelDNA revisions remain immutable artifacts. Performance-only edits preserve visual hash and approved generation authority; visual and narration changes affect only their defined authority domains.
+- Same-channel/different-project and cross-channel parent references are rejected. Arbitrary stage keys and inconsistent artifact kinds are rejected.
+
+## Security, lineage and scope review
+
+- The live npm audit is clear. The only npm install notice is npm's allowScripts notice for esbuild's pinned package postinstall; the package installed, built and passed the audit and browser gates.
+- Runtime source scanning found no banned Scene/Beat, prototype-branch or Genielabs imports. Documentation references remain intentional policy text.
+- No LLM SDK/API, G-Labs paid task, image generation, rigging, motion, voice, rendering or other P1+ producer was added.
+- YTB remained unmodified. No PR #1 or abandoned-branch source was inspected or reused. Existing provenance entries remain accurate.
+
+## Remaining limitations
+
+- Starlette TestClient emits one upstream deprecation warning for `anyio.abc.BlockingPortal`; tests pass and no vulnerable dependency is reported.
+- Screenshot and raw audit files stay under ignored `workspace/` so synthetic/local run artifacts are not committed. Their path and screenshot hash are recorded above.
+- P0 exposes future stages as blocked status only. No later-phase success is claimed.
 
 ## Release decision
 
-Keep the implementation available for review, but do not mark P0 accepted while the dependency audit has a high advisory. Resolve the Vite dependency policy against the normative pinned baseline, then rerun `npm ci`, `npm audit`, frontend tests/build and the full P0 gates. Do not merge or continue to P1 as part of this phase.
+P0 remediation gates H1, H2, H3, M2, M3 and M1 pass. PR #2 is ready for human review and must remain unmerged until the user explicitly requests merge.

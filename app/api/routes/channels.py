@@ -1,21 +1,19 @@
 from __future__ import annotations
 
-from pathlib import Path
-
-from fastapi import APIRouter, Body, Depends, Query, Request
+from fastapi import APIRouter, Depends, Query, Request
 from sqlalchemy import func, select
 from sqlalchemy.orm import Session
 
 from app.api.errors import ApiError
-from app.api.schemas.base import ChannelCreate, ChannelDNAResponse, ChannelResponse, DataEnvelope, ErrorEnvelope, PageResponse
+from app.api.schemas.base import ChannelCreate, ChannelDNAResponse, ChannelDNAUpdate, ChannelResponse, DataEnvelope, ErrorEnvelope, PageResponse
 from app.core.config import get_settings
-from app.core.hashing import canonical_json, sha256_bytes
 from app.core.ids import new_id
 from app.core.time import utc_now
 from app.core.strict_json import strict_json_loads
 from app.db.dependencies import get_db
-from app.db.models import Artifact, Channel
+from app.db.models import Channel
 from app.modules.platform.channels import ChannelDNAValidationError, validate_channel_dna
+from app.repositories.channels import ChannelDNAPublicationConflict, ChannelDNARepository, ChannelDNAStaleRevision
 
 router = APIRouter(prefix="/channels", tags=["channels"], responses={404: {"model": ErrorEnvelope}, 409: {"model": ErrorEnvelope}, 422: {"model": ErrorEnvelope}, 500: {"model": ErrorEnvelope}})
 
@@ -56,7 +54,7 @@ def get_channel_dna(channel_id: str, db: Session = Depends(get_db)) -> dict:
 
 
 @router.put("/{channel_id}/dna", response_model=DataEnvelope[ChannelDNAResponse])
-async def update_channel_dna(channel_id: str, request: Request, body: dict = Body(...), db: Session = Depends(get_db)) -> dict:
+async def update_channel_dna(channel_id: str, request: Request, body: ChannelDNAUpdate, db: Session = Depends(get_db)) -> dict:
     channel = db.get(Channel, channel_id)
     if channel is None:
         raise ApiError(404, "CHANNEL_NOT_FOUND", "Channel was not found.")
@@ -69,10 +67,13 @@ async def update_channel_dna(channel_id: str, request: Request, body: dict = Bod
         raise ApiError(422, "CHANNEL_DNA_INVALID", "Request JSON is invalid or contains duplicate keys.", {"path": "$", "recovery": "Send one well-formed JSON object with unique keys."}) from error
     if not isinstance(strict_body, dict):
         raise ApiError(422, "REQUEST_INVALID", "Request body must be an object.", {"path": "$", "recovery": "Send {dna: <channel_dna.v2 object>}."})
-    body = strict_body
-    if set(body) != {"dna"} or not isinstance(body.get("dna"), dict):
-        raise ApiError(422, "REQUEST_INVALID", "Request must contain only an object named dna.", {"path": "$", "recovery": "Send {dna: <channel_dna.v2 object>}."})
-    dna = dict(body["dna"])
+    if set(strict_body) != {"dna", "expected_current_artifact_id"} or not isinstance(strict_body.get("dna"), dict):
+        raise ApiError(422, "REQUEST_INVALID", "Request must contain dna and expected_current_artifact_id.", {"path": "$", "recovery": "Read the current DNA, then send both required fields."})
+    try:
+        parsed = ChannelDNAUpdate.model_validate(strict_body)
+    except ValueError as error:
+        raise ApiError(422, "REQUEST_INVALID", "ChannelDNA revision precondition is invalid.", {"path": "$.expected_current_artifact_id", "recovery": "Send null or an art_<32hex> current artifact ID."}) from error
+    dna = dict(parsed.dna)
     if dna.get("schema_version") != "channel_dna.v2":
         raise ApiError(422, "CHANNEL_DNA_VERSION_UNSUPPORTED", "Only channel_dna.v2 is supported.", {"path": "$.schema_version", "recovery": "Submit a channel_dna.v2 document."})
     dna["artifact_id"] = new_id("art")
@@ -80,37 +81,21 @@ async def update_channel_dna(channel_id: str, request: Request, body: dict = Bod
         hashes = validate_channel_dna(dna, {"channel_id": channel.channel_id, "name": channel.name, "language": channel.language, "niche": channel.niche, "audience": channel.audience})
     except ChannelDNAValidationError as error:
         raise ApiError(422, error.code, str(error), {"path": error.path, "recovery": "Correct the field to match channel_dna.v2."}) from error
-    root = get_settings().artifact_root
-    payload = canonical_json(dna)
-    digest = sha256_bytes(payload)
     artifact_id = dna["artifact_id"]
-    destination_dir = (root / channel_id / artifact_id).resolve()
-    if not destination_dir.is_relative_to(root):
-        raise ApiError(422, "ARTIFACT_PATH_INVALID", "Artifact path is invalid.")
-    destination_dir.mkdir(parents=True, exist_ok=True)
-    destination = destination_dir / f"{digest.removeprefix('sha256:')}.json"
-    if destination.exists():
-        raise ApiError(409, "ARTIFACT_IMMUTABLE", "Artifact content already exists and cannot be replaced.")
-    temporary = destination.with_suffix(".tmp")
     try:
-        with temporary.open("xb") as file:
-            file.write(payload)
-            file.flush()
-            import os
-            os.fsync(file.fileno())
-        os.replace(temporary, destination)
-        version = (db.scalar(select(func.max(Artifact.version)).where(Artifact.channel_id == channel_id, Artifact.logical_key == "channel_dna")) or 0) + 1
-        artifact = Artifact(artifact_id=artifact_id, project_id=None, channel_id=channel_id, kind="channel_dna", logical_key="channel_dna", version=version, sha256=digest, size_bytes=len(payload), path=str(destination), status="ready", approved_at=utc_now(), parents_json=[], metadata_json=hashes, created_at=utc_now())
-        db.add(artifact)
-        channel.dna_json = dna
-        channel.visual_style_hash = hashes["visual_style_hash"]
-        channel.performance_style_hash = hashes["performance_style_hash"]
-        channel.narration_identity_hash = hashes["narration_identity_hash"]
-        channel.updated_at = utc_now()
-        db.commit()
-    except Exception:
-        db.rollback()
-        temporary.unlink(missing_ok=True)
-        destination.unlink(missing_ok=True)
-        raise
+        ChannelDNARepository(db, get_settings().artifact_root).publish(
+            channel_id,
+            dna,
+            hashes,
+            parsed.expected_current_artifact_id,
+        )
+    except ChannelDNAStaleRevision as error:
+        raise ApiError(
+            409,
+            "CHANNEL_DNA_STALE_REVISION",
+            "ChannelDNA changed after it was loaded.",
+            {"path": "$.expected_current_artifact_id", "current_artifact_id": error.current_artifact_id, "recovery": "Reload the current DNA, review changes, and retry explicitly."},
+        ) from error
+    except ChannelDNAPublicationConflict as error:
+        raise ApiError(409, "CHANNEL_DNA_PUBLICATION_CONFLICT", "ChannelDNA revision could not be published.", {"path": "$", "recovery": "Reload the current DNA before retrying."}) from error
     return {"data": {"dna": dna, "artifact_id": artifact_id, **hashes}}

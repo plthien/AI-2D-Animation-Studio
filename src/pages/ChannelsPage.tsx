@@ -3,6 +3,7 @@ import { Alert, Button, Card, CardContent, Stack, TextField, Typography } from '
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { api } from '../api/client';
 import { ErrorNotice } from '../components/Notice';
+import { ChannelDNAImport } from '../features/channels/ChannelDNAImport';
 
 export function ChannelsPage() {
   const client = useQueryClient();
@@ -25,6 +26,6 @@ export function ChannelsPage() {
     <ErrorNotice error={channels.error || create.error} />
     {channels.isLoading && <Alert severity="info">Loading channels…</Alert>}
     {channels.data?.items.length === 0 && <Alert severity="info">No channels yet. Create one to get started.</Alert>}
-    {channels.data?.items.map((channel) => <Card key={channel.channel_id}><CardContent><Typography variant="h6">{channel.name}</Typography><Typography color="text.secondary">{channel.niche} · {channel.language} · {channel.audience}</Typography><Typography variant="caption">{channel.channel_id}</Typography></CardContent></Card>)}
+    {channels.data?.items.map((channel) => <Stack key={channel.channel_id} spacing={1}><Card><CardContent><Typography variant="h6">{channel.name}</Typography><Typography color="text.secondary">{channel.niche} · {channel.language} · {channel.audience}</Typography><Typography variant="caption">{channel.channel_id}</Typography></CardContent></Card><ChannelDNAImport channel={channel} /></Stack>)}
   </Stack>;
 }

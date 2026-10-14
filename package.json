@@ -5,7 +5,11 @@
   "type": "module",
   "scripts": {
     "build": "tsc -b && vite build",
-    "test": "node --test"
+    "test": "node --test && node tools/openapi-types.mjs --check",
+    "generate:api-types": "node tools/openapi-types.mjs",
+    "check:api-types": "node tools/openapi-types.mjs --check",
+    "pretest:e2e": "node tools/prepare-e2e.mjs",
+    "test:e2e": "node tools/run-e2e.mjs"
   },
   "dependencies": {
     "@emotion/react": "11.11.4",
@@ -20,8 +24,10 @@
   "devDependencies": {
     "@types/react": "18.3.3",
     "@types/react-dom": "18.3.0",
+    "@playwright/test": "1.55.1",
     "@vitejs/plugin-react": "4.7.0",
+    "openapi-typescript": "7.13.0",
     "typescript": "5.5.3",
-    "vite": "5.4.21"
+    "vite": "6.4.3"
   }
 }
