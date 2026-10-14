@@ -29,8 +29,6 @@
 
 The initial `jsonschema` import error is an **environment prerequisite failure**, not a schema failure: provision `tools/requirements-validation.txt` before running JSON Schema gates. If PyPI or GitHub is unreachable in the Codex sandbox, arrange network access or pre-provision the exact approved upstream source snapshot and Python/npm dependencies. Do not bypass the full phase gates or claim P0 accepted.
 
-The frozen specification manifest is **not** a whitelist of repository files: `.git`, P0 implementation files and QA outputs must not invalidate it. Run `python tools/test_manifest_verifier.py` as a dependency-free regression check for this rule.
-
 ## Mandatory phase protocol
 
 1. Start from the latest approved `main`; never read, merge or copy from `feat/p0-p1-foundation` or PR #1. Freeze upstream `ytb-ai-studio` at `393d0eb5516ac8bb8455f859b79bfc64388b128e`. Record every reused function/file and source SHA in `docs/UPSTREAM_PORT_MANIFEST.md`.

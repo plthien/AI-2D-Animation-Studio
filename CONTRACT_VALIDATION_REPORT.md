@@ -7,7 +7,6 @@ Date: 2026-10-14. Scope: **documentation/contracts only**. Repository app code, 
 - `python tools/validate_agent_pack.py`: **PASS**, root AGENTS + 9 Skills + 5 Rules.
 - `python tools/validate_implementation_pack.py`: **PASS**, 12 detailed P0–P11 phase plans, mandatory references, Master v1.3.
 - `python tools/test_cross_phase_contracts.py`: **PASS**, 19 cross-phase and voice extension positive/negative assertions.
-- `python tools/verify_package_manifest.py`: **PASS** once manifest is generated.
 
 Cross-phase corrections: VoiceManifest original-film absolute cue timing; raw WAV overrun stored in P8 and safely reconciled in P9; FinalTimeline max768 frames per shot and 23040 total; fresh DB exactly 14 tables; canonical requirement ID hash; P0 `/health` success envelope. See `docs/audits/CONTRACT_PHASE_CONSISTENCY_v1_3.md`.
 

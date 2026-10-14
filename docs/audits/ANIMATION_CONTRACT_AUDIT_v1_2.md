@@ -58,4 +58,4 @@ Character dialogue, phoneme lip sync, rig view changes mid-action, airborne jump
 
 ## Verification gates
 
-Structural: `python tools/validate_contract_pack.py`; positive+negative boundary fixtures: `python tools/test_animation_contract_semantics.py`; agent/rule references: `python tools/validate_agent_pack.py`; manifest: `python tools/verify_package_manifest.py`. These never claim a real 2D motion render has already been tested.
+Structural: `python tools/validate_contract_pack.py`; positive+negative boundary fixtures: `python tools/test_animation_contract_semantics.py`; agent/rule references: `python tools/validate_agent_pack.py`. These never claim a real 2D motion render has already been tested.

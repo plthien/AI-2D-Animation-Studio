@@ -19,4 +19,4 @@
 | [`P10_PRODUCTION_UI_QC.md`](P10_PRODUCTION_UI_QC.md) | Crash-safe durable operations, complete UI and QC |
 | [`P11_ACCEPTANCE_RELEASE.md`](P11_ACCEPTANCE_RELEASE.md) | Film A/B real Windows acceptance, licensing/security checks |
 
-Contract verification: `python tools/validate_contract_pack.py`, `python tools/test_animation_contract_semantics.py`, `python tools/validate_agent_pack.py`, `python tools/validate_implementation_pack.py`, `python tools/test_cross_phase_contracts.py`, then `python tools/verify_package_manifest.py`. Do not claim runtime/Windows/G-Labs acceptance from contract tests.
+Contract verification: `python tools/validate_contract_pack.py`, `python tools/test_animation_contract_semantics.py`, `python tools/validate_agent_pack.py`, `python tools/validate_implementation_pack.py`, `python tools/test_cross_phase_contracts.py`. Do not claim runtime/Windows/G-Labs acceptance from contract tests.

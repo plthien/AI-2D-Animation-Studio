@@ -25,6 +25,6 @@ The schemas determine exact shape; Master Spec supplies semantics; rules govern 
 
 ## Contents
 
-`AGENTS.md`, `MASTER_SPEC.md`, `README_FOR_CODEX.md`, `docs/contracts/`, `docs/audits/`, `docs/research/`, `docs/rules/` (5 documents), `.agents/skills/` (9 skills), `contracts/schemas/` (19 documents), `contracts/examples/` (19 examples), `tools/validate_contract_pack.py`, generated `PACKAGE_MANIFEST.json` and `CONTRACT_VALIDATION_REPORT.md`.
+`AGENTS.md`, `MASTER_SPEC.md`, `README_FOR_CODEX.md`, `docs/contracts/`, `docs/audits/`, `docs/research/`, `docs/rules/` (5 documents), `.agents/skills/` (9 skills), `contracts/schemas/` (19 documents), `contracts/examples/` (19 examples), `tools/validate_contract_pack.py` and `CONTRACT_VALIDATION_REPORT.md`.
 
 The **twelve phase plans P0–P11** are mandatory implementation authorities, not optional summaries. Schemas remain authoritative on shape; executable semantic validators prove cross-artifact invariants; phase plans are subordinate to Master Spec and must never override schema by implication.

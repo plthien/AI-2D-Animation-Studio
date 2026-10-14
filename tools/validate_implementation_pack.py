@@ -34,7 +34,7 @@ def main():
     for path in [ROOT/'AGENTS.md',ROOT/'README_FOR_CODEX.md'] + list((ROOT/'docs/rules').glob('*.md')) + list((ROOT/'.agents/skills').glob('*/SKILL.md')):
         s=path.read_text(encoding='utf-8')
         assert 'docs/implementation/' in s,(path,'missing phase docs authority')
-    assert 'P8 stores exact measured WAV' in (ROOT/'docs/audits/CONTRACT_PHASE_CONSISTENCY_v1_3.md').read_text()
+    assert 'P8 stores exact measured WAV' in (ROOT/'docs/audits/CONTRACT_PHASE_CONSISTENCY_v1_3.md').read_text(encoding='utf-8')
     print(f'PASS {len(PLANS)} phase plans, root/agent/skills/rules references, Master v1.3, timing & provenance gates')
 
 if __name__=='__main__': main()
