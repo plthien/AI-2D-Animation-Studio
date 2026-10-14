@@ -359,9 +359,48 @@ def get_job(job_id: str) -> dict:
     return job
 
 
+@router.post("/projects/{project_id}/bootstrap-demo")
+def generate_demo_assets(project_id: str) -> dict:
+    """Explicit, free, local synthetic integration fixture. NEVER uses G-Labs or Kokoro.
+
+    Requires the pinned Genielabs scripts installed by setup_studio.bat.
+    Saves fixtures inside THIS project's asset directory.
+    """
+    root = _project(project_id)
+    vendor = REPO / "vendor" / "genielabs"
+    required = [vendor / "scripts" / "build_spine_json.py",
+                vendor / "scripts" / "make_atlas.py"]
+    if any(not p.is_file() for p in required):
+        raise HTTPException(422, "Pinned Genielabs scripts missing. Run setup_studio.bat first.")
+    from scripts.p4_spine_fixture import produce
+    from scripts.p6_fixture_voice import main as demo_audio
+    from scripts.p6_v2_fixture_assets import generate as cafe_images
+    from scripts.p7_lost_key_fixture_assets import generate as lost_key_images
+
+    info = _metadata(root)
+    source = "coffee" if info["template"] == "coffee" else "lost_key"
+    catalog = AssetCatalog.model_validate_json((root / "catalog.json").read_text(encoding="utf-8"))
+    if set(catalog.rigs) - {"baseline", "compact"}:
+        raise HTTPException(422, "Demo generation only supports baseline/compact synthetic rigs")
+    for rig_id, rig in catalog.rigs.items():
+        staging = root / "demo_generated" / rig_id
+        produce(vendor, staging, rig_id)
+        target = root / "rigs" / rig.directory
+        target.mkdir(parents=True, exist_ok=True)
+        for name in ("skeleton.json", "skeleton.atlas", "skeleton.png", "rig_profile.json"):
+            shutil.copyfile(staging / name, target / name)
+    if source == "coffee":
+        cafe_images(root)
+    else:
+        lost_key_images(root)
+    demo_audio(root / "voices")
+    return {"demo": True, "message": "Synthetic fixture only; WAV files contain tones, not speech.",
+            "preflight": _preflight(root)}
+
+
 @router.get("/projects/{project_id}/video")
 def download_video(project_id: str):
     video = _project(project_id) / "render" / "film.mp4"
     if not video.is_file():
         raise HTTPException(404, "No rendered MP4")
-    return FileResponse(video, media_type="video/mp4", filename="animation.mp4")
+    return FileResponse(video, media_type="video/mp4", filename="animation.mp4", content_disposition_type="inline")

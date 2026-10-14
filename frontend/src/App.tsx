@@ -137,6 +137,13 @@ export default function App(){
     <section className="panel"><div className="spread"><h2>Required assets</h2><Btn click={()=>void work(async()=>{await load(pid);success('Assets checked.')})}><RefreshCcw size={14}/> Recheck</Btn></div>
      <p className="muted text">Import file đúng tên theo Asset Catalog. Background phải trùng độ phân giải của film. Rig cần 4 file Spine. WAV phải mono PCM16 24kHz.</p>
      <div className="pills"><span className={'pill '+(primary?'ok':'warn')}>{primary?'Ready':'Missing '+missing.length}</span><span className="pill">{files.length} uploaded</span></div>
+     <div className="row" style={{marginTop:14}}>
+     <Btn disabled={loading} click={()=>void work(async()=>{
+      const result=await api<{preflight:Report}>(endpoint+'/'+pid+'/bootstrap-demo',{method:'POST'});
+      await load(pid);success(result.preflight.ready?'Demo assets prepared. Ready for test render.':'Synthetic assets prepared; inspect preflight warnings.');
+     })}><Play size={14}/> Prepare demo assets (offline)</Btn>
+     <span className="small muted">Uses local pinned rigging scripts, fixture art and tone WAV; overwrites demo-named assets in this project.</span>
+    </div>
      <div className="list" style={{marginTop:14}}>{missing.map(path=><div key={path} className="item spread"><span className="small">{path}</span><label className="btn"><Upload size={14}/> Import<input type="file" style={{display:'none'}} aria-label={'Upload '+path} accept={path.endsWith('.png')?'.png,.jpg,.jpeg,.webp':path.endsWith('.wav')?'.wav':undefined} onChange={e=>{const f=e.target.files?.[0];if(f)void uploadPath(path,f);e.target.value=''}}/></label></div>)}{!missing.length&&<p className="muted small">No missing files found.</p>}</div>
      {preflight?.errors.map((s,i)=><div key={i} className="alert">{s}</div>)}
     </section>
