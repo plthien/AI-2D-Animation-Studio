@@ -152,3 +152,31 @@ def test_glabs_project_task_explicit_submit_import_and_idempotent_poll(client, m
     assert client.post(url+"/images/generate",json={
       "asset_path":"backgrounds/not_catalog.png",
       "prompt":"Clean 2D cartoon unknown asset"}).status_code==422
+
+
+def test_rig_workshop_requires_explicit_sources_and_human_anchors(client):
+    project_id=make_project(client)
+    base=f"/studio/projects/{project_id}/rigging/baseline"
+    assert client.post(base+"/stage/segment").status_code==422
+    result=client.post(base+"/source/atlas.png",
+        files={"file":("atlas.png",png(640,480),"image/png")})
+    assert result.status_code==200
+    photo=BytesIO()
+    Image.new("RGB",(640,480),"#cba").save(photo,format="JPEG")
+    assert client.post(base+"/source/reference.png",
+        files={"file":("reference.jpg",photo.getvalue(),"image/jpeg")}).status_code==200
+    info=client.get(base+"/inspect")
+    assert info.status_code==200
+    assert info.json()["has_atlas"] is True and info.json()["has_reference"] is True
+    assert info.json()["layout"] is None
+    semantic={"part_00":"torso","part_01":"head","part_02":"left_upper_arm",
+              "part_03":"left_forearm","part_04":"left_hand"}
+    anchors={"torso":{"x":140,"y":210},"head":{"x":140,"y":110},
+             "left_upper_arm":{"x":140,"y":165},"left_forearm":{"x":230,"y":165},
+             "left_hand":{"x":310,"y":165}}
+    saved=client.post(base+"/configuration",json={"semantic":semantic,"anchors":anchors})
+    assert saved.status_code==200
+    assert client.get(base+"/inspect").json()["semantic"]==semantic
+    assert client.get(base+"/part/nonexistent.png").status_code==404
+    assert client.post(base+"/stage/build").status_code==422
+    assert client.post(base+"/stage/unknown").status_code==422
