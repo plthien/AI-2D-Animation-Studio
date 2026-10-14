@@ -20,3 +20,8 @@ description: Port and adapt G-Labs webhook client while keeping explicit paid-ta
 ## Acceptance
 
 A live G-Labs authenticated Windows request is a separate **required later acceptance**; mocked CI is insufficient proof of provider readiness.
+
+
+## Mandatory animation-first v1.2 amendment
+
+For character_parts_atlas/expression_sheet generation, enforce an existing source reference artifact ID and same character lineage. Reference and parts atlas must be independently reviewed; paid G-Labs submission still requires explicit approval.

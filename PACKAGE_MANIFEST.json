@@ -1,85 +1,86 @@
 {
-  "title": "AI 2D Animation Studio Codex Execution Spec Pack v1.1",
+  "title": "AI 2D Animation Studio Codex Animation-first Specification Pack v1.2",
   "prepared_on": "2026-10-14",
   "target_repository": "plthien/AI-2D-Animation-Studio",
-  "target_main_baseline": "d45528635442512e21dd276baf3a3b721150811e",
+  "target_main_baseline": "2fca1e1c6835a707a718608a5f09602aef865069",
   "source_repository": "plthien/ytb-ai-studio",
   "source_sha": "393d0eb5516ac8bb8455f859b79bfc64388b128e",
-  "file_count": 60,
   "schemas": 19,
   "examples": 19,
   "skills": 9,
   "rules": 5,
+  "spec_revision": "1.2",
+  "file_count": 66,
   "files": [
     {
       "path": ".agents/skills/asset-resolution/SKILL.md",
-      "bytes": 1335,
-      "sha256": "523bc6e877b48ad09baa73183e488ec8110685d9ae2c756d6d74b8edf3be3326"
+      "bytes": 1630,
+      "sha256": "d5483d3c2b1a5d29abe4b4aad45d55011d77be873eefcdef725125e41b512398"
     },
     {
       "path": ".agents/skills/external-authoring/SKILL.md",
-      "bytes": 1561,
-      "sha256": "869def2b32eb086f25dc132f7e60af07e2fe0797ec0b8ab989ced10a22f542a5"
+      "bytes": 1914,
+      "sha256": "e58304025efd0b68c1950ca12e5726f0600023cc45df8e1509b1da729f012eee"
     },
     {
       "path": ".agents/skills/glabs-integration/SKILL.md",
-      "bytes": 1390,
-      "sha256": "65028643a131b5d5cb6c640228f1b966b83b29b01b3d56e9eac7324a87dc0355"
+      "bytes": 1684,
+      "sha256": "2f5c20b79724bb7af7d984914571f49c67ca1f80c6596374faac4a78d060bdf0"
     },
     {
       "path": ".agents/skills/motion-engine/SKILL.md",
-      "bytes": 1865,
-      "sha256": "142a0586f0f17cd4638ad85bdbe39b7928c89705edaab01fd369b3643e55c051"
+      "bytes": 2169,
+      "sha256": "a173125886ea99332d87078f3a76f421b85a346aed058e36d2d1c91e1de2aaa1"
     },
     {
       "path": ".agents/skills/native-auto-rig/SKILL.md",
-      "bytes": 1924,
-      "sha256": "19efedeb27a4f2a2673a634a34144da98782198d344725c20f548cc388ab425e"
+      "bytes": 2225,
+      "sha256": "4a16dbf2df87c7b8b4ee553e3a71650b13b73a6ca02f9dc05f8a2691b38dcf58"
     },
     {
       "path": ".agents/skills/phase-self-review/SKILL.md",
-      "bytes": 1468,
-      "sha256": "f9e747331b67d04bb4dec2161a0f0169d598e62e738d77e6167d247e8a94e4ea"
+      "bytes": 1715,
+      "sha256": "cfef7dad4c32589d993d0d0844d6497b68b50027361d9991b69f0e59eb3dd8c5"
     },
     {
       "path": ".agents/skills/spine-renderer/SKILL.md",
-      "bytes": 1477,
-      "sha256": "169c37210009ee486124acbaa9f40599d3fca935a56fab24deb21ea6947ccf90"
+      "bytes": 1832,
+      "sha256": "59cf606a695977350249a670c4b058d7dad956a4e66fb7e3706add1c50b62ddd"
     },
     {
       "path": ".agents/skills/voice-video-assembly/SKILL.md",
-      "bytes": 1618,
-      "sha256": "e1968fc0614291cf2242e706a3d46f986c18c9c1568a09ad37c9a97d0c3c515c"
+      "bytes": 1894,
+      "sha256": "17fcde07c80405d4ba4121b19740ac085629040c609b0ff8bc63e7f76b73e1a0"
     },
     {
       "path": ".agents/skills/ytb-source-port/SKILL.md",
-      "bytes": 1735,
-      "sha256": "75cec34ffaba014938902948337cab3a1ec25564148f0287f8ffa1a8d2970479"
+      "bytes": 2019,
+      "sha256": "f37f4b5d3c81e2aa4c506476d7e0400a4ed1a02b569787586b8c2389ea42b98c"
     },
     {
       "path": "AGENTS.md",
-      "bytes": 5013,
-      "sha256": "ef84018735f3828ca530e83e1f402e3df07541359f3b71db2701a7359e1cd6c2"
+      "bytes": 5828,
+      "sha256": "8a31a0b6c04e527056bd227f4f936b9ce8c074194393d6366340075c757256dc"
     },
     {
       "path": "CONTRACT_VALIDATION_REPORT.md",
-      "bytes": 641,
-      "sha256": "26458e784d3f4568c3b4dc045a3e77a57692ebf840fdf55c5470f70ee7705227"
+      "bytes": 1022,
+      "sha256": "eb44750d6fc7812e2516408cb5901bac7b3b589a0b8048d19c2439fb9e8e73e2"
     },
     {
       "path": "MASTER_SPEC.md",
-      "bytes": 110487,
-      "sha256": "6fc0a92cdf31c544b2873381154c2ecdc133e9ecead16114b4398b02e7cca4a7"
+      "bytes": 119043,
+      "sha256": "f1fceff209f637e56a2f07458b61cbd363f558df21952f54d3ad55d9bbb13f67"
     },
     {
       "path": "README_FOR_CODEX.md",
-      "bytes": 2010,
-      "sha256": "a2e88bd3ef297a247299defc592e2a29ce2326d8a67ff2f7590a96f12edff6c1"
+      "bytes": 2272,
+      "sha256": "aa5912b948f6734be4b6b28d468e9b72c0b35a3923677ee7bb1ddf1cff7db674"
     },
     {
       "path": "contracts/examples/animation_plan.json",
-      "bytes": 1057,
-      "sha256": "0850fe531ae3c892217a605e7b72138b6d607b25ac5be8b11aaa55dea65188b4"
+      "bytes": 1238,
+      "sha256": "c08a7041f4a118fe1060062b90d18eb333b99506b607559d508abe53cdad9c2e"
     },
     {
       "path": "contracts/examples/asset_requirements.json",
@@ -98,8 +99,8 @@
     },
     {
       "path": "contracts/examples/channel_dna.json",
-      "bytes": 754,
-      "sha256": "4325db55f444ad73feadf34ba146736805c7773449d339ca6b10ba62fecfb3d7"
+      "bytes": 3689,
+      "sha256": "e61ae3331a4cb3ac66d5067f122543ac35e0d7718cc38ab4f1e4e96ebf54f381"
     },
     {
       "path": "contracts/examples/compiled_film.json",
@@ -123,8 +124,8 @@
     },
     {
       "path": "contracts/examples/parts_manifest.json",
-      "bytes": 5893,
-      "sha256": "b4494cba692df22cff7931714799f9d803ebb4adc4874f8fe9b6955d1363b27c"
+      "bytes": 6036,
+      "sha256": "1a8cac822ee72eace83edfc1cdef1cd4b51b455ccddca02ce0e56a1c53a566d8"
     },
     {
       "path": "contracts/examples/qc_report.json",
@@ -148,8 +149,8 @@
     },
     {
       "path": "contracts/examples/rig_profile.json",
-      "bytes": 4371,
-      "sha256": "5520c7ce3009c6ea216c3f4188f99f6614b27bc192f595f421ef70f3cde972f1"
+      "bytes": 4680,
+      "sha256": "59c2c10dd02cc0043505b127b874198b433f1a981da169442360dd26dfca7404"
     },
     {
       "path": "contracts/examples/script.json",
@@ -158,8 +159,8 @@
     },
     {
       "path": "contracts/examples/shot_plan.json",
-      "bytes": 1474,
-      "sha256": "8039a98525024b911198a2e7177380aab4bfad23eda3cf7c12d0dfc3e5066fc7"
+      "bytes": 1512,
+      "sha256": "ca2de4768e4e8fd52e9777342e33bafe96a82d70233696f1793bf2a56db1e05c"
     },
     {
       "path": "contracts/examples/topic_ideas.json",
@@ -173,13 +174,13 @@
     },
     {
       "path": "contracts/schemas/animation_plan.schema.json",
-      "bytes": 23299,
-      "sha256": "4195be30f89a93d42c28115bcd0d1cb1fcc5485ad64f012c97238887df382332"
+      "bytes": 24448,
+      "sha256": "f455b55338742550cb7f660a2116d79f93de08833eab34d82dcd09815b188284"
     },
     {
       "path": "contracts/schemas/asset_requirements.schema.json",
-      "bytes": 3084,
-      "sha256": "b37e59a586ec0d60ae49cc69ded6933bda97cbc58747f76f718575acca6b8a51"
+      "bytes": 3060,
+      "sha256": "117a9f9c34ac1b3ac42ef5dddae5ff58f940323c12e5c96f17bda3dc27065c3e"
     },
     {
       "path": "contracts/schemas/asset_resolution.schema.json",
@@ -188,18 +189,18 @@
     },
     {
       "path": "contracts/schemas/asset_version.schema.json",
-      "bytes": 2732,
-      "sha256": "9c74b27426a2591b06e5315d27fdcec053f1f410fcc2cdd7d7982e6754fd4a82"
+      "bytes": 2714,
+      "sha256": "d4988866870756f19e85e3ec07165e8b2455bf6d28a6392cd822bf681542484f"
     },
     {
       "path": "contracts/schemas/channel_dna.schema.json",
-      "bytes": 3016,
-      "sha256": "aee4288790e635e268debf2f5b400a3e0caac313afb261c925afc515471ad453"
+      "bytes": 9410,
+      "sha256": "706c88edaab478beab7aad12ff9615ae0d975ea6eb41f14d8387351181d2ac14"
     },
     {
       "path": "contracts/schemas/compiled_film.schema.json",
       "bytes": 10361,
-      "sha256": "58349b743c664346edc8d0a50ef311db855c108b5d4fdff5743153a95098f9af"
+      "sha256": "fa44e92110a526cd2f4459117437c54a9d71f0e02a5eea220a3c531bf26657a4"
     },
     {
       "path": "contracts/schemas/final_timeline.schema.json",
@@ -213,13 +214,13 @@
     },
     {
       "path": "contracts/schemas/generation_request.schema.json",
-      "bytes": 1975,
-      "sha256": "9d5370daf494edd042ad760b58480893d7ebc72e224e9fd5ed85b73adb3dc787"
+      "bytes": 2461,
+      "sha256": "bcc49154cb852d0c04a1d6500d1565c76e22f7688be2a879ff966b493e00b1ec"
     },
     {
       "path": "contracts/schemas/parts_manifest.schema.json",
-      "bytes": 3510,
-      "sha256": "cb091538bf0bda93fa03cd7a857d4173a42d0753bd218be7aa45c4d2183372ae"
+      "bytes": 3786,
+      "sha256": "769cc8fb3fbf315fab1f03891970aa23e3a675735462ef17b38948102fd39f42"
     },
     {
       "path": "contracts/schemas/qc_report.schema.json",
@@ -243,8 +244,8 @@
     },
     {
       "path": "contracts/schemas/rig_profile.schema.json",
-      "bytes": 18970,
-      "sha256": "a97231fa226c86f2911a601ada9bdf0cf3c42aef44734bbead76693412f93f8d"
+      "bytes": 19239,
+      "sha256": "989655bdabaa61c30e3baf1024f9825a22030629991f0642794f843eed8dfc90"
     },
     {
       "path": "contracts/schemas/script.schema.json",
@@ -253,8 +254,8 @@
     },
     {
       "path": "contracts/schemas/shot_plan.schema.json",
-      "bytes": 9375,
-      "sha256": "5bcf57695171a324d4061fe622cef30e6f38c6ec5a8f67d7bf8de60eca335cf7"
+      "bytes": 9600,
+      "sha256": "92b0e3a06509b8a7d04d9adae3f81c125f51436587f68926306c2d49f3dd2c0b"
     },
     {
       "path": "contracts/schemas/topic_ideas.schema.json",
@@ -267,29 +268,54 @@
       "sha256": "f50fcddc6d3bee9b27f096e38f5ec513ea50c35b9c88b62fb73fc67e5999ff37"
     },
     {
+      "path": "docs/audits/ANIMATION_CONTRACT_AUDIT_v1_2.md",
+      "bytes": 6214,
+      "sha256": "b9d0e6a3b68c3d96a65e0d83644bece5661aa491068c3930b95ee0fa61a831d2"
+    },
+    {
+      "path": "docs/contracts/ANIMATION_CONTRACT_SEMANTICS.md",
+      "bytes": 6003,
+      "sha256": "5be0c0dc48e63865bdcfef8e14c0aa051aeeabe120f2d91967449c1a86286e24"
+    },
+    {
+      "path": "docs/contracts/CHANNEL_DNA_ANIMATION_GUIDE.md",
+      "bytes": 4215,
+      "sha256": "302223895b98b536922dae771baad7eea9dd05e6feb6e7cf4c58aa7b11cf0f33"
+    },
+    {
+      "path": "docs/research/ANIMATION_RUNTIME_EVIDENCE.md",
+      "bytes": 2762,
+      "sha256": "73e461036186337f1bf63454bd3d07ffbef2f6db3bf6f4ee6de77327fdd41e98"
+    },
+    {
       "path": "docs/rules/ARCHITECTURE_RULES.md",
-      "bytes": 3123,
-      "sha256": "b3bc28231656c7c5ce13f660b233a74fb6e0a622687615543037485847f562b5"
+      "bytes": 3832,
+      "sha256": "dcf5ca8608574fc5d7db94cfe803c73ec3a0b7a444f18de420cafb7c69c12492"
     },
     {
       "path": "docs/rules/CODING_RULES.md",
-      "bytes": 3584,
-      "sha256": "4295355acb34b7ddc403402c413ce4ebda4238ede702d124fb5760d503b58757"
+      "bytes": 4529,
+      "sha256": "196598974484e9b767a7fd65a83d55b91b4fd259d7a7ed9dccf2fa6ed02bdc03"
     },
     {
       "path": "docs/rules/PROJECT_RULES.md",
-      "bytes": 2916,
-      "sha256": "c535d848c9a5549e681c1cbabf5b2863a7b68415636ab83553b204e85e6f2114"
+      "bytes": 3558,
+      "sha256": "172582f7dc1f78701e90cde9bef68b9a74193ef36b878f7c0d17c100570e655b"
     },
     {
       "path": "docs/rules/REVIEW_RULES.md",
-      "bytes": 2115,
-      "sha256": "10696886b611b4a5be8a95b2c69988af02fff402cbc3e4bfdd5dc2474d77d73a"
+      "bytes": 2630,
+      "sha256": "78ab69f55007734a72b0ed0271d43cc33cf9164c290f4d3a452caf31bb03bb41"
     },
     {
       "path": "docs/rules/TESTING_RULES.md",
-      "bytes": 2812,
-      "sha256": "165801dd9f76ba935db6e31d51e3c6649f945c82d549558faf403f277603d232"
+      "bytes": 3371,
+      "sha256": "df23619f197e6486a12836d18d93de8097d133dbd4841882e97f4c6b98c48f99"
+    },
+    {
+      "path": "tools/test_animation_contract_semantics.py",
+      "bytes": 5551,
+      "sha256": "1ec8f5095812c5765124d8c60f45b97e2e11957293e3b55d34edf97a0b736a96"
     },
     {
       "path": "tools/validate_agent_pack.py",
@@ -297,14 +323,19 @@
       "sha256": "4bed8b3e873d4d8349e8643a7a18b7f67440af1426441f5920225f8da374b5cd"
     },
     {
+      "path": "tools/validate_animation_semantics.py",
+      "bytes": 4432,
+      "sha256": "10d54f8facaa5531da5004b481b8978ebec7bc3ecd80ab33d96c2fd3d5c6443d"
+    },
+    {
       "path": "tools/validate_contract_pack.py",
-      "bytes": 4500,
-      "sha256": "6900cdc513aafb2278ebbeea8abcba864ff1a78cbfaaeaa42a88ab945a313fcb"
+      "bytes": 5388,
+      "sha256": "6f0b679745f5e6ace56385dc77ac74436fd370cc07e45c84cdbb2bf149c4ba15"
     },
     {
       "path": "tools/verify_package_manifest.py",
-      "bytes": 783,
-      "sha256": "bb2a8ee8d949e99a808c9f54e1b2dba8b3eb7f44f369ddd3721dbdb700ad03e4"
+      "bytes": 837,
+      "sha256": "fa5172b4c6ea9f9845cb314bec7c2d59c3b29be1bac81a972b17477a5be68d88"
     }
   ]
 }

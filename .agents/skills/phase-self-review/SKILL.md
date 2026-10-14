@@ -22,3 +22,8 @@ Read `docs/rules/REVIEW_RULES.md`, `TESTING_RULES.md`, `CODING_RULES.md`; `MASTE
 ## Acceptance
 
 PASS requires observed commands/tests and no BLOCKER/HIGH. Incomplete tests must be reported NOT_RUN, not guessed green.
+
+
+## Mandatory animation-first v1.2 amendment
+
+Audit against `docs/audits/ANIMATION_CONTRACT_AUDIT_v1_2.md`, inspect `docs/contracts/*`, run `tools/test_animation_contract_semantics.py`, and report unresolved license/real-render gates explicitly.

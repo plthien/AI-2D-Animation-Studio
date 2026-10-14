@@ -205,5 +205,7 @@
       "approved": true
     }
   ],
-  "reviewed": true
+  "reviewed": true,
+  "reference_image_artifact_id": "art_10101010101010101010101010101010",
+  "source_atlas_artifact_id": "art_20202020202020202020202020202020"
 }

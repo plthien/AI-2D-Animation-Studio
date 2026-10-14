@@ -184,7 +184,7 @@
                           ]
                         },
                         "minItems": 16,
-                        "maxItems": 16
+                        "maxItems": 64
                       }
                     },
                     "required": [

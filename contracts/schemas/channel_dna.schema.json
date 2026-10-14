@@ -3,7 +3,7 @@
   "additionalProperties": false,
   "properties": {
     "schema_version": {
-      "const": "channel_dna.v1"
+      "const": "channel_dna.v2"
     },
     "artifact_id": {
       "type": "string",
@@ -130,6 +130,285 @@
         "height",
         "fps"
       ]
+    },
+    "content_identity": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "format": {
+          "type": "string",
+          "enum": [
+            "narrated_cartoon_comedy",
+            "narrated_storytelling",
+            "narrated_explainer"
+          ]
+        },
+        "audience_promise": {
+          "type": "string",
+          "minLength": 1
+        },
+        "storytelling_rules": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 16,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "humor_rules": {
+          "type": "array",
+          "minItems": 0,
+          "maxItems": 16,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      },
+      "required": [
+        "format",
+        "audience_promise",
+        "storytelling_rules",
+        "humor_rules"
+      ]
+    },
+    "narration_identity": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "voice": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 8,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "delivery": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 8,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "tone_boundaries": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 8,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "avoid": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 12,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      },
+      "required": [
+        "voice",
+        "delivery",
+        "tone_boundaries",
+        "avoid"
+      ]
+    },
+    "entity_styles": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "character": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 16,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "location": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 16,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "prop": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 16,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "expression": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 12,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      },
+      "required": [
+        "character",
+        "location",
+        "prop",
+        "expression"
+      ]
+    },
+    "animation_identity": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "acting_style": {
+          "type": "string",
+          "enum": [
+            "deadpan",
+            "natural",
+            "snappy",
+            "exaggerated"
+          ]
+        },
+        "motion_energy": {
+          "type": "string",
+          "enum": [
+            "low",
+            "medium",
+            "high"
+          ]
+        },
+        "movement_rhythm": {
+          "type": "string",
+          "enum": [
+            "deliberate",
+            "balanced",
+            "rapid"
+          ]
+        },
+        "transition_easing": {
+          "type": "string",
+          "enum": [
+            "gentle",
+            "standard",
+            "snappy"
+          ]
+        },
+        "reaction_hold_frames": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 24
+        },
+        "acting_rules": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 16,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "motion_constraints": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 16,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      },
+      "required": [
+        "acting_style",
+        "motion_energy",
+        "movement_rhythm",
+        "transition_easing",
+        "reaction_hold_frames",
+        "acting_rules",
+        "motion_constraints"
+      ]
+    },
+    "editorial_identity": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "shot_rhythm": {
+          "type": "string",
+          "enum": [
+            "slow",
+            "balanced",
+            "fast"
+          ]
+        },
+        "camera_language": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 12,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "comedy_timing": {
+          "type": "string",
+          "enum": [
+            "understated",
+            "rhythmic",
+            "punchline_hold"
+          ]
+        },
+        "cut_rules": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 12,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      },
+      "required": [
+        "shot_rhythm",
+        "camera_language",
+        "comedy_timing",
+        "cut_rules"
+      ]
+    },
+    "global_negative_constraints": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 32,
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
     }
   },
   "required": [
@@ -137,11 +416,17 @@
     "artifact_id",
     "channel_id",
     "channel",
+    "content_identity",
     "visual_identity",
+    "entity_styles",
     "narration",
+    "narration_identity",
+    "animation_identity",
+    "editorial_identity",
+    "global_negative_constraints",
     "render"
   ],
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://ai-2d-animation-studio.local/contracts/schemas/channel_dna.schema.json",
-  "title": "channel_dna.v1"
+  "title": "channel_dna.v2"
 }

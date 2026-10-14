@@ -21,3 +21,8 @@ description: Reuse YTB Kokoro/ElevenLabs voice, forced alignment, audio validati
 ## Acceptance
 
 One 48kHz authoritative timeline, no voice-first authoring dependency, no video/image fallback and no fake TTS completion.
+
+
+## Mandatory animation-first v1.2 amendment
+
+Only voiced shots receive WAV/VoiceCue. Silent visual shots remain duration-correct and receive exact 2000 zero samples/frame at final assembly, with no fabricated voice artifact. Voice remains last; no dialogue/lip-sync in MVP.

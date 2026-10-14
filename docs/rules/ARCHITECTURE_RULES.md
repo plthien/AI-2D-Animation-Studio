@@ -12,8 +12,8 @@
 4. `app/modules/media`: only G-Labs transport, explicit paid operation lifecycle and asset materialization. Do not mix rig anatomy with transport.
 5. `app/modules/assets`: global asset metadata, resolver, version, approvals; consumes published media results, not provider SDK types.
 6. `app/modules/rigging`: segmentation, matching, pivots, bones, atlas, rigor and Spine 4.2 export; local, no AI remote calls.
-7. `app/modules/motion`: deterministic Action DSL interpretation, gait, IK, grip, world and contact; consumes approved `RigProfile` and ShotPlan snapshots only.
-8. `app/modules/animation`: external Director authoring and compiled timeline authority; no direct media generation.
+7. `app/modules/animation`: deterministic Action DSL interpretation, gait, IK, grip, world and contact; consumes approved `RigProfile`, ShotPlan, and current performance-style hashes. Compiler owns immutable frame snapshots.
+8. `app/modules/director`: external Director authoring, strict JSON validation and capability checks; no direct media generation. `app/modules/voice` owns TTS/alignment independently of Spine.
 9. `runtime/spine`: browser rendering using official matching Spine 4.2/PixiJS 8 runtime; one shot renderer, no story conditional logic.
 10. `app/modules/production`: shot frames, final timing/voice, FFmpeg and QC, requiring frozen upstream hashes.
 11. `app/api`: validation and orchestration edges only. UI is a client, never the source of business state.
@@ -33,3 +33,8 @@ YTB's Scene Breakdown, BeatTimingMap, Scene Assets, image-per-Beat Prompt Bundle
 ## PR/module boundaries
 
 Use Master Spec §14 and Appendix A for file-level phase deliverables. If work spans more than one authority, design interface + test in owning phase and defer implementation of dependent phase; no placeholder “complete” state. Avoid circular imports via typed DTOs.
+
+
+## Animation-style/hash authority
+
+ChannelDNA v2 owns textual and bounded style defaults. Assets consume the `visual_style_hash`; Director/Motion consume `performance_style_hash` and explicit per-shot performance snapshot; Voice consumes `narration_identity_hash`. Never invalidate approved G-Labs images solely for movement style changes, nor allow a new visual asset to bypass rig QA. Renderer consumes compiled frame snapshots and Spine 4.2 assets, not arbitrary ChannelDNA prose. Rig actual bone list must be checked against approved RigProfile before rendering.

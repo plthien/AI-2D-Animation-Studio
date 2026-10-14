@@ -20,3 +20,8 @@ description: Implement strict external ChatGPT/DeepSeek authoring and ID-reserve
 ## Output
 
 Approved immutable `topic_ideas.v1`, `script.v1`, `shot_plan.v1` and, when P6 reached, `animation_plan.v1`. No direct asset generation in authoring phase.
+
+
+## Mandatory animation-first v1.2 amendment
+
+Use `channel_dna.v2` and separate channel identity hashes; Script is narration-only and ShotPlan has required `shot_purpose`. Empty narration is valid only for visual-only shots with `section_start=section_end`. Director shot performance must match approved ChannelDNA defaults, not prompt hallucinations.

@@ -22,3 +22,8 @@ description: Implement deterministic full-body 2D world-state motion planner, ac
 ## Acceptance
 
 No false green on structurally valid but unreachable/foot-sliding animation; browser true-bone world transforms must confirm contact.
+
+
+## Mandatory animation-first v1.2 amendment
+
+Respect bounded `animation_plan.shots[].performance` derived from ChannelDNA v2. Energy scales non-contact idle/arm-swing only; easing affects transition frames but never grip or IK targets. Accept 16..64 approved actual rig bones and preserve determinism.

@@ -21,3 +21,8 @@ description: Implement official matching Spine 4.2/PixiJS 8 deterministic shot r
 ## Acceptance
 
 Two independent films with identical engine code hashes, zero stale frames and exact ffprobe FPS/frame counts. Browser screenshots required, not only synthetic serialization tests.
+
+
+## Mandatory animation-first v1.2 amendment
+
+Use official Spine-Pixi v8 4.2.x and PixiJS >=8.16 with the matching Spine 4.2 skeleton JSON, WebGL preferred. Do not hardcode exactly 16 emitted bones; verify exact approved `rig_profile.runtime_bone_names`, support approved extras and reject unknown bones. Check Spine runtime license before distributing.

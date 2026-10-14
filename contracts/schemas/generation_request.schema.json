@@ -93,5 +93,30 @@
   ],
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://ai-2d-animation-studio.local/contracts/schemas/generation_request.schema.json",
-  "title": "generation_request.v1"
+  "title": "generation_request.v1",
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "generation_kind": {
+            "enum": [
+              "character_parts_atlas",
+              "expression_sheet"
+            ]
+          }
+        },
+        "required": [
+          "generation_kind"
+        ]
+      },
+      "then": {
+        "properties": {
+          "reference_image_artifact_id": {
+            "type": "string",
+            "pattern": "^art_[0-9a-f]{32}$"
+          }
+        }
+      }
+    }
+  ]
 }

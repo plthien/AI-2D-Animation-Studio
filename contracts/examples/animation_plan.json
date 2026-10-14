@@ -36,7 +36,13 @@
             "zoom": 1.0
           }
         }
-      ]
+      ],
+      "performance": {
+        "motion_energy": "medium",
+        "movement_rhythm": "balanced",
+        "transition_easing": "standard",
+        "reaction_hold_frames": 8
+      }
     }
   ]
 }

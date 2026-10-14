@@ -2,7 +2,7 @@
 
 **Status:** architecture frozen for implementation; no repository changes have been made by this document.  
 **Date:** 2026-10-14. **Language of implementation/contracts:** English. **UI language for MVP:** English.  
-**Target repository:** `https://github.com/plthien/AI-2D-Animation-Studio`, **base `main` at `d45528635442512e21dd276baf3a3b721150811e`** (contains README only).  
+**Target repository:** `https://github.com/plthien/AI-2D-Animation-Studio`, **implement from latest approved `main`**; original empty-repo freeze `d45528635442512e21dd276baf3a3b721150811e` is historical only.  
 **Upstream reuse repository:** `https://github.com/plthien/ytb-ai-studio`, **source `main` at `393d0eb5516ac8bb8455f859b79bfc64388b128e`**.  
 **Conceptual inspiration only:** `https://github.com/GenielabsOpenSource/spine-animation-ai`; **do not checkout, vendor, import, call, or copy Genielabs source**.
 
@@ -33,7 +33,7 @@ MVP: 1–2 humanoid actors per shot, front/three-quarter-or-side single approved
 | 1 `authoring` | Idea → Script → Shot Plan | `topic_ideas.v1`, `script.v1`, `shot_plan.v1` | external ChatGPT/DeepSeek JSON |
 | 2 `resolver` | Asset Resolver | `asset_requirements.v1`, `asset_resolution.v1` | manual approve/relink if needed |
 | 3 `generation` | G-Labs Image Generation | approved visual asset versions | confirm paid requests / approve images |
-| 4 `rigging` | Native Auto-Rig | approved `rig_package.v1` | review semantic mapping/pivots |
+| 4 `rigging` | Native Auto-Rig | approved `rig_manifest.v1` | review semantic mapping/pivots |
 | 5 `director` | AI Animation Director | `animation_plan.v1` | external ChatGPT/DeepSeek JSON |
 | 6 `motion` | Motion Planner + Spine Preview | `compiled_film.v1`, rendered shot previews | edit/reapprove actions/rigs |
 | 7 `delivery` | Shot Render → Voice → MP4 | voiced final timeline, MP4, QC report | select voice / final review |
@@ -147,7 +147,7 @@ Every new Python module under `app/modules/...` has a single ownership surface a
 
 IDs are backend-generated, never LLM-invented except echoed reserved IDs. Use lowercase `uuid.uuid4().hex` suffixed by prefix: `chn_`, `prj_`, `art_`, `ast_`, `av_`, `rig_`, `rv_`, `mot_`, `mv_`, `op_`, `job_`, `res_`; regex `^(chn|prj|art|ast|av|rig|rv|mot|mv|op|job|res)_[0-9a-f]{32}$`. Shot/actor semantic IDs are local IDs: `shot_[a-z0-9_]+`, `actor_[a-z0-9_]+`; `semantic_key` is `^[a-z][a-z0-9_]{1,63}$`. IDs are immutable.
 
-Serialize canonical JSON with Python `json.dumps(sort_keys=True, separators=(',', ':'), ensure_ascii=False, allow_nan=False)` encoded UTF-8; `sha256:` + lowercase digest. Artifacts stored under `{ARTIFACT_ROOT}/{project_id}/{artifact_id}/{sha256hex}.{ext}`; Asset versions under `{ARTIFACT_ROOT}/library/{channel_id}/{asset_id}/{asset_version_id}/...`. Write to unique same-volume temp path; validate bytes; atomic rename; transactionally commit metadata/current pointer. On losing CAS conflict, remove only temp/attempt-owned paths, never delete historical objects. Store original provenance, prompt hash, G-Labs task ID, stage input hash, generation params, source hashes and approval actor/time. No in-place edits to approved versions.
+Serialize canonical JSON with Python `json.dumps(sort_keys=True, separators=(',', ':'), ensure_ascii=False, allow_nan=False)` encoded UTF-8; `sha256:` + lowercase digest. Artifacts stored under `{ARTIFACT_ROOT}/{project_id}/{artifact_id}/{sha256hex}.{ext}`; Asset versions under `{ARTIFACT_ROOT}/library/{channel_id}/{asset_id}/{asset_version_id}/...`. Write to unique same-volume temp path; validate bytes; atomic rename; transactionally commit metadata/current pointer. On losing CAS conflict, remove only temp/attempt-owned paths, never delete historical objects. Store original provenance, prompt hash, G-Labs task ID, stage input hash, generation params, source hashes and approval actor/time. Separate `visual_style_hash`, `performance_style_hash`, and `narration_identity_hash` in ChannelDNA v2 consumers. Separate `visual_style_hash`, `performance_style_hash`, and `narration_identity_hash` in ChannelDNA v2 consumers. No in-place edits to approved versions.
 
 ### 3.2 New database (do not reuse YTB migrations)
 
@@ -160,7 +160,7 @@ Create `migrations/versions/0001_initial.py` with SQLite WAL + FKs. Columns belo
 | `project_stage_heads` | `project_id`, `stage_key`, `artifact_id`, `approval_status`, `updated_at` | PK `(project_id,stage_key)`, FK immutable artifact; stage keys §0.2 plus `topic`,`script`,`shot_plan`,`animation_plan`,`compiled_film`,`voice`,`final_video` |
 | `artifacts` | `artifact_id`, `project_id nullable`, `channel_id`, `kind`, `logical_key`, `version`, `sha256`, `path`, `status`, `approved_at nullable`, `parents_json`, `metadata_json`, `created_at` | unique `(channel_id,logical_key,version)`; artifact immutable after `ready` |
 | `authoring_reservations` | `reservation_id`, `project_id`, `stage_key`, `artifact_id`, `source_hash`, `status`, `created_at`, `consumed_at` | only one `pending` per `(project,stage)` via partial unique index; single-use ID |
-| `assets` | `asset_id`, `channel_id`, `kind`, `semantic_key`, `display_name`, `created_at` | unique `(channel_id,kind,semantic_key)`; kind `character`,`background`,`prop`,`effect` |
+| `assets` | `asset_id`, `channel_id`, `kind`, `semantic_key`, `display_name`, `created_at` | unique `(channel_id,kind,semantic_key)`; kind `character`,`background`,`prop` |
 | `asset_versions` | `asset_version_id`, `asset_id`, `version`, `status`, `view`, `style_hash`, `image_artifact_id nullable`, `rig_version_id nullable`, `capabilities_json`, `source_hashes_json`, `approved_at nullable` | unique `(asset_id,version)`; only approved version reusable |
 | `project_asset_bindings` | `project_id`, `requirement_id`, `asset_version_id`, `rig_version_id nullable`, `approved_at` | PK `(project_id,requirement_id)`, FK project/approved versions; enforce same-channel ownership |
 | `rigs` | `rig_id`, `asset_id`, `created_at` | FK asset character |
@@ -180,6 +180,8 @@ A consumer must validate exact current head artifact ID, content hash, approval 
 |---|---|
 | Channel DNA visual identity | `asset_requirements`, `asset_resolution`, generated asset eligibility, rig compatibility where visual replaced, director, motion, final |
 | Channel DNA narration/style guidance | external authoring prompts and downstream if script changed; voice identity/timing if voice changed |
+| Channel DNA animation/editorial identity only | Director prompt/performance hash, compiled motion and renders; **do not** invalidate approved G-Labs reference/atlas, rig parts or source images |
+| Channel DNA animation/editorial identity only | Director prompt/performance hash, compiled motion and renders; **do not** invalidate approved G-Labs reference/atlas, rig parts or source images |
 | Topic selection | script, shot plan, resolver, director, motion, voice, final |
 | Script | shot plan, resolver, director, motion, voice, final |
 | Shot Plan | resolver, animation plan, compiled film, shot previews, final timeline/MP4; **existing catalog assets remain approved** |
@@ -206,18 +208,18 @@ Actual IDs in examples are illustrative, but runtime IDs must match §3.1. HTTP 
 
 ### 4.1 Required immutable stage contracts
 
-The following schema documents are bundled in the ZIP alongside this spec (JSON Schema examples are **structural**, not evidence of real image/rig quality). The complete set of 19 schemas is enumerated in Appendix D:
+The following schema documents are committed as individual files in this repository alongside this spec (JSON Schema examples are **structural**, not evidence of real image/rig quality). The complete set of 19 schemas is enumerated in Appendix D:
 
 | File | Artifact type | Source of truth |
 |---|---|---|
-| `channel_dna.schema.json` | `channel_dna.v1` | channel visual/narration/style identity |
+| `channel_dna.schema.json` | `channel_dna.v2` | channel visual, entity, narration, animation-performance and editorial identity |
 | `script.schema.json` | `script.v1` | narration text and semantic story sections |
 | `shot_plan.schema.json` | `shot_plan.v1` | actor IDs/actions/intents/timing estimates per shot |
 | `asset_requirements.schema.json` | `asset_requirements.v1` | locked requirements derived from Shot Plan |
 | `asset_resolution.schema.json` | `asset_resolution.v1` | exact reusable/needs-generation decisions |
 | `rig_profile.schema.json` | `rig_profile.v1` | bone roles, measured lengths, views, sockets, action capabilities |
-| `animation_plan.schema.json` | `animation_plan.v1` | shot action DSL, exact frame ranges, targets and tracks |
-| `compiled_film.schema.json` | `compiled_film.v1` | immutable compiled shot frame contract |
+| `animation_plan.schema.json` | `animation_plan.v1` | shot action DSL, exact frame ranges, performance settings, targets and tracks |
+| `compiled_film.schema.json` | `compiled_film.v1` | immutable compiled shot frame contract; >=16 core semantic bones, <=64 total incl. approved optional rig bones |
 | `voice_manifest.schema.json` | `voice_manifest.v1` | timed narration and exact WAV hashes |
 | `final_timeline.schema.json` | `final_timeline.v1` | shot video paths, frame counts, voice/map revisions |
 
@@ -226,9 +228,9 @@ All fields are documented by accompanying samples in `contracts/examples/`. `top
 ### 4.2 Semantic rules that JSON Schema alone cannot express
 
 1. `script.sections[*].section_id` unique; `narration_text` nonempty; `full_narration` must equal section text joined by **two newline characters** in canonical section order; no automatic rewrite of dialogue.
-2. `shot_plan.shots[*].shot_id` unique, contiguous `order=1..N`, planned durations 1–30 sec, total target 30–60 sec for **acceptance fixture only** (regular production permits any duration up to 30×30sec). Script section refs must exist. The exact narration character range for each shot partitions relevant section text without overlap/gaps and has exact quote equality.
+2. `shot_plan.shots[*].shot_id` unique, contiguous `order=1..N`, planned durations 1–30 sec, total target 30–60 sec for **acceptance fixture only** (regular production permits any duration up to 30×30sec). Script section refs must exist. The voiced Shot narration ranges partition relevant section text without overlap/gaps and have exact quote equality; a visual-only Shot has an empty range and `narration_text=""`.
 3. `asset_requirements` created **deterministically** from approved Shot Plan plus Channel DNA: one requirement per unique `(kind,semantic_key,view)` and static world asset variant; sorted `(kind,semantic_key,view)`. `asset_resolution.requirement_id`s match exactly and only `approved` versions are assignable.
-4. `animation_plan` **must echo** the approved `shot_plan_artifact_id`, `asset_resolution_artifact_id`, `source_hash` and reserved `artifact_id`; identical shot IDs and durations (integer planned frame counts) unless a user has explicitly revised Shot Plan. No extra characters/props/assets. Each action must refer to a declared actor and approved rig capabilities. No last-minute content from model.
+4. `animation_plan` **must echo** the approved `shot_plan_artifact_id`, `asset_resolution_artifact_id`, `source_hash` and reserved `artifact_id`; identical shot IDs and durations (integer planned frame counts) unless a user has explicitly revised Shot Plan. No extra characters/props/assets. Each Director shot includes required executable `performance` with `motion_energy`, `movement_rhythm`, `transition_easing`, and `reaction_hold_frames`, derived from current ChannelDNA and explicitly approved with the Director output. Each action must refer to a declared actor and approved rig capabilities. No last-minute content from model.
 5. Every action uses `[start_frame,end_frame)` half-open range relative to its Shot and `0 <= start < end <= shot.duration_frames`. Each `action_id` unique within film; actions on the same exclusive track must not overlap. Allowed overlapping tracks: `locomotion`,`upper_body`,`gaze`,`expression`. `interaction` has exclusive events on the referenced hand/prop. No overlapping `grab` ownership conflicts.
 6. `grab` requires `reach_for` by same actor and hand ending no later than grab event, and an unowned prop at contact. `carry_to` requires hand ownership; `place_at` releases. A shot may begin holding a prop **only if previous Shot WorldState holds it**; if first Shot begins held, Shot Plan must explicitly set initial ownership. All event transitions happen on **exact frame boundary**; render evaluation is pure against compiled snapshots.
 7. Two simultaneous actors may share a rig asset but must have separate actor instances. One prop cannot have two simultaneous owners, and an actor's one hand cannot own two props. Invalid action must not be silently replaced with idle.
@@ -246,7 +248,7 @@ Prompts must direct external ChatGPT/DeepSeek to return **a complete JSON object
 
 ### 5.2 ShotPlan authoring rules
 
-Use `shot_plan.v1` sample as template. Each shot has `shot_id`, `order`, `section_id`, `narration_text`, `duration_frames`, `background_key`, `actors` with actor IDs/character keys/view/world positions, `props` with prop IDs/keys/initial world coords and ownership, `story_actions` (brief causal intent including `target_prop_id` and `target_world`, each nullable; rules: `walk` requires `target_world`; `look`/`point` requires one of `target_world` or `target_prop_id`; `reach`/`grab`/`carry`/`place` requires `target_prop_id`; `react`/`idle` both null), `camera` (center, zoom), `continuity` (`continuous` or `cut`). First appearance binds `actor_id → character_key`; later shots cannot change the character key. A prop ID identifies the same physical object across shots. `background_key` denotes one consistent location; scene view change requires explicit variant or new key. ShotPlan is editable only via a new artifact revision, not in-place.
+Use `shot_plan.v1` sample as template. Each shot has `shot_id`, `order`, `section_id`, `narration_text`, `duration_frames`, `background_key`, `actors` with actor IDs/character keys/view/world positions, `props` with prop IDs/keys/initial world coords and ownership, `story_actions` (brief causal intent including `target_prop_id` and `target_world`, each nullable; rules: `walk` requires `target_world`; `look`/`point` requires one of `target_world` or `target_prop_id`; `reach`/`grab`/`carry`/`place` requires `target_prop_id`; `react`/`idle` both null), `camera` (center, zoom), `continuity` (`continuous` or `cut`). Empty `narration_text` is legal **only** if `section_start == section_end` and `shot_purpose` is `visual_reaction` or `establishing`; otherwise require a nonempty exact script quote with `section_start < section_end`. Silent spans do not consume narration characters; voiced spans partition exact original sections in chronological order with no overlap or gap. Shot purpose is required: `story_action`, `visual_reaction`, or `establishing`. First appearance binds `actor_id → character_key`; later shots cannot change the character key. A prop ID identifies the same physical object across shots. `background_key` denotes one consistent location; scene view change requires explicit variant or new key. ShotPlan is editable only via a new artifact revision, not in-place.
 
 Planned frame count = `round_half_up(planned_seconds * 24)` on import if external object reports seconds? **Do not accept seconds at all**: ShotPlan JSON schema requires integer `duration_frames`, and authoring prompt instructs LLM to output frame counts. `duration_frames` 24..720; prevents alternative rounding rules. Total film frames no implicit gaps. Stage 7 voice may cause explicit timing reconciled revision without editing canonical Shot Plan.
 
@@ -258,7 +260,7 @@ Endpoints (full API inventory §12): build/get pending prompt, validate import, 
 
 ### 6.1 Entity vocabulary, scopes and storage
 
-`asset.kind`: `character`, `background`, `prop`, `effect`. `asset.semantic_key` is story-independent channel-local logical identity (e.g. `ancient_man`, `forest_clearing`, `honey_jar`), not arbitrary text in a motion instruction. A `character` can have multiple **view-specific** versions; MVP one view per assigned actor in one shot. Background versions include anchor map (floor line, table points), prop versions include dimensions (world meters) and local grip sockets. `effect` supported only as sprite overlay without automatic rig.
+`asset.kind`: `character`, `background`, `prop`. `asset.semantic_key` is story-independent channel-local logical identity (e.g. `ancient_man`, `forest_clearing`, `honey_jar`), not arbitrary text in a motion instruction. A `character` can have multiple **view-specific** versions; MVP one view per assigned actor in one shot. Background versions include anchor map (floor line, table points), prop versions include dimensions (world meters) and local grip sockets. Standalone `effect` is **not** a supported asset kind in the MVP; transient visual effects require an explicit future versioned contract and renderer implementation.
 
 Approval is per AssetVersion. Creation of new version never replaces referenced historical version; a Project stores exact binding. `project_asset_bindings` table: PK `(project_id,requirement_id)`, columns `asset_version_id`, `rig_version_id nullable`, `approved_at`; FK version IDs, enforce channel equality.
 
@@ -406,7 +408,7 @@ Headless frame export uses one Chromium process per render operation, one browse
 
 ### 11.1 Render stages and reusability
 
-Render **silent** shot clips or PNG frame sequences from `compiled_film`; cache each `rendered_shot` by `{compiled_shot_hash,rig_version_hashes,renderer_version,resolution,fps}`. Output frame count exact; backgrounds must cover whole frame; overlays face/props; no title overlays unless authored. Preview may run at 640×360 but final must be 1280×720, both deterministic at respective resolution. Separate artifacts for preview/final.
+Render **audio-free** shot clips or PNG frame sequences from `compiled_film`; cache each `rendered_shot` by `{compiled_shot_hash,rig_version_hashes,renderer_version,resolution,fps}`. Output frame count exact; backgrounds must cover whole frame; overlays face/props; no title overlays unless authored. Preview may run at 640×360 but final must be 1280×720, both deterministic at respective resolution. Separate artifacts for preview/final.
 
 ### 11.2 Voice provider reuse
 
@@ -414,7 +416,7 @@ Port coherent YTB Kokoro/ElevenLabs voice adapters in P8 with their tests. Canon
 
 ### 11.3 Voice windows and final reconciliation algorithm
 
-Each ShotPlan shot declares an exact narration text and `duration_frames`. Stage 7 voice produces one WAV per shot, duration in samples `S`. Narration cue default at `start_frame=0`; user may set `start_frame` within shot before generating voice. `available_samples=(duration_frames-start_frame)*2000`. If `S<=available_samples`, pad silence **at end** (never stretch speech). If overflow `Δ=S-available_samples>0`, do **not** truncate, compress speech, silently overlap following shot, or violate physics events. Reconciliation first extends shot by `ceil(Δ/2000)` frames up to **max 48 added frames** and max 30 seconds/shot; only legal action state after the last timeline event may be held, with loop-safe idle/head micro-motion. If no legal hold (prop airborne, pending grab, walking unfinished, required fixed cut) or extension exceeds bounds, mark `VOICE_WINDOW_OVERFLOW`, user must edit Shot Plan/Voice or regenerate narration. Extended shot causes absolute later shot start shifts; persists `final_timeline.v1` distinct from frozen `shot_plan` and `compiled_film`. **Rerender only extended shots** with new hold frames. Do not resample one frame into multiple frames or change event frame indices.
+Each ShotPlan shot declares an exact `narration_text` (possibly empty for a visual-only shot) and `duration_frames`. Stage 7 generates one WAV per **voiced** shot; silent shots have no voice cue and are represented as exact digital silence in the assembled track. A voiced shot WAV has duration in samples `S`. Narration cue default at `start_frame=0`; user may set `start_frame` within shot before generating voice. `available_samples=(duration_frames-start_frame)*2000`. If `S<=available_samples`, pad silence **at end** (never stretch speech). If overflow `Δ=S-available_samples>0`, do **not** truncate, compress speech, silently overlap following shot, or violate physics events. Reconciliation first extends shot by `ceil(Δ/2000)` frames up to **max 48 added frames** and max 30 seconds/shot; only legal action state after the last timeline event may be held, with loop-safe idle/head micro-motion. If no legal hold (prop airborne, pending grab, walking unfinished, required fixed cut) or extension exceeds bounds, mark `VOICE_WINDOW_OVERFLOW`, user must edit Shot Plan/Voice or regenerate narration. Extended shot causes absolute later shot start shifts; persists `final_timeline.v1` distinct from frozen `shot_plan` and `compiled_film`. **Rerender only extended shots** with new hold frames. Do not resample one frame into multiple frames or change event frame indices. For a visual-only Shot, emit no `voice_manifest.cues` entry; assembler fills `duration_frames * 2000` samples of silence. At least one voiced Shot is required for the initial narration-first MVP movie; all-visual films are a future contract.
 
 At 24FPS, exactly 2000 48kHz audio samples/frame. Concatenate per-shot canonical PCM into a film-length buffer, pad silence to each final shot window, reject overlap/out-of-bounds. Subtitle SRT/VTT generated from narration cues and alignment if available; if no alignment, cue spans entire shot narration WAV duration. SRT times quantized from exact sample count, not assumptions about words.
 
@@ -609,18 +611,50 @@ No API key logged or sent to frontend. Never commit model weights, paid provider
 
 Before each PR: read this spec and affected YTB source files at pinned SHA; save source manifest, run tests twice if determinism relevant, open generated images and inspect actual visuals (not only counts/metadata), run backend migration from empty SQLite, check schemas/models/OpenAPI/TS client agreement, run import/static dependency grep for banned code, and produce `docs/PHASE_<P#>_REVIEW.md` listing DONE / NOT DONE / RISKS / proof. Never label a fake synthetic animation or sine-wave test as publishable production.
 
-Before P11 signoff create `docs/FINAL_ACCEPTANCE.md` with all 7 stages executed end-to-end for both films, links/hashes for evidence, G-Labs real test status, Kokoro/ElevenLabs speech status, manual rig corrections, all open warnings and actual Windows batch run. Acceptance is blocked if any required component uses `feat/p0-p1-foundation`, imports `vendor/genielabs`, makes in-app LLM API calls, restores YTB Scene/Beat pipeline, silently replaces failed motion, or cannot generate a real animated character independent of a single hardcoded test story.
+Before P11 signoff verify the official Spine Runtimes distribution/license requirements for the intended deployment model and create `docs/FINAL_ACCEPTANCE.md` with all 7 stages executed end-to-end for both films, links/hashes for evidence, G-Labs real test status, Kokoro/ElevenLabs speech status, manual rig corrections, all open warnings and actual Windows batch run. Acceptance is blocked if any required component uses `feat/p0-p1-foundation`, imports `vendor/genielabs`, makes in-app LLM API calls, restores YTB Scene/Beat pipeline, silently replaces failed motion, or cannot generate a real animated character independent of a single hardcoded test story.
 
 **Success definition:** a different script, using existing approved actor rig and motion library plus new props/backgrounds, produces a distinct 24fps 720p H.264/AAC narrated 2D cutout animated film without writing new per-story Python/JavaScript code. The first real rig may require manual joint/parts correction. No expectation of Disney-grade frame-by-frame animation, 360° turns or advanced physics.
 
 ## 18. Reference links and source provenance
 
-- Target empty main: https://github.com/plthien/AI-2D-Animation-Studio/tree/main (SHA `d45528635442512e21dd276baf3a3b721150811e`). Ignore prototype branch completely.
+- Target repository: https://github.com/plthien/AI-2D-Animation-Studio/tree/main (use latest approved main; SHA `d45528635442512e21dd276baf3a3b721150811e` denotes historical blank state only). Ignore prototype branch completely.
 - YTB main: https://github.com/plthien/ytb-ai-studio/tree/main (SHA `393d0eb5516ac8bb8455f859b79bfc64388b128e`). Copy only §1 transplant groups.
 - Genielabs reference (concepts only): https://github.com/GenielabsOpenSource/spine-animation-ai ; relevant ideas are alpha segmentation, feature registration, semantic pivots, Spine skeleton/atlas; code NOT imported.
 - Official Spine/PixiJS docs: https://en.esotericsoftware.com/spine-pixi ; https://en.esotericsoftware.com/spine-json-format . Compatible major.minor for Spine JSON and runtime required. The official runtime has its own license requirements; treat these as a compliance check before commercial release, not as permission to copy Genielabs source.
 
 ---
+
+
+## 19. Animation-first contracts and inherited YTB identity — v1.2 amendment (normative)
+
+This section overrides any conflicting **older** v1.0 prose until all phase implementation plans are updated. The 19 JSON Schema documents remain authoritative for shape. This revision is a pre-implementation contract correction; no existing production data is migrated. Read `docs/contracts/ANIMATION_CONTRACT_SEMANTICS.md` and `docs/contracts/CHANNEL_DNA_ANIMATION_GUIDE.md` before implementing P0/P1/P2/P4/P5/P6/P7/P8/P9.
+
+### 19.1 ChannelDNA 2D identity and immutable hashes
+
+- `channel_dna.v2` requires `channel`, `content_identity`, the **exact seven** visual identity string keys, `entity_styles` for character/location/prop/expression, `narration` (`wpm_min/max/style`), `narration_identity`, `animation_identity`, `editorial_identity`, `global_negative_constraints`, and fixed `render` (1280×720 @ 24 FPS). Never import YTB's `channel_dna.v3` verbatim.
+- `visual_style_hash = sha256(canonical_json({visual_identity,entity_styles,global_negative_constraints}))`. `performance_style_hash = sha256(canonical_json({animation_identity,editorial_identity}))`. `narration_identity_hash = sha256(canonical_json({narration,narration_identity}))`. Use distinct hashes, not a full-DNA hash, to decide asset reuse. Visual assets and rigs depend only on visual/technical identity; timing performance changes recompile Director/Motion, not regenerate G-Labs assets.
+- `animation_identity` restricts acting to bounded deterministic parameters. `motion_energy`: low/medium/high multiplier 0.75/1.0/1.25 for **non-contact** procedural arm swing, torso breathing and head idle only. `transition_easing` controls transition frames: gentle 6, standard 4, snappy 2, capped to at most `floor(action_duration/4)` and minimum 0; easing curve is smoothstep for all three. `movement_rhythm` may change idle phase/cadence only, never invalidate authored `walk_to.speed_mps`, event/contact world state or shot duration. `reaction_hold_frames` (0..24) is a minimum duration for a `react` expression from its start until it is legally replaced; overlapping reactions shorter than this gate are rejected, not silently shifted. Do not use these presets to automatically create gestures/events.
+- Director `shots[].performance` MUST echo executable settings derived from currently approved ChannelDNA. Changes require explicit approved Director revision. Semantic validator rejects mismatch if not declared as a separately approved override (MVP **no overrides**). No free-text ChannelDNA string may turn into hidden actions or asset substitutions.
+- Allowed content formats: `narrated_cartoon_comedy`, `narrated_storytelling`, `narrated_explainer`. MVP supports narrated 2D animation, NOT two-character spoken dialogue or auto lip-sync. `Script` remains narration+story intent; speech roles/dialogue require a future versioned Script/Voice extension.
+
+### 19.2 Rig/export and generation lineage
+
+- `parts_manifest.v1` includes BOTH `reference_image_artifact_id` and `source_atlas_artifact_id` plus their SHA256 values. Reference and atlas must be distinct validated artifacts from the same approved character lineage. Image artifacts for parts atlas/expression sheet must explicitly pin non-null source reference. Never auto-approve an atlas because its `asset_version_id` is approved; derivative generation reviews are distinct.
+- `rig_manifest.v1` is the **only** Stage 4 terminal artifact name. There is no `rig_package.v1`. `RigProfile` has **16 required semantic bone roles** but Spine skeletons may include extra controlled bones. The required `rig_profile.runtime_bone_names` array lists **all** actual approved Spine bone names (16..64, including all 16 semantic roles). Spine loader verifies exactly this list when publishing rig. Each per-frame `compiled_film` actor `bones` list must have exactly this approved name set; reject missing, unrecognized, or duplicate bones with `RIG_BONE_SET_MISMATCH`. Spine 4.2 JSON parent-before-child, slots and atlas must load in official matched Spine-Pixi; no Genielabs code is imported.
+- `asset.kind` is exactly `character`, `background` or `prop`. Standalone `effect` is **not** a supported MVP asset (no provider or motion contract). Do not expose it in UI/DB; add later only through versioned implementation and tests.
+
+### 19.3 Silent visual shots and voice delivery
+
+- A visual-only shot has `shot_purpose` either `visual_reaction` or `establishing`, `narration_text=""`, and `section_start=section_end`. A voiced `story_action` shot must have nonempty source-matching narration range. Silent shots carry actor/prop action and world continuity like ordinary shots and may not invent extra script content.
+- VoiceManifest `cues` is a **subset** containing exactly one cue for each voiced shot and none for silent shots; `cues` minimum 1 for the narration-first MVP. Final audio assembly injects exact silence frames for visual-only shots. No fake silent WAV is submitted to a TTS provider. Require an exact 2000 audio samples per video frame throughout.
+- No direct character dialogue output, automated phoneme lip sync, unlicensed Spine runtime bundling, story-specific motion fallbacks, or image-per-beat substitutions are authorized.
+
+### 19.4 Concurrency, provenance, tests and acceptance
+
+- New schemas stay at existing v1 filenames until runtime product code exists; the breaking DNA upgrade uses `channel_dna.v2` and updates fixtures, prompts, API and DB validation **in P0/P1**. There is no legacy `channel_dna.v1` import compatibility contract.
+- Cross-file semantics are executable assertions, beyond simple Draft 2020-12 shape validation. Run `python tools/test_animation_contract_semantics.py` alongside `python tools/validate_contract_pack.py` before each PR. Real visual and live-provider gates remain mandatory at their appropriate phases.
+- `docs/research/ANIMATION_RUNTIME_EVIDENCE.md` records official Spine version and distribution considerations. Licenses are an explicit release gate, not a reason to copy code from Genielabs or bypass source checks.
+
 
 # IMPLEMENTER APPENDIX — File-by-file work orders and proof artifacts
 
@@ -630,9 +664,9 @@ Before P11 signoff create `docs/FINAL_ACCEPTANCE.md` with all 7 stages executed 
 
 ### P0: Standalone foundation (target/main only)
 
-**Inputs:** YTB `393d0eb5`, target initial `d4552863`. **Create:** `requirements.txt`, root `package.json`/lockfile and TS build config, `app/main.py`, `app/core/*` scoped §1, `app/db/*` fresh, `migrations/env.py`, `migrations/versions/0001_initial.py`, `app/api/routes/{system,channels,projects,jobs,artifacts}.py`, `src/layout/*`, `src/pages/{ChannelsPage,ProjectsPage,StudioPage,JobsPage,SettingsPage}.tsx`, `src/api/client.ts`, `src/features/projects`, `src/features/channels`, `setup.bat`, `start.bat`, `.env.example`, `tests/platform/*`, `docs/UPSTREAM_PORT_MANIFEST.md`.
+**Inputs:** YTB `393d0eb5`, target latest approved `main` (historical empty target was `d4552863`). **Create:** `requirements.txt`, root `package.json`/lockfile and TS build config, `app/main.py`, `app/core/*` scoped §1, `app/db/*` fresh, `migrations/env.py`, `migrations/versions/0001_initial.py`, `app/api/routes/{system,channels,projects,jobs,artifacts}.py`, `src/layout/*`, `src/pages/{ChannelsPage,ProjectsPage,StudioPage,JobsPage,SettingsPage}.tsx`, `src/api/client.ts`, `src/features/projects`, `src/features/channels`, `setup.bat`, `start.bat`, `.env.example`, `tests/platform/*`, `docs/UPSTREAM_PORT_MANIFEST.md`.
 
-**Actions:** Create empty SQLite with new schema; use the `channel_dna.v1` schema (do not port YTB v3 ChannelDNA unchanged); stage status of every project starts `blocked` except authoring after valid ChannelDNA; create the seven stage UI shells in fixed order. Port artifact immutable storage and job DB projection, with none of the YTB Scene/Beat heads/columns. Add a lint/test rule that scans **active imports and build manifests** for banned names (`scene_breakdown`, `scene_asset`, `beat_timing`, `prompt_composer`, `feat/p0-p1-foundation`, `genielabs`) and fails when used as runtime code. Documentation/reference mentions may exist.
+**Actions:** Create empty SQLite with new schema; use approved `channel_dna.v2` with separate visual/performance hashes; do not port YTB v3 ChannelDNA unchanged; stage status of every project starts `blocked` except authoring after valid ChannelDNA; create the seven stage UI shells in fixed order. Port artifact immutable storage and job DB projection, with none of the YTB Scene/Beat heads/columns. Add a lint/test rule that scans **active imports and build manifests** for banned names (`scene_breakdown`, `scene_asset`, `beat_timing`, `prompt_composer`, `feat/p0-p1-foundation`, `genielabs`) and fails when used as runtime code. Documentation/reference mentions may exist.
 
 **Tests:** clean Alembic upgrade from nonexistent database; 1 channel+2 projects; concurrent staged artifact publication CAS conflict; missing and cross-project artifact rejects; get health; `/api/v1` OpenAPI; TS build and shell screenshot. **DoD:** Windows setup starts the empty app, no animation-demo assets or vendor installs.
 
@@ -664,9 +698,9 @@ Before P11 signoff create `docs/FINAL_ACCEPTANCE.md` with all 7 stages executed 
 
 **Create:** `app/modules/rigging/{segmentation,positioning,anatomy,spine_builder,atlas_builder,validation,workshop}.py`, `app/modules/animation/rig_profile.py`, `app/repositories/rigs.py`, `app/api/routes/rigging.py`, `src/features/rigging/{PartsGrid,SemanticMapper,JointCanvas,DepthOrderEditor,PosePreview,RigApproval}.tsx`; contracts `parts_manifest`,`rig_layout`,`rig_joints`,`rig_profile`,`rig_manifest`,`qc_report`.
 
-**Actions:** All 14 parts generated as exact semantic files; transparent alpha/connected components, manual masks/editors, positioning, pivots, world-rest geometry, Spine 4.2 region attachments and single atlas. Use manual review for failed/uncertain algorithms. Build remains local and deterministic; no Genielabs dependency. A rig cannot be approved without live Spine runtime load and 5 representative non-degenerate test poses.
+**Actions:** All 14 mandatory parts generated as exact semantic files; transparent alpha/connected components, manual masks/editors, positioning, pivots, world-rest geometry, Spine 4.2 region attachments and single atlas. Use manual review for failed/uncertain algorithms. Build remains local and deterministic; no Genielabs dependency. A rig cannot be approved without live Spine runtime load and 5 representative non-degenerate test poses.
 
-**Tests:** synthetic 14-part fixture for CI; real G-Labs image **separate manual gate**; malformed atlas/alpha, 13/15 parts, duplicate role, out-of-frame joint, zero length, atlas overflow, bad slot/bone path, dynamic rest math. **DoD:** compiled rig displays correct assembled character in official runtime without missing parts and can independently move both arms/legs.
+**Tests:** synthetic 14-part fixture for CI; real G-Labs image **separate manual gate**; malformed atlas/alpha, 13/15 parts, duplicate role, out-of-frame joint, zero length, atlas overflow, bad slot/bone path, dynamic rest math. **DoD:** compiled rig displays correct assembled character in official runtime without missing parts and can independently move both arms/legs; optional extra bones must match the approved RigProfile snapshot.
 
 ### P5: Motion/World engine
 
@@ -696,7 +730,7 @@ Before P11 signoff create `docs/FINAL_ACCEPTANCE.md` with all 7 stages executed 
 
 **Create:** `app/modules/voice/` with YTB voice provider/adapter/pacing/calibration modules ported and rewired, `app/api/routes/voice.py`, `src/features/voice/VoicePanel.tsx`, `tests/voice/*`. Add `voice_manifest` contract. Preserve standalone `kokoro/` setup with canonical model/voices SHA readiness.
 
-**Actions:** Owner of speech generation is voice subsystem, not static Scene Breakdown. Convert script/shot narration to bounded VoiceCue batch (one WAV per shot), align via ElevenLabs where configured. Verify canonical WAV 48k mono PCM16 byte-by-byte; expose provider readiness. UI allows voice selection, revoice shot, manual import. Never claim forced alignment if skipped/unavailable.
+**Actions:** Owner of speech generation is voice subsystem, not static Scene Breakdown. Convert script/shot narration to bounded VoiceCue batch (one WAV per voiced shot), align via ElevenLabs where configured. Verify canonical WAV 48k mono PCM16 byte-by-byte; expose provider readiness. UI allows voice selection, revoice shot, manual import. Never claim forced alignment if skipped/unavailable.
 
 **Tests:** missing Kokoro config, identity change during calibration, provider disabled, injected process crash/cancel, source text mismatch and 48k audio integrity. **DoD:** real speech WAV from configured provider usable in final pipeline.
 
@@ -810,8 +844,8 @@ For any output marked rendered: execute ffprobe against actual MP4, open at leas
 You are implementing AI-2D-Animation-Studio using the attached
 MASTER_SPEC.md and 19 normative contracts/schemas + 19 contracts/examples.
 Read MASTER_SPEC.md completely, including Implementer Appendix.
-DO NOT use feat/p0-p1-foundation or PR #1; start from target main
-SHA d45528635442512e21dd276baf3a3b721150811e.
+DO NOT use feat/p0-p1-foundation or PR #1; start from the latest approved target main HEAD; the original empty main
+SHA d45528635442512e21dd276baf3a3b721150811e is historical only.
 Port ONLY authorized neutral code from ytb-ai-studio main
 SHA 393d0eb5516ac8bb8455f859b79bfc64388b128e.
 Do not import/copy/run Genielabs source; create native rig modules.

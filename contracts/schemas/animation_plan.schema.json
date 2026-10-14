@@ -686,13 +686,55 @@
             },
             "minItems": 1,
             "maxItems": 50
+          },
+          "performance": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "motion_energy": {
+                "type": "string",
+                "enum": [
+                  "low",
+                  "medium",
+                  "high"
+                ]
+              },
+              "movement_rhythm": {
+                "type": "string",
+                "enum": [
+                  "deliberate",
+                  "balanced",
+                  "rapid"
+                ]
+              },
+              "transition_easing": {
+                "type": "string",
+                "enum": [
+                  "gentle",
+                  "standard",
+                  "snappy"
+                ]
+              },
+              "reaction_hold_frames": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 24
+              }
+            },
+            "required": [
+              "motion_energy",
+              "movement_rhythm",
+              "transition_easing",
+              "reaction_hold_frames"
+            ]
           }
         },
         "required": [
           "shot_id",
           "duration_frames",
           "actions",
-          "camera_keyframes"
+          "camera_keyframes",
+          "performance"
         ]
       },
       "minItems": 1,

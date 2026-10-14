@@ -1,5 +1,5 @@
 {
-  "schema_version": "channel_dna.v1",
+  "schema_version": "channel_dna.v2",
   "artifact_id": "art_11111111111111111111111111111111",
   "channel_id": "chn_11111111111111111111111111111111",
   "channel": {
@@ -9,13 +9,13 @@
     "audience": "general"
   },
   "visual_identity": {
-    "medium": "flat hand-drawn 2D",
-    "linework": "flat hand-drawn 2D",
-    "rendering": "flat hand-drawn 2D",
-    "palette": "flat hand-drawn 2D",
-    "shape_language": "flat hand-drawn 2D",
-    "texture": "flat hand-drawn 2D",
-    "editorial_language": "flat hand-drawn 2D"
+    "medium": "rough hand-drawn 2D cutout cartoon on flat layers",
+    "linework": "uneven thick dark contours with irregular endpoints",
+    "rendering": "opaque flat fill, no gradient lighting or realistic depth",
+    "palette": "muted ochre, cream, charcoal, dusty green; 4-6 colors per character",
+    "shape_language": "simple asymmetric silhouettes, limbs split along usable joint boundaries",
+    "texture": "light paper grain within flat shapes only; maintain transparent parts",
+    "editorial_language": "readable silhouettes, sparse set dressing, expressive pose clarity"
   },
   "narration": {
     "wpm_min": 140,
@@ -26,5 +26,78 @@
     "width": 1280,
     "height": 720,
     "fps": 24
-  }
+  },
+  "content_identity": {
+    "format": "narrated_cartoon_comedy",
+    "audience_promise": "Short visual comedy with clear cause and effect, made readable without dialogue.",
+    "storytelling_rules": [
+      "Show setup, concrete action, failure and visual consequence in causal order.",
+      "One main visual objective per shot; preserve actor and prop identity."
+    ],
+    "humor_rules": [
+      "Use visible false hope followed by an understated reversal.",
+      "Let a meaningful reaction hold land before the cut."
+    ]
+  },
+  "narration_identity": {
+    "voice": [
+      "Curious dry narrator, never forced dramatic acting."
+    ],
+    "delivery": [
+      "Short thought groups with space for a visual punchline."
+    ],
+    "tone_boundaries": [
+      "Keep uncertainty and sarcasm subtle."
+    ],
+    "avoid": [
+      "No forced laughter or theatrical shouting."
+    ]
+  },
+  "entity_styles": {
+    "character": [
+      "Humanoid puppet composed of independently riggable transparent parts.",
+      "Stable colors and silhouette across reference, parts atlas and expressions."
+    ],
+    "location": [
+      "Large legible planar masses and a consistent world floor at y=0.",
+      "Retain physical landmarks when returning to the same location."
+    ],
+    "prop": [
+      "Clean grip contact zone and readable silhouette.",
+      "Stable dimensions and identifying details across shots."
+    ],
+    "expression": [
+      "Neutral, happy, surprised and angry face overlays share the same head-local anchor."
+    ]
+  },
+  "animation_identity": {
+    "acting_style": "deadpan",
+    "motion_energy": "medium",
+    "movement_rhythm": "balanced",
+    "transition_easing": "standard",
+    "reaction_hold_frames": 8,
+    "acting_rules": [
+      "Prefer clear anticipation through authored action spacing instead of spontaneous unplanned gestures.",
+      "Keep acting readable at 24 FPS and 720p."
+    ],
+    "motion_constraints": [
+      "No unrigged rotations or topology changes.",
+      "Do not stretch limbs beyond reachable IK constraints."
+    ]
+  },
+  "editorial_identity": {
+    "shot_rhythm": "balanced",
+    "camera_language": [
+      "Use deliberate mid-shots for grab/place interactions.",
+      "Keep hand-object contacts inside frame."
+    ],
+    "comedy_timing": "punchline_hold",
+    "cut_rules": [
+      "A cut can change composition, not ownership or physical object location."
+    ]
+  },
+  "global_negative_constraints": [
+    "No 3D appearance, photorealism, volumetric perspective, or painterly limbs.",
+    "No invented limbs, unsupported motion, full 360 turn, fight physics or phoneme lip-sync."
+  ]
 }

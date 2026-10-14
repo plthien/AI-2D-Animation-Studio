@@ -20,3 +20,8 @@ description: Build canonical global Asset Registry and deterministic reuse-or-ge
 ## Acceptance
 
 No paid G-Labs call triggered by resolver. Every demanded asset has an actionable decision and a traceable immutable input.
+
+
+## Mandatory animation-first v1.2 amendment
+
+Resolve only `character`, `background`, `prop` asset kinds. Hash visual identity/entity styles/negative constraints, excluding animation/editorial performance; changes to acting do not force image regeneration. Detect rig capability independently.

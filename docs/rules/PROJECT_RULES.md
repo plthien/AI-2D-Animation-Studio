@@ -34,3 +34,8 @@
 - Local-first, no provider charges without explicit human action and accurate provider task ownership. Ambiguous provider POST is blocked and reconciled, never blindly retried.
 - Secrets only in backend environment, never client, artifact JSON, prompt exports or logs. Do not upload private input assets to unrelated third parties.
 - Project data is scoped, auditable and versioned; approval and invalidation are explicit.
+
+
+## Animation-first scope (v1.2)
+
+`channel_dna.v2` separates visual style, performance identity, narration identity and editorial identity; asset reuse must not invalidate because acting-only settings changed. Rig final artifact is `rig_manifest.v1` (not `rig_package.v1`). Supported asset kinds are character/background/prop only. One silent visual shot uses `narration_text=""` with zero-length script span; all-silent productions and multi-speaker dialogue remain outside narrated MVP. No engine behavior derived from unstructured creative prose; implement only versioned action DSL and bounded performance presets. See Master Spec §19.

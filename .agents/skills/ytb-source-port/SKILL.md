@@ -21,3 +21,8 @@ Read `MASTER_SPEC.md` §1, §2, §3, §14 and Appendix A P0; `docs/rules/ARCHITE
 ## STOP / acceptance
 
 P0 ends without imported Scene Asset, voice-first, Ken Burns or YTB old routes. Do not implement future stage logic or report their status as complete. Complete phase audit per `phase-self-review`.
+
+
+## Mandatory animation-first v1.2 amendment
+
+Port YTB platform primitives only, NOT YTB ChannelDNA v3/schema or voice-first Scene/Beat contracts. Use new `channel_dna.v2`, strict extra-key rejection and separate visual/performance/narration hashes. Start from latest approved main.

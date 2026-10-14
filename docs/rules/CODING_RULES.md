@@ -32,3 +32,13 @@
 ## Review traceability
 
 Every changed behavior requires a test; report exact reproducible commands and outcomes; do not declare the phase complete on lint-only or schema-only success.
+
+
+## Animation schema contract refinements (v1.2)
+
+- Only `channel_dna.v2` is supported; do not resurrect `channel_dna.v1` adapters. Follow 7-field visual identity, entity styles and bounded acting metadata.
+- `animation_plan.shots[].performance` is required, typed, versioned, and must exactly match current ChannelDNA defaults in MVP; no free-form motion/gesture inference.
+- Preserve approved metadata and SHA for both generated character reference and parts atlas. `parts_manifest` references both original image artifact IDs.
+- `compiled_film` core semantic bone roles number 16; serialized bones are between 16 and 64 distinct approved rig bones. Validate all names against actual skeleton.
+- For silent visual shots: zero-length script range, explicit shot purpose, no VoiceCue, exact silence injected only in final audio assembly.
+- `rig_manifest.v1` is sole rig publication name; effect asset is unsupported until explicitly versioned.

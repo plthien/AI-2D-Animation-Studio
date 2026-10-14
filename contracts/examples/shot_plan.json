@@ -54,7 +54,8 @@
         },
         "zoom": 1.0
       },
-      "continuity": "continuous"
+      "continuity": "continuous",
+      "shot_purpose": "story_action"
     }
   ]
 }

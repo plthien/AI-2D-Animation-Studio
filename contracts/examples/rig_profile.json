@@ -271,5 +271,23 @@
   "expressions": [
     "neutral",
     "surprised"
+  ],
+  "runtime_bone_names": [
+    "root",
+    "pelvis",
+    "torso",
+    "head",
+    "left_upper_arm",
+    "left_forearm",
+    "left_hand",
+    "right_upper_arm",
+    "right_forearm",
+    "right_hand",
+    "left_thigh",
+    "left_shin",
+    "left_foot",
+    "right_thigh",
+    "right_shin",
+    "right_foot"
   ]
 }

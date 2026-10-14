@@ -132,11 +132,21 @@
     },
     "reviewed": {
       "const": true
+    },
+    "reference_image_artifact_id": {
+      "type": "string",
+      "pattern": "^art_[0-9a-f]{32}$"
+    },
+    "source_atlas_artifact_id": {
+      "type": "string",
+      "pattern": "^art_[0-9a-f]{32}$"
     }
   },
   "required": [
     "schema_version",
     "artifact_id",
+    "reference_image_artifact_id",
+    "source_atlas_artifact_id",
     "source_atlas_sha256",
     "reference_sha256",
     "canvas",

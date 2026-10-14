@@ -28,3 +28,8 @@ Run `python tools/validate_contract_pack.py` with Python 3.12 + `jsonschema`; ch
 ## Evidence
 
 `docs/qa/PHASE_Pxx_REVIEW.md` must include environment, commands, stdout/pass/fail totals, CI run links, screenshots/artifact paths, limitation list and phase verdict PASS/BLOCKED/NOT_RUN. Never invent run evidence.
+
+
+## v1.2 contract regression gates
+
+Before implementation and every PR run `python tools/test_animation_contract_semantics.py` in addition to the existing schema checker. Tests must reject old ChannelDNA v1, missing performance, corrupt reference/atlas lineage, invalid silent quote windows, effect asset kind, >64 bone arrays and invalid generation references. Tests must also accept a valid zero-length silent visual shot, an approved extra bone, and distinctly hashed visual/performance identities. Structural PASS does not prove image or motion quality.

@@ -826,6 +826,17 @@
       "minItems": 1,
       "maxItems": 4,
       "uniqueItems": true
+    },
+    "runtime_bone_names": {
+      "type": "array",
+      "minItems": 16,
+      "maxItems": 64,
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "pattern": "^[a-z][a-z0-9_]*$"
+      }
     }
   },
   "required": [
@@ -846,7 +857,8 @@
     "chains",
     "sockets",
     "supported_actions",
-    "expressions"
+    "expressions",
+    "runtime_bone_names"
   ],
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://ai-2d-animation-studio.local/contracts/schemas/rig_profile.schema.json",

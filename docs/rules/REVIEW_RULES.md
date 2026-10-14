@@ -20,3 +20,8 @@
 ## Hand-off report format
 
 Include `base_sha`, `head_sha`, `phase`, `upstream_sha`, changed file list, exact test commands, observed counts, screenshots/video artifacts, blocked gates, explicit non-goals and next recommended phase. Claim PASS only for execution you actually observed.
+
+
+## Additional self-review proof: animation-first
+
+Inspect `channel_dna.v2` cross-field and effective animation preset tests, verify that visual hash is not recomputed from performance-only edits, inspect actual rig bone name validation and official Spine 4.2 matched runtime, and verify per-voiced-shot cue completeness with silent-shot sample insertion. Note any YTB V3 fields that were deliberately not ported. `docs/audits/ANIMATION_CONTRACT_AUDIT_v1_2.md` is review scope, not a substitute for running tests.

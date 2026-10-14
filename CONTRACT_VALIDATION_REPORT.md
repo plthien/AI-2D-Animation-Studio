@@ -1,7 +1,11 @@
-# Contract and Agent Pack Audit — v1.1 (2026-10-14)
+# Animation-first Codex Specification validation — v1.2
 
-- 19 JSON Schema Draft 2020-12 files and 19 same-name examples.
-- Root `AGENTS.md` + nine `.agents/skills/*/SKILL.md` + five `docs/rules/*.md`.
-- `tools/validate_contract_pack.py` performs 19 structural schema validations and cross-artifact assertions; run it again with Python + `jsonschema`.
-- Documentation audit checks mandatory source references, skill frontmatter and absence of the prohibited prototype as a source.
-- **Not verified:** implemented application, Windows setup, authenticated live G-Labs, actual Spine character/rig, voice synthesis, visual acting or video output.
+Date: 2026-10-14. The following commands were run locally against the updated files. These are **specification checks only** and not proof of actual G-Labs, Spine, Kokoro, FFmpeg or Windows production behavior.
+
+- `python tools/validate_contract_pack.py` — exit 0: `PASS 19 schema/example pairs + animation-specific cross-artifact assertions`
+- `python tools/test_animation_contract_semantics.py` — exit 0: `PASS 30 animation-first positive/negative and cross-domain contract assertions`
+- `python tools/validate_agent_pack.py` — exit 0: `PASS 1 AGENTS + 9 skills + 5 rules + authoritative references`
+
+Changes audited: 19 schema/example pairs; Channel DNA v2; bounded per-shot acting; actor bone set; silent visual shots; atlas/reference source lineage; no unsupported effect; official Spine runtime/license references.
+
+No application source was implemented as part of this contract revision. Real provider/rig/animation/video acceptance remains NOT_RUN.

@@ -52,11 +52,11 @@
           },
           "section_end": {
             "type": "integer",
-            "minimum": 1
+            "minimum": 0
           },
           "narration_text": {
             "type": "string",
-            "minLength": 1
+            "minLength": 0
           },
           "duration_frames": {
             "type": "integer",
@@ -309,6 +309,14 @@
               "continuous",
               "cut"
             ]
+          },
+          "shot_purpose": {
+            "type": "string",
+            "enum": [
+              "story_action",
+              "visual_reaction",
+              "establishing"
+            ]
           }
         },
         "required": [
@@ -325,7 +333,8 @@
           "props",
           "story_actions",
           "camera",
-          "continuity"
+          "continuity",
+          "shot_purpose"
         ]
       },
       "minItems": 1,

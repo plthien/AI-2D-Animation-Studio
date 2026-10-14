@@ -22,3 +22,8 @@ Read `MASTER_SPEC.md` §8.1–8.6, §10.2, Appendix A P4; schemas `parts_manifes
 ## Acceptance
 
 A valid JSON skeleton without convincing poses is only structural proof; real G-Labs character pose screenshots and reviewer acceptance are required to pass final product gate.
+
+
+## Mandatory animation-first v1.2 amendment
+
+Stage 4 output is `rig_manifest.v1`, never `rig_package.v1`. `parts_manifest.v1` stores both source reference and parts atlas artifact IDs+SHA. Skeleton may have extra approved bones; core 16 semantic roles required, runtime must verify all named bones.

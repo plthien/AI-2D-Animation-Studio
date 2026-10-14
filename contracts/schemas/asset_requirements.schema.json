@@ -42,8 +42,7 @@
             "enum": [
               "character",
               "background",
-              "prop",
-              "effect"
+              "prop"
             ]
           },
           "semantic_key": {

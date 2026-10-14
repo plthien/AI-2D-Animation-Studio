@@ -30,12 +30,16 @@ def main():
     sections = {s['section_id']:s['narration_text'] for s in script['sections']}
     for item in shot['shots']:
         s=sections[item['section_id']]
-        require(s[item['section_start']:item['section_end']] == item['narration_text'], 'Shot exact-text source range')
+        start,end=item['section_start'],item['section_end']
+        require(0<=start<=end<=len(s),'Shot source offsets bounded')
+        require(s[start:end]==item['narration_text'],'Shot exact-text source range')
+        require(bool(item['narration_text']) == (start<end),'Silent shots must have zero-length quoted span')
     require(requirements['shot_plan_artifact_id'] == shot['artifact_id'], 'Requirements ShotPlan reference')
     require(resolution['asset_requirements_artifact_id'] == requirements['artifact_id'], 'Resolution requirement reference')
     require([r['requirement_id'] for r in requirements['requirements']] == [r['requirement_id'] for r in resolution['decisions']], 'Resolution requirement completeness/order')
     anim=load('animation_plan');compiled=load('compiled_film');voice=load('voice_manifest');final=load('final_timeline')
     require(anim['shot_plan_artifact_id'] == shot['artifact_id'] and anim['asset_resolution_artifact_id'] == resolution['artifact_id'], 'Director lineage')
+    require(all('performance' in s and s['performance']['motion_energy'] in ('low','medium','high') for s in anim['shots']), 'Director executable performance')
     require(compiled['source_ids']['animation_plan_artifact_id'] == anim['artifact_id'], 'Compiled film lineage')
     require(compiled['total_frames'] == sum(s['duration_frames'] for s in compiled['shots']), 'Compiled total frame equality')
     require(all(len(s['frames']) == s['duration_frames'] and [f['frame'] for f in s['frames']] == list(range(s['duration_frames'])) for s in compiled['shots']), 'Contiguous frame list')
@@ -50,10 +54,14 @@ def main():
     require(sorted(roles)==sorted(p['semantic_role'] for p in layout['parts']), 'Layout part roles')
     require(joints['rig_layout_artifact_id']==layout['artifact_id'], 'Joint layout reference')
     require(manifest['parts_manifest_artifact_id']==parts['artifact_id'] and manifest['rig_layout_artifact_id']==layout['artifact_id'] and manifest['rig_joints_artifact_id']==joints['artifact_id'], 'Rig manifest source chain')
+    require(parts['reference_image_artifact_id'] != parts['source_atlas_artifact_id'], 'Distinct reference and atlas asset artifacts')
     require(manifest['rig_version_id']==rig['rig_version_id'], 'RigProfile matching version')
     frm=load('frame_sequence_manifest')
     require(frm['frame_count']==len(frm['frames']) and frm['shot_id']==compiled['shots'][0]['shot_id'], 'Frame sequence consistency')
-    print(f'PASS {len(names)} schema/example pairs, 21 cross-artifact/semantic assertions')
+    dna=load('channel_dna'); require(dna['schema_version']=='channel_dna.v2', 'ChannelDNA v2')
+    require(set(dna['visual_identity'])=={'medium','linework','rendering','palette','shape_language','texture','editorial_language'}, 'Seven visual identity fields')
+    require(0<=dna['animation_identity']['reaction_hold_frames']<=24, 'Reaction hold within supported bounded profile')
+    print(f'PASS {len(names)} schema/example pairs + animation-specific cross-artifact assertions')
 
 if __name__ == '__main__':
     try:main()
