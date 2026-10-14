@@ -28,6 +28,7 @@ from PIL import Image
 from studio.film_v2 import AssetCatalog, FilmPlanV2, compile_film_v2
 from studio.motion import MotionPlan, MotionError, compile_motion
 from studio.retarget import RigProfile, validate_spine_profile
+from studio.glabs import GlabsClient, ImageRequest
 
 router = APIRouter(prefix="/studio", tags=["Studio Workspace"])
 REPO = Path(__file__).resolve().parents[1]
@@ -357,6 +358,101 @@ def get_job(job_id: str) -> dict:
         folder = PROJECTS / job["project_id"] / "render" / "working" / "frames"
         job["rendered_frames"] = len(list(folder.glob("frame_*.png"))) if folder.is_dir() else 0
     return job
+
+
+class GlabsAssetSubmit(BaseModel):
+    asset_path: str = Field(pattern=r"^(backgrounds|props)/[a-z][a-z0-9_.-]*\.png$")
+    prompt: str = Field(min_length=10, max_length=15000)
+    model: str = "nano_banana_2"
+    aspect_ratio: str = "16:9"
+    allow_replace: bool = False
+
+
+@router.get("/provider/glabs")
+async def glabs_readiness() -> dict:
+    if not os.environ.get("GLABS_API_KEY"):
+        return {"configured": False, "reachable": False, "message": "GLABS_API_KEY not configured in backend environment"}
+    try:
+        async with GlabsClient.from_env() as client:
+            response = await client.health()
+        return {"configured": True, "reachable": True, "health": response}
+    except Exception:
+        return {"configured": True, "reachable": False, "message": "Local G-Labs webhook is not reachable"}
+
+
+@router.post("/projects/{project_id}/images/generate", status_code=202)
+async def glabs_generate_for_project(project_id: str, request: GlabsAssetSubmit) -> dict:
+    """Only an explicit user request may consume G-Labs image generation quota."""
+    root = _project(project_id)
+    _, catalog, _ = _documents(root)
+    allowed = {asset.image for asset in (*catalog.backgrounds.values(), *catalog.props.values())}
+    if request.asset_path not in allowed:
+        raise HTTPException(422, "Requested image is not declared in this project's catalog")
+    destination = root / request.asset_path
+    if destination.exists() and not request.allow_replace:
+        raise HTTPException(409, "Image already exists. Explicitly allow replacement to regenerate")
+    metadata_folder = root / "glabs_tasks"
+    for task in metadata_folder.glob("*.json"):
+        try:
+            prior = json.loads(task.read_text(encoding="utf-8"))
+        except (ValueError, OSError):
+            continue
+        if prior.get("asset_path") == request.asset_path and prior.get("status") in {"pending", "running"}:
+            raise HTTPException(409, "An image generation for this asset is already active")
+    try:
+        image_request = ImageRequest(prompt=request.prompt, model=request.model, aspect_ratio=request.aspect_ratio)
+        async with GlabsClient.from_env() as client:
+            task_id = await client.submit(image_request)
+    except Exception as exc:
+        raise HTTPException(503, "G-Labs submission failed. Check local MAX webhook and backend credentials.") from exc
+    record = {"task_id": task_id, "asset_path": request.asset_path,
+              "status": "pending", "allow_replace": request.allow_replace}
+    _atomic_json(metadata_folder / (task_id + ".json"), record)
+    return record
+
+
+@router.get("/projects/{project_id}/images/tasks/{task_id}")
+async def glabs_project_task(project_id: str, task_id: str) -> dict:
+    root = _project(project_id)
+    if not re.fullmatch(r"[0-9a-fA-F]{8}", task_id):
+        raise HTTPException(404, "Unknown image task ID")
+    task = root / "glabs_tasks" / (task_id.lower() + ".json")
+    if not task.is_file():
+        raise HTTPException(404, "Task not owned by this project")
+    record = json.loads(task.read_text(encoding="utf-8"))
+    if record["status"] == "completed":
+        return record
+    try:
+        async with GlabsClient.from_env() as client:
+            provider = await client.status(task_id.lower())
+            status = provider.get("status")
+            if status == "completed":
+                results = provider.get("results")
+                if not isinstance(results, list) or not results or not isinstance(results[0], str):
+                    raise ValueError("Completed G-Labs result missing image URL")
+                destination = root / record["asset_path"]
+                if destination.exists() and not record.get("allow_replace"):
+                    raise ValueError("Destination exists; overwrite not approved")
+                tmp = root / "glabs_tasks" / (task_id.lower() + ".result")
+                try:
+                    await client.download(results[0], tmp)
+                    if tmp.stat().st_size > MAX_ASSET_BYTES:
+                        raise ValueError("G-Labs image exceeds local upload size limit")
+                    with Image.open(tmp) as im:
+                        if im.width * im.height > 24_000_000:
+                            raise ValueError("G-Labs image exceeds pixel safety limit")
+                        normalized = im.convert("RGBA") if im.has_transparency_data else im.convert("RGB")
+                        destination.parent.mkdir(parents=True, exist_ok=True)
+                        normalized.save(destination, format="PNG")
+                finally:
+                    tmp.unlink(missing_ok=True)
+            record["status"] = status
+            if status == "failed":
+                record["error"] = "G-Labs reported a failed task"
+            _atomic_json(task, record)
+            return record
+    except Exception as exc:
+        raise HTTPException(502, "Unable to retrieve/import G-Labs image; task remains tracked locally") from exc
 
 
 @router.post("/projects/{project_id}/bootstrap-demo")
