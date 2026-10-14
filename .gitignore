@@ -1,0 +1,17 @@
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.env
+ai_2d_animation_studio.db*
+local_artifacts/
+workspace/
+outputs/
+node_modules/
+dist/
+coverage/
+*.png
+*.mp4
+*.wav
+*.log
