@@ -670,3 +670,11 @@ def download_video(project_id: str):
     if not video.is_file():
         raise HTTPException(404, "No rendered MP4")
     return FileResponse(video, media_type="video/mp4", filename="animation.mp4", content_disposition_type="inline")
+
+
+@router.get("/projects/{project_id}/video/status")
+def video_status(project_id: str) -> dict:
+    """Check the persisted movie independently of ephemeral job state."""
+    file = _project(project_id) / "render" / "film.mp4"
+    return {"available": file.is_file() and file.stat().st_size > 0,
+            "bytes": file.stat().st_size if file.is_file() else 0}

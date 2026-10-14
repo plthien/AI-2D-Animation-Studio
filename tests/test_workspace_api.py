@@ -180,3 +180,17 @@ def test_rig_workshop_requires_explicit_sources_and_human_anchors(client):
     assert client.get(base+"/part/nonexistent.png").status_code==404
     assert client.post(base+"/stage/build").status_code==422
     assert client.post(base+"/stage/unknown").status_code==422
+
+
+def test_persisted_video_status_after_job_registry_reset(client):
+    project_id=make_project(client)
+    url=f"/studio/projects/{project_id}"
+    assert client.get(url+"/video/status").json()=={"available":False,"bytes":0}
+    path=ws.PROJECTS/project_id/"render"/"film.mp4"
+    path.parent.mkdir(parents=True,exist_ok=True)
+    path.write_bytes(b"test video fixture")
+    ws.JOBS.clear()
+    assert client.get(url+"/video/status").json()=={"available":True,"bytes":18}
+    assert client.get(url+"/video").status_code==200
+    path.unlink()
+    assert client.get(url+"/video/status").json()=={"available":False,"bytes":0}

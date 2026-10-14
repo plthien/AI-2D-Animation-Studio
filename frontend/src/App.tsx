@@ -24,6 +24,7 @@ export default function App(){
  const [preflight,setPreflight]=useState<Report|null>(null);
  const [files,setFiles]=useState<Asset[]>([]);
  const [job,setJob]=useState<Job|null>(null);
+ const [hasVideo,setHasVideo]=useState(false);
  const [backend,setBackend]=useState(false);
  const [newName,setNewName]=useState('My Animation');
  const [template,setTemplate]=useState('coffee');
@@ -40,21 +41,22 @@ export default function App(){
  const success=(msg:string)=>{setProblem('');setNotice(msg)};
  const list=async()=>{const response=await get<{projects:Project[]}>(endpoint);setProjects(response.projects)};
  const load=async(id:string)=>{
-  const [f,c,m,a,p]=await Promise.all([
+  const [f,c,m,a,p,v]=await Promise.all([
    get<Film>(endpoint+'/'+id+'/documents/film'),
    get<Catalog>(endpoint+'/'+id+'/documents/catalog'),
    get<Record<string,unknown>>(endpoint+'/'+id+'/documents/motions'),
    get<{files:Asset[]}>(endpoint+'/'+id+'/assets'),
-   get<Report>(endpoint+'/'+id+'/preflight')
+   get<Report>(endpoint+'/'+id+'/preflight'),
+   get<{available:boolean}>(endpoint+'/'+id+'/video/status')
   ]);
-  setFilm(f);setCatalog(c);setMotions(m);setFiles(a.files);setPreflight(p);
+  setFilm(f);setCatalog(c);setMotions(m);setFiles(a.files);setPreflight(p);setHasVideo(v.available);
  };
  useEffect(()=>{get<{ok:boolean}>('/health').then(x=>setBackend(x.ok)).catch(()=>setBackend(false));list().catch(err)},[]);
  useEffect(()=>{if(pid)load(pid).catch(err)},[pid]);
  useEffect(()=>{if(!dirtyDoc)setDraft(shown(doc==='film'?film:doc==='catalog'?catalog:motions))},[doc,film,catalog,motions,dirtyDoc]);
  useEffect(()=>{
   if(!job||!['queued','running'].includes(job.status))return;
-  const timer=window.setInterval(()=>get<Job>('/studio/jobs/'+job.id).then(setJob).catch(err),2000);
+  const timer=window.setInterval(()=>get<Job>('/studio/jobs/'+job.id).then(next=>{setJob(next);if(next.status==='completed')setHasVideo(true)}).catch(err),2000);
   return ()=>window.clearInterval(timer);
  },[job?.id,job?.status]);
  const work=async(action:()=>Promise<void>)=>{setLoading(true);try{await action()}catch(e){err(e)}finally{setLoading(false)}};
@@ -73,6 +75,7 @@ export default function App(){
  });
  const refresh=()=>work(async()=>{await load(pid);success('Preflight updated.')});
  const render=()=>work(async()=>{
+  setHasVideo(false);
   const result=await api<Job>(endpoint+'/'+pid+'/render',{method:'POST'});
   setJob(result);success('Render queued locally. No image generation or TTS charged.');
  });
@@ -168,7 +171,7 @@ export default function App(){
      <Btn primary disabled={loading||!primary||running} click={render}><Play size={15}/> Start render</Btn>
      {job&&<div className="item" style={{marginTop:14}}><div className="spread"><b>Job {job.id.slice(0,8)}</b><span>{job.status} {job.rendered_frames!==undefined?' · '+job.rendered_frames+' frames':''}</span></div>{job.error&&<pre>{job.error}</pre>}{job.log&&<details><summary className="muted small">Renderer log</summary><pre>{job.log}</pre></details>}</div>}
     </section>
-    {job?.status==='completed'&&<section className="panel"><h2>Video review</h2><video className="preview" controls src={endpoint+'/'+pid+'/video'}/><p><a className="btn primary" href={endpoint+'/'+pid+'/video'} download><Download size={15}/> Download MP4</a></p></section>}
+    {(hasVideo||job?.status==='completed')&&<section className="panel"><h2>Video review</h2><video className="preview" controls src={endpoint+'/'+pid+'/video'}/><p><a className="btn primary" href={endpoint+'/'+pid+'/video'} download><Download size={15}/> Download MP4</a></p></section>}
    </div>}
    {view==='settings'&&<section className="panel"><h2>Local pipeline status</h2>
     <div className="list"><div className="item spread">API backend <span className={'pill '+(backend?'ok':'bad')}>{backend?'Connected':'Offline'}</span></div>
