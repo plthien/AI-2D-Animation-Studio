@@ -34,3 +34,16 @@ Reviewed the user's `plthien/ytb-ai-studio` repository, specifically `src/layout
 6. **UI editing**: no true interactive timeline drag handles or keyframe IK editor; film and motion JSON remain editable text and shot-inspector fields.
 
 This implementation is intended as a **local user-testable cockpit**, not a claim that a no-touch, studio-quality idea-to-video factory is finished. [Windows testing guide](STUDIO_UI_USER_GUIDE.md), [project phase status](STATUS.md), [PR #1](https://github.com/plthien/AI-2D-Animation-Studio/pull/1).
+
+
+## 2026-10-14 user-test hardening
+
+- Read the actual `plthien/ytb-ai-studio` `CockpitShell`, `GlobalSidebar`, `StudioPipeline` and dark theme and reviewed the already implemented local React/Vite cockpit. Kept the standalone animation-specific app; no copy of YouTube workflow logic.
+- Director stage stepper now routes to relevant sections and reflects whether core project documents, rigs, background images, motion definitions, voice WAVs and preflight are available. This is a **readiness indicator**, not a substitute for complete preflight.
+- The manual JSON editor now guards unsaved drafts when switching JSON documents or reloading. It no longer resets the text after unrelated film/camera state updates. Raw JSON save remains explicitly validated by backend.
+- The local setup now installs an **isolated Python 3.12 `.venv`** and checks Node major version 22; startup uses that exact virtual environment rather than whichever global Python happens to be on PATH. This is Windows-specific and must be checked on an actual Windows machine; Linux CI cannot prove batch behavior.
+- Added persistent MP4 availability check (project-local `/studio/projects/{id}/video/status`) so a successfully rendered file remains visible/downloadable after backend restart, even if in-memory job IDs are gone. Includes a focused API test.
+- Existing built cockpit CI runs React TypeScript build, API TestClient smoke, and a real Playwright browser run through project creation / offline asset creation / render / MP4 response. It does **not** assert that G-Labs authenticated provider tasks work on the user's Windows installation.
+- No Kokoro/TTS is added here; existing WAV import/sample-rate checks remain required. Synthetic waveform demo audio must never be represented as real generated speech.
+
+**Release interpretation:** local user-testable prototype with real UI and offline end-to-end technical render. The user-facing intent of a fully automatic, professional-quality original-character studio is NOT yet met: verified G-Labs image-to-rig quality, high-quality multi-limb acting, local Kokoro, durable job queue and GUI keyframe motion editor are open.
