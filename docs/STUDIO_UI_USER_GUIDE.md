@@ -2,9 +2,9 @@
 
 ## 1. First-time setup
 
-On Windows install **Python 3.12**, **Node.js 22**, and **FFmpeg + ffprobe** on PATH. From the `feat/p0-p1-foundation` branch of the **AI-2D-Animation-Studio** repository, double-click **`setup_studio.bat`**. It installs backend/React and Spine/Playwright dependencies, builds the frontend and downloads four **pinned** open-source Genielabs segmentation/positioning/builder/atlas scripts to `vendor/genielabs/scripts` if not present. These are fetched from the Genielabs GitHub commit `702b71689cac826efee942ee4564fef9560d6ef8`; they do **not** call Gemini or G-Labs. If you want to review third-party code before using it, inspect those source files first.
+On Windows install **Python 3.12**, **Node.js 22**, and **FFmpeg + ffprobe** on PATH. From the `feat/p0-p1-foundation` branch of the **AI-2D-Animation-Studio** repository, double-click **`setup_studio.bat`**. It checks Python 3.12/Node 22 and creates an isolated **`.venv`** in the repository (no global pip package install). It installs backend/React and Spine/Playwright dependencies, builds the frontend and downloads four **pinned** open-source Genielabs segmentation/positioning/builder/atlas scripts to `vendor/genielabs/scripts` if not present. These are fetched from the Genielabs GitHub commit `702b71689cac826efee942ee4564fef9560d6ef8`; they do **not** call Gemini or G-Labs. If you want to review third-party code before using it, inspect those source files first.
 
-For daily use, run **`start_studio.bat`**, which starts the local backend and serves the built UI at **http://127.0.0.1:8000**.
+For daily use, run **`start_studio.bat`**, which launches the checked-in project through **`.venv\\Scripts\\python.exe`** and starts the local backend and serves the built UI at **http://127.0.0.1:8000**.
 
 No secrets/API keys belong in React or the repository. The web server binds only to `127.0.0.1` by default.
 
