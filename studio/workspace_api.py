@@ -473,6 +473,152 @@ async def glabs_project_task(project_id: str, task_id: str) -> dict:
         raise HTTPException(502, "Unable to retrieve/import G-Labs image; task remains tracked locally") from exc
 
 
+class RigConfiguration(BaseModel):
+    semantic: dict[str, str]
+    anchors: dict[str, dict[str, float]]
+
+
+@router.post("/projects/{project_id}/rigging/{rig_id}/source/{name}")
+async def upload_rig_source(project_id: str, rig_id: str, name: str,
+                            file: UploadFile = File(...)) -> dict:
+    root = _project(project_id)
+    if not ID.fullmatch(rig_id) or name not in {"atlas.png", "reference.png"}:
+        raise HTTPException(422, "Only character atlas.png and reference.png are accepted")
+    data = await file.read(MAX_ASSET_BYTES + 1)
+    if not data or len(data) > MAX_ASSET_BYTES:
+        raise HTTPException(413, "Character art too large or empty")
+    try:
+        with Image.open(io.BytesIO(data)) as image:
+            if image.format not in {"PNG", "WEBP", "JPEG"}:
+                raise ValueError("Unsupported image encoding")
+            if image.width * image.height > 24_000_000:
+                raise ValueError("Character image too many pixels")
+            image.load()
+            image = image.convert("RGBA")
+            destination = root / "rigging" / rig_id / name
+            destination.parent.mkdir(parents=True, exist_ok=True)
+            image.save(destination, format="PNG")
+    except Exception as exc:
+        raise HTTPException(422, f"Invalid character art: {exc}") from exc
+    return {"saved": True, "rig_id": rig_id, "filename": name}
+
+
+@router.post("/projects/{project_id}/rigging/{rig_id}/configuration")
+def save_rig_configuration(project_id: str, rig_id: str, value: RigConfiguration) -> dict:
+    root = _project(project_id)
+    if not ID.fullmatch(rig_id):
+        raise HTTPException(422, "Unknown rig ID")
+    workspace = root / "rigging" / rig_id
+    _atomic_json(workspace / "semantic.json", value.semantic)
+    _atomic_json(workspace / "anchors.json", value.anchors)
+    return {"saved": True, "parts": len(value.semantic), "anchors": len(value.anchors)}
+
+
+@router.get("/projects/{project_id}/rigging/{rig_id}/inspect")
+def inspect_rig(project_id: str, rig_id: str) -> dict:
+    root = _project(project_id)
+    if not ID.fullmatch(rig_id):
+        raise HTTPException(404, "Unknown rig")
+    workspace = root / "rigging" / rig_id
+    result = {"rig_id": rig_id, "has_atlas": (workspace / "atlas.png").is_file(),
+              "has_reference": (workspace / "reference.png").is_file(),
+              "parts": sorted(p.name for p in (workspace / "parts").glob("*.png")),
+              "layout": None, "semantic": None, "anchors": None,
+              "built": (root / "rigs" / rig_id / "skeleton.json").is_file()}
+    for field, filename in (("layout", "layout.json"), ("semantic", "semantic.json"),
+                            ("anchors", "anchors.json")):
+        source = workspace / filename
+        if source.is_file():
+            result[field] = json.loads(source.read_text(encoding="utf-8"))
+    return result
+
+
+@router.get("/projects/{project_id}/rigging/{rig_id}/part/{name}")
+def get_rig_part(project_id: str, rig_id: str, name: str):
+    root = _project(project_id)
+    if not ID.fullmatch(rig_id) or not FILE.fullmatch(name) or not name.endswith(".png"):
+        raise HTTPException(404, "Unknown rig part")
+    image = root / "rigging" / rig_id / "parts" / name
+    if not image.is_file():
+        raise HTTPException(404, "Unknown rig part")
+    return FileResponse(image, media_type="image/png")
+
+
+@router.post("/projects/{project_id}/rigging/{rig_id}/stage/{stage}")
+def execute_rig_stage(project_id: str, rig_id: str, stage: str) -> dict:
+    """Manually approved stepwise Genielabs workflow. Never guesses semantics."""
+    root = _project(project_id)
+    if not ID.fullmatch(rig_id) or stage not in {"segment", "position", "build"}:
+        raise HTTPException(422, "Unsupported rig stage")
+    vendor = REPO / "vendor" / "genielabs"
+    workspace = root / "rigging" / rig_id
+    atlas, reference = workspace / "atlas.png", workspace / "reference.png"
+    if not atlas.is_file() or not reference.is_file():
+        raise HTTPException(422, "Upload separated atlas and reference pose first")
+    if not (vendor / "scripts" / "make_atlas.py").is_file():
+        raise HTTPException(422, "Pinned Genielabs tools missing; run setup_studio.bat")
+    try:
+        from scripts.run_rig_pipeline import segment, launch
+        from studio.rigging import build_rig_config, run_genielabs_builder
+        from studio.rigging import bone_name
+        if stage == "segment":
+            parts = segment(vendor, atlas, workspace / "parts")
+            if not parts:
+                raise ValueError("No separate body parts found in atlas")
+        elif stage == "position":
+            parts = workspace / "parts"
+            if not list(parts.glob("*.png")):
+                raise ValueError("Run segmentation first")
+            launch(vendor / "scripts" / "position_parts.py",
+                   "--reference", str(reference), "--parts", str(parts),
+                   "--output", str(workspace / "layout.json"),
+                   "--debug", str(workspace / "debug"))
+        else:
+            layout = json.loads((workspace / "layout.json").read_text(encoding="utf-8"))
+            semantic = json.loads((workspace / "semantic.json").read_text(encoding="utf-8"))
+            anchors = json.loads((workspace / "anchors.json").read_text(encoding="utf-8"))
+            for label in ("left_upper_arm", "left_forearm", "left_hand"):
+                if label not in anchors or label not in semantic.values():
+                    raise ValueError("Rig requires explicitly approved left arm and wrist anchors")
+            upper = anchors["left_forearm"]["x"] - anchors["left_upper_arm"]["x"]
+            lower = anchors["left_hand"]["x"] - anchors["left_forearm"]["x"]
+            if upper <= 0 or lower <= 0 or abs(anchors["left_forearm"]["y"]-anchors["left_upper_arm"]["y"]) > .01 or abs(anchors["left_hand"]["y"]-anchors["left_forearm"]["y"]) > .01:
+                raise ValueError("Current two-link IK supports only straight +X neutral setup arm")
+            config = build_rig_config(layout, semantic, anchors, ["idle", "wave"])
+            for bone in config["bones"]:
+                if bone["name"] == bone_name("left_upper_arm"):
+                    bone["length"] = upper
+                elif bone["name"] == bone_name("left_forearm"):
+                    bone["length"] = lower
+            config_path = workspace / "rig_config.json"
+            _atomic_json(config_path, config)
+            run_genielabs_builder(vendor, config_path, workspace / "skeleton.json")
+            launch(vendor / "scripts" / "make_atlas.py",
+                   "--parts", str(workspace / "parts"), "--output", str(workspace),
+                   "--name", "skeleton")
+            profile = {
+                "schema_version": "1.0", "rig_id": rig_id,
+                "bones": {"upper_arm": bone_name("left_upper_arm"),
+                          "forearm": bone_name("left_forearm"),
+                          "hand": bone_name("left_hand")},
+                "actor_origin": {"x": 320, "y": 480},
+                "shoulder": anchors["left_upper_arm"],
+                "upper_arm": upper, "forearm": lower,
+                "grip_offset": {"x": -16, "y": 0}}
+            RigProfile.model_validate(profile)
+            validate_spine_profile(RigProfile.model_validate(profile),
+                json.loads((workspace / "skeleton.json").read_text(encoding="utf-8")))
+            target = root / "rigs" / rig_id
+            target.mkdir(parents=True, exist_ok=True)
+            for filename in ("skeleton.json", "skeleton.atlas", "skeleton.png"):
+                shutil.copyfile(workspace / filename, target / filename)
+            _atomic_json(target / "rig_profile.json", profile)
+        return {"stage": stage, "result": "completed",
+                "rig": inspect_rig(project_id, rig_id), "preflight": _preflight(root)}
+    except Exception as exc:
+        raise HTTPException(422, f"Rig stage {stage} failed: {exc}") from exc
+
+
 @router.post("/projects/{project_id}/bootstrap-demo")
 def generate_demo_assets(project_id: str) -> dict:
     """Explicit, free, local synthetic integration fixture. NEVER uses G-Labs or Kokoro.
