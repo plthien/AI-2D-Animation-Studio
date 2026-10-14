@@ -1,6 +1,7 @@
 import {useEffect,useState} from 'react';
 import {Activity,Clapperboard,FolderKanban,Images,Film as FilmIcon,Settings2,Plus,Save,Upload,RefreshCcw,Play,Download,Copy,CheckCircle2,AlertTriangle} from 'lucide-react';
 import {api,get,post,put,upload} from './api';
+import {GlabsPanel} from './GlabsPanel';
 import type {Project,Report,Job,Asset,Film,Catalog} from './api';
 type View='projects'|'director'|'assets'|'render'|'settings';
 type Doc='film'|'catalog'|'motions';
@@ -148,7 +149,7 @@ export default function App(){
      {preflight?.errors.map((s,i)=><div key={i} className="alert">{s}</div>)}
     </section>
     <section className="panel"><h2>Media library</h2><div className="imagegrid">{files.map(a=><div key={a.path} className="imagecard">{(a.path.startsWith('backgrounds/')||a.path.startsWith('props/'))&&<img alt={a.path} src={endpoint+'/'+pid+'/media/'+a.path}/>}<span>{a.path}</span><div className="tiny muted">{(a.bytes/1024).toFixed(1)} KB</div></div>)}</div></section>
-    <section className="panel"><h2>Image generation</h2><p className="muted text">G-Labs webhook code exists, but the authenticated generation → import → auto-rig round trip is not yet verified. UI does not auto-charge image requests. Use imported assets for the current test.</p></section>
+    {catalog&&<GlabsPanel projectId={pid} catalog={catalog} onImported={()=>load(pid)}/>} 
    </div>}
    {view==='render'&&pid&&<div className="stack">
     <section className="panel"><div className="spread"><h2>Preflight / Quality gates</h2><Btn click={refresh}><RefreshCcw size={14}/> Recheck</Btn></div>

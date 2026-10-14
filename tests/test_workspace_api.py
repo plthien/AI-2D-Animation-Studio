@@ -111,3 +111,44 @@ def test_jpeg_asset_normalized_to_png_for_film_catalog(client):
     assert response.status_code==200 and response.content.startswith(b"\x89PNG\r\n\x1a\n")
     with Image.open(BytesIO(response.content)) as im:
         assert im.size==(640,480) and im.format=="PNG"
+
+
+def test_glabs_project_task_explicit_submit_import_and_idempotent_poll(client, monkeypatch, tmp_path):
+    class FakeClient:
+        @classmethod
+        def from_env(cls):
+            return cls()
+        async def __aenter__(self):
+            return self
+        async def __aexit__(self, *args):
+            return None
+        async def submit(self, request):
+            assert request.prompt.startswith("Clean 2D")
+            return "aabbccdd"
+        async def status(self, task_id):
+            assert task_id == "aabbccdd"
+            return {"status":"completed", "results":["http://127.0.0.1:8765/api/files/generated.png"]}
+        async def download(self, url, destination):
+            destination.parent.mkdir(parents=True, exist_ok=True)
+            destination.write_bytes(png())
+            return destination
+    monkeypatch.setattr(ws, "GlabsClient", FakeClient)
+    project_id=make_project(client)
+    url=f"/studio/projects/{project_id}"
+    submitted=client.post(url+"/images/generate",json={
+      "asset_path":"backgrounds/cafe_morning.png",
+      "prompt":"Clean 2D cartoon morning cafe illustration",
+      "model":"nano_banana_2","aspect_ratio":"16:9"})
+    assert submitted.status_code==202 and submitted.json()["task_id"]=="aabbccdd"
+    assert client.post(url+"/images/generate",json={
+      "asset_path":"backgrounds/cafe_morning.png",
+      "prompt":"Clean 2D cartoon morning cafe illustration"}).status_code==409
+    result=client.get(url+"/images/tasks/aabbccdd")
+    assert result.status_code==200 and result.json()["status"]=="completed"
+    assert client.get(url+"/images/tasks/aabbccdd").status_code==200
+    image=client.get(url+"/media/backgrounds/cafe_morning.png")
+    assert image.content.startswith(b"\x89PNG\r\n\x1a\n")
+    assert client.get(url+"/images/tasks/bad").status_code==404
+    assert client.post(url+"/images/generate",json={
+      "asset_path":"backgrounds/not_catalog.png",
+      "prompt":"Clean 2D cartoon unknown asset"}).status_code==422
