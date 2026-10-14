@@ -1,19 +1,25 @@
 # AI 2D Animation Studio
 
-Local-first 2D animation engine: manual ChatGPT/DeepSeek Director JSON → (eventually G-Labs image assets) → Genielabs Spine rig → reusable P4 IK/motion primitives → per-shot PixiJS/Spine film → FFmpeg H.264/AAC.
+A **local-first 2D animation cockpit** with a React/TypeScript UI and a Python Spine/PixiJS motion/render engine.
 
-## P7: second-story engine reuse proof — PASS
+## Getting started on Windows
 
-The first film (**The Coffee Cup Save**, 28 seconds, 672 frames, six motion clips) and second film (**The Lost Key**, 21 seconds, 504 frames, five motion clips) now render through the **same unchanged P5/P6 source engine**. The second film uses the existing two Spine rig variants, new workshop day/twilight PNGs, a new brass key prop PNG and completely separate Director/Motion JSON. Both are verified 24fps 640×480 MP4s with two separate clean frame workspaces.
+1. Install Python 3.12, Node.js 22, and FFmpeg + ffprobe.
+2. Clone the **`feat/p0-p1-foundation` branch** of `plthien/AI-2D-Animation-Studio`.
+3. Run **`setup_studio.bat`** one time; installs pinned JS/Python dependencies, Playwright Chromium and the pinned open-source Genielabs scripts.
+4. Run **`start_studio.bat`**; open **http://127.0.0.1:8000**.
+5. Create a project, open Assets, click **Prepare demo assets (offline)**, then Render & Review → Preflight → Start render. The result is a real multi-shot Spine/PixiJS H.264/AAC MP4, but with **synthetic five-part art and non-speech tone WAVs**.
 
-- [P7 two-story GitHub Actions proof and MP4 artifacts](https://github.com/plthien/AI-2D-Animation-Studio/actions/runs/38486839154)
-- [P7 self-review, bugs and acceptance scope](docs/P7_SELF_REVIEW.md)
-- [Run both films locally](docs/P7_RUNBOOK.md)
-- [Overall phase status](docs/STATUS.md)
-- [Draft PR #1](https://github.com/plthien/AI-2D-Animation-Studio/pull/1)
+For your own project art, import PNG/JPEG/WebP assets and local PCM16 WAVs. The new **Rig Workshop** offers separate atlas/ref input, segmentation, positioning and manually approved semantic/pivot rig building. G-Labs tasks can be submitted explicitly and imported into a catalog background or prop, with provider credentials kept in backend environment. G-Labs MAX authenticated live access **still must be tested on Windows**.
 
-## Project status
+### UI design source
 
-P5 per-shot Director and asset/motion compiler, P6 WAV-based multi-shot render/FFmpeg and P7 bounded second-story reuse are **technically validated**. P0–P4 support these demos with actual Genielabs Spine bones. The first G-Labs authenticated generation test and local Kokoro TTS were deferred by the user. CI uses **synthetic five-part characters and non-speech tone WAVs**, not finished human-like animation and not Kokoro narration.
+Interface layout borrows the dark cockpit/sidebar/pipeline-stage presentation patterns from your [ytb-ai-studio](https://github.com/plthien/ytb-ai-studio) frontend; the 2D Studio code is its own UI rather than a copy of the YouTube app.
 
-The Studio still lacks a complete GUI editor, full-body production rigs, polished acting/lip-sync, sound direction, and verification on real AI-generated assets. Never interpret two successful demos as proof of universal story generalization or a production-ready film system. The PR stays Draft, not merged into `main`.
+### Verified technical baseline
+
+P5: independent `film.v2` per-shot JSON with validated catalogs, motion clips, camera and continuity. P6: Spine/PixiJS fixed-step frames and WAV/FFmpeg MP4 assembly. P7: same engine produces Coffee Cup 28s and Lost Key 21s with different story/art/motion data.
+
+The UI and local workspace endpoints have separate Python API tests and actual Chromium screenshot + rendered-video workflow, located at [UI cockpit CI](https://github.com/plthien/AI-2D-Animation-Studio/actions/workflows/ui-cockpit.yml). See [UI self-review](docs/UI_PHASE_SELF_REVIEW.md), [Windows guide](docs/STUDIO_UI_USER_GUIDE.md), and [project status](docs/STATUS.md).
+
+**Still not production-quality:** authentic G-Labs/Genielabs full-body character acceptance, real Kokoro TTS, expressive acting/lip-sync/physics, fully interactive keyframe editor, robust persistent job queue. The full repo remains [Draft PR #1](https://github.com/plthien/AI-2D-Animation-Studio/pull/1), unmerged.

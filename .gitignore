@@ -9,3 +9,9 @@ assets/generated/
 outputs/
 projects/
 node_modules/
+
+# Local React build, downloaded pinned third-party sources and generated media
+frontend/dist/
+runtime/*.bundle.js
+vendor/genielabs/
+workspace/
