@@ -144,6 +144,24 @@ def _preflight(path: Path) -> dict:
                         problems.append(f"{item}: narration exceeds shot duration")
             except Exception as exc:
                 problems.append(f"{item}: invalid WAV ({exc})")
+    for shot in film.shots:
+        for actor in shot.actors:
+            clip = clips.get(actor.motion_id)
+            if clip and len(clip["frames"]) >= 48:
+                hands = [pose["hand"] for pose in clip["frames"]]
+                distance = sum(((right["x"]-left["x"])**2+
+                                 (right["y"]-left["y"])**2)**0.5
+                               for left, right in zip(hands,hands[1:]))
+                if distance < 4:
+                    warnings.append(
+                        f"{shot.shot_id}/{actor.actor_id}: almost static for "
+                        f"{shot.duration_frames/24:.1f}s. Review acting/secondary motion."
+                    )
+                elif distance > 1800:
+                    warnings.append(
+                        f"{shot.shot_id}/{actor.actor_id}: very large wrist travel; "
+                        "review pose speed and physical credibility."
+                    )
     if any(s.continuity_break for s in film.shots):
         warnings.append("Intentional jump cut(s): review geographic/visual continuity manually.")
     if film.width * film.height > 1280 * 720:

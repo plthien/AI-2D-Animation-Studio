@@ -66,7 +66,7 @@ try {
       const lower=actor.skeleton.findBone(rig.profile.bones.forearm);
       const hand=actor.skeleton.findBone(rig.profile.bones.hand);
       if(!upper||!lower||!hand)throw Error('Spine rig missing arm bones: '+track.rig_id);
-      instances[key]={actor,upper,lower,hand};
+      instances[key]={actor,upper,lower,hand,head:actor.skeleton.findBone('head')};
     }
   }
   for(const id of Object.keys(timeline.assets.backgrounds)){
@@ -119,6 +119,14 @@ try {
       if(!pose||pose.frame!==assignment.pose_frame)throw Error('Motion clip frame gap');
       const actor=instance.actor,profile=rig.profile;
       actor.skeleton.setToSetupPose();actor.state.clearTracks();
+      // Lightweight procedural secondary acting only: bone-local head motion.
+      // The arm IK and physical prop socket remain frame-perfect and unchanged.
+      if(instance.head){
+        const idle=pose.phase==='wait';
+        const energy=idle?1.2:0.55;
+        const phase=frame.local_frame*0.065+(assignment.actor_id.length*0.53);
+        instance.head.rotation+=Math.sin(phase)*energy;
+      }
       const shoulder=toSpine(pose.shoulder,profile);
       const elbow=toSpine(pose.elbow,profile);
       const wrist=toSpine(pose.hand,profile);
