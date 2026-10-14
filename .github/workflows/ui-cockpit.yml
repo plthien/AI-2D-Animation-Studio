@@ -30,6 +30,14 @@ jobs:
           cd frontend
           npm install --no-audit --no-fund
           npm run build
+      - name: Install FFmpeg and pinned Genielabs synthetic rig builder for test
+        run: |
+          sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg
+          mkdir -p vendor/genielabs/scripts
+          SHA=702b71689cac826efee942ee4564fef9560d6ef8
+          for script in build_spine_json.py make_atlas.py; do
+            curl -fsSL --retry 3 "https://raw.githubusercontent.com/GenielabsOpenSource/spine-animation-ai/$SHA/scripts/$script" -o "vendor/genielabs/scripts/$script"
+          done
       - name: Run local Python server + test actual browser UI
         run: |
           cd runtime
