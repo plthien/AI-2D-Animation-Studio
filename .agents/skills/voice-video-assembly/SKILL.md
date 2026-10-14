@@ -26,3 +26,7 @@ One 48kHz authoritative timeline, no voice-first authoring dependency, no video/
 ## Mandatory animation-first v1.2 amendment
 
 Only voiced shots receive WAV/VoiceCue. Silent visual shots remain duration-correct and receive exact 2000 zero samples/frame at final assembly, with no fabricated voice artifact. Voice remains last; no dialogue/lip-sync in MVP.
+
+## Mandatory phase implementation authority
+
+Read `docs/implementation/INDEX.md` and the matching full `Pxx_*.md` plan before writing code; run `tools/validate_implementation_pack.py` and `tools/test_cross_phase_contracts.py` as part of this skill. Phase plan adds executable work orders but cannot override Master Spec or normative JSON Schema.

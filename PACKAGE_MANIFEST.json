@@ -1,81 +1,82 @@
 {
-  "title": "AI 2D Animation Studio Codex Animation-first Specification Pack v1.2",
+  "title": "AI 2D Animation Studio Codex Implementation + Contract Pack v1.3",
   "prepared_on": "2026-10-14",
   "target_repository": "plthien/AI-2D-Animation-Studio",
-  "target_main_baseline": "2fca1e1c6835a707a718608a5f09602aef865069",
+  "target_main_baseline": "c7ed0748a4e037a20bf775d48821492e4d2ecb81",
   "source_repository": "plthien/ytb-ai-studio",
   "source_sha": "393d0eb5516ac8bb8455f859b79bfc64388b128e",
+  "spec_revision": "1.3",
   "schemas": 19,
   "examples": 19,
   "skills": 9,
   "rules": 5,
-  "spec_revision": "1.2",
-  "file_count": 66,
+  "phase_plans": 12,
+  "file_count": 81,
   "files": [
     {
       "path": ".agents/skills/asset-resolution/SKILL.md",
-      "bytes": 1630,
-      "sha256": "d5483d3c2b1a5d29abe4b4aad45d55011d77be873eefcdef725125e41b512398"
+      "bytes": 1977,
+      "sha256": "860676a72f74d2c8796fd16892470efa1e867ac13e099b2a5fa430547118d992"
     },
     {
       "path": ".agents/skills/external-authoring/SKILL.md",
-      "bytes": 1914,
-      "sha256": "e58304025efd0b68c1950ca12e5726f0600023cc45df8e1509b1da729f012eee"
+      "bytes": 2261,
+      "sha256": "73afabc03b1262e01c17a4750e26b66e579245fcb80d87f3dcc520042c5344bc"
     },
     {
       "path": ".agents/skills/glabs-integration/SKILL.md",
-      "bytes": 1684,
-      "sha256": "2f5c20b79724bb7af7d984914571f49c67ca1f80c6596374faac4a78d060bdf0"
+      "bytes": 2031,
+      "sha256": "f5727473a1eca45e49a6ee8502ef9c817b4f245de81cbc12a456d86d55de3a20"
     },
     {
       "path": ".agents/skills/motion-engine/SKILL.md",
-      "bytes": 2169,
-      "sha256": "a173125886ea99332d87078f3a76f421b85a346aed058e36d2d1c91e1de2aaa1"
+      "bytes": 2516,
+      "sha256": "97485b785430a34e2e7fa4562e8f55a060cdb87101ad3fecda8bf1a2cef1819c"
     },
     {
       "path": ".agents/skills/native-auto-rig/SKILL.md",
-      "bytes": 2225,
-      "sha256": "4a16dbf2df87c7b8b4ee553e3a71650b13b73a6ca02f9dc05f8a2691b38dcf58"
+      "bytes": 2572,
+      "sha256": "3d92197fcd1d275323177226faa4779c33b44cdd3a61f3922d4887bba111bad7"
     },
     {
       "path": ".agents/skills/phase-self-review/SKILL.md",
-      "bytes": 1715,
-      "sha256": "cfef7dad4c32589d993d0d0844d6497b68b50027361d9991b69f0e59eb3dd8c5"
+      "bytes": 2062,
+      "sha256": "f111ada88aedbd262d0c156b6bfca033385561c4ccea0363cee94d0279b5dbb6"
     },
     {
       "path": ".agents/skills/spine-renderer/SKILL.md",
-      "bytes": 1832,
-      "sha256": "59cf606a695977350249a670c4b058d7dad956a4e66fb7e3706add1c50b62ddd"
+      "bytes": 2179,
+      "sha256": "11288dfaec496dea539a51e18136bb5dc380f4f3c5770f9ee091e552f0584359"
     },
     {
       "path": ".agents/skills/voice-video-assembly/SKILL.md",
-      "bytes": 1894,
-      "sha256": "17fcde07c80405d4ba4121b19740ac085629040c609b0ff8bc63e7f76b73e1a0"
+      "bytes": 2241,
+      "sha256": "c3a3dc65bed18703c7fec795fe8d7c0695c6a8861add6566310bc5e54fb22c0b"
     },
     {
       "path": ".agents/skills/ytb-source-port/SKILL.md",
-      "bytes": 2019,
-      "sha256": "f37f4b5d3c81e2aa4c506476d7e0400a4ed1a02b569787586b8c2389ea42b98c"
+      "bytes": 2366,
+      "sha256": "2e2b7ec5c5c95819786cf51c1a2d218a29744277a0eb05c2aa4e6819fcc1b637"
     },
     {
       "path": "AGENTS.md",
-      "bytes": 5828,
-      "sha256": "8a31a0b6c04e527056bd227f4f936b9ce8c074194393d6366340075c757256dc"
+      "bytes": 6335,
+      "sha256": "f4d48f108743676753b78edb90fb5466ff7e327b8a720adaa79e214fedf22c0f"
     },
     {
       "path": "CONTRACT_VALIDATION_REPORT.md",
-      "bytes": 1022,
-      "sha256": "eb44750d6fc7812e2516408cb5901bac7b3b589a0b8048d19c2439fb9e8e73e2"
+      "bytes": 1360,
+      "sha256": "43b437b90a0f212da958e5a428d11c290b1f78411ca840cad1ceb9dd2c85857f"
     },
     {
       "path": "MASTER_SPEC.md",
-      "bytes": 119043,
-      "sha256": "f1fceff209f637e56a2f07458b61cbd363f558df21952f54d3ad55d9bbb13f67"
+      "bytes": 122383,
+      "sha256": "494e209b883385115c7d4512155661336c7215cd34e00a29926aec374607589a"
     },
     {
       "path": "README_FOR_CODEX.md",
-      "bytes": 2272,
-      "sha256": "aa5912b948f6734be4b6b28d468e9b72c0b35a3923677ee7bb1ddf1cff7db674"
+      "bytes": 2762,
+      "sha256": "a3b9def88b3fa3920be81da0948e95020b206250a702d0438ce6cdc91d3af797"
     },
     {
       "path": "contracts/examples/animation_plan.json",
@@ -205,7 +206,7 @@
     {
       "path": "contracts/schemas/final_timeline.schema.json",
       "bytes": 3874,
-      "sha256": "9e025cca57f069fdf71e9a6b40a8dd1395e9bb791ae9d6a365ad1ab12099eb1a"
+      "sha256": "65facb1415611e0882a86a14b07779af922d1e7b42fca34360625cb480d5096f"
     },
     {
       "path": "contracts/schemas/frame_sequence_manifest.schema.json",
@@ -273,6 +274,11 @@
       "sha256": "b9d0e6a3b68c3d96a65e0d83644bece5661aa491068c3930b95ee0fa61a831d2"
     },
     {
+      "path": "docs/audits/CONTRACT_PHASE_CONSISTENCY_v1_3.md",
+      "bytes": 4360,
+      "sha256": "afea8453d6ba6baa910fb38b570bb324a92a68c242f341ec72d01bfb6b9663ca"
+    },
+    {
       "path": "docs/contracts/ANIMATION_CONTRACT_SEMANTICS.md",
       "bytes": 6003,
       "sha256": "5be0c0dc48e63865bdcfef8e14c0aa051aeeabe120f2d91967449c1a86286e24"
@@ -283,39 +289,109 @@
       "sha256": "302223895b98b536922dae771baad7eea9dd05e6feb6e7cf4c58aa7b11cf0f33"
     },
     {
+      "path": "docs/implementation/INDEX.md",
+      "bytes": 2058,
+      "sha256": "4b0a39543a8f95a4cb32658d4383a5b197be27ded56ed1fb5fdf40789dd7cbf8"
+    },
+    {
+      "path": "docs/implementation/P0_FOUNDATION.md",
+      "bytes": 8170,
+      "sha256": "582261e1499611b250e286c0da256970de593c0e2c890612ea13eb871112cbc3"
+    },
+    {
+      "path": "docs/implementation/P10_PRODUCTION_UI_QC.md",
+      "bytes": 6479,
+      "sha256": "76e83e9e0e69e822f184131ab182cb35c5ae58ec7436b0acba7e8ce4084e22ab"
+    },
+    {
+      "path": "docs/implementation/P11_ACCEPTANCE_RELEASE.md",
+      "bytes": 6686,
+      "sha256": "86707cf62100a002faa7917b8d5bdedb775ba7c4389253d347cefc27a423af8e"
+    },
+    {
+      "path": "docs/implementation/P1_EXTERNAL_AUTHORING.md",
+      "bytes": 7717,
+      "sha256": "e764158390465224bfa8d43127000834599208987beaac09896eb3debc350580"
+    },
+    {
+      "path": "docs/implementation/P2_ASSET_REGISTRY.md",
+      "bytes": 7523,
+      "sha256": "d2c472fe64694277eb8b4e3425fa061a6861a50004ff41cb84b726de48a5eaea"
+    },
+    {
+      "path": "docs/implementation/P3_GLABS_INTEGRATION.md",
+      "bytes": 6891,
+      "sha256": "448f15e899c2503c504b3aaf4b79d3b1109a20fba1afd49740ae2b62c2fd4306"
+    },
+    {
+      "path": "docs/implementation/P4_NATIVE_AUTO_RIG.md",
+      "bytes": 7772,
+      "sha256": "8fc0489b1ca7b8a253f83363f0d9935ceb3a6988da8ab892125ce8e1645370c9"
+    },
+    {
+      "path": "docs/implementation/P5_MOTION_ENGINE.md",
+      "bytes": 7393,
+      "sha256": "9dc6a5dc2e91bb5f3dfee0a4447e0f23b961e51d20d7fd5b829c556282f0f7d0"
+    },
+    {
+      "path": "docs/implementation/P6_ANIMATION_DIRECTOR.md",
+      "bytes": 6155,
+      "sha256": "0b8a55067892ff72a4de2c890780dab80fc6bee7d8ed3bc179636bafe2e06ce0"
+    },
+    {
+      "path": "docs/implementation/P7_SPINE_RENDERER.md",
+      "bytes": 6644,
+      "sha256": "ee5c5329134fa839c9a96e9a403d8ac3824cad2906043411a1fc993422ed7ba2"
+    },
+    {
+      "path": "docs/implementation/P8_VOICE.md",
+      "bytes": 6474,
+      "sha256": "259ef97b588a24a1b2abd63ca6e23dc6c0712167d5298879a02b15919c2d37e7"
+    },
+    {
+      "path": "docs/implementation/P9_TIMING_FFMPEG.md",
+      "bytes": 7003,
+      "sha256": "7cf8ecac826fd8a097e0a2de925f41b469b287ca174c7bcbe53cf72dbb4a30f6"
+    },
+    {
       "path": "docs/research/ANIMATION_RUNTIME_EVIDENCE.md",
       "bytes": 2762,
       "sha256": "73e461036186337f1bf63454bd3d07ffbef2f6db3bf6f4ee6de77327fdd41e98"
     },
     {
       "path": "docs/rules/ARCHITECTURE_RULES.md",
-      "bytes": 3832,
-      "sha256": "dcf5ca8608574fc5d7db94cfe803c73ec3a0b7a444f18de420cafb7c69c12492"
+      "bytes": 4335,
+      "sha256": "d6704a6f9d05957d7faecca1cf9512a472d4f905ef22dc69a7e7ca3fb09bbfb9"
     },
     {
       "path": "docs/rules/CODING_RULES.md",
-      "bytes": 4529,
-      "sha256": "196598974484e9b767a7fd65a83d55b91b4fd259d7a7ed9dccf2fa6ed02bdc03"
+      "bytes": 5032,
+      "sha256": "550592a09489705399e08aa237d89ebbe3a3528c983de2ce15a049ae44272e93"
     },
     {
       "path": "docs/rules/PROJECT_RULES.md",
-      "bytes": 3558,
-      "sha256": "172582f7dc1f78701e90cde9bef68b9a74193ef36b878f7c0d17c100570e655b"
+      "bytes": 4061,
+      "sha256": "1f060de7963a58707c7597dc853c015f3a705f012a9a99cab2d410517ed4797c"
     },
     {
       "path": "docs/rules/REVIEW_RULES.md",
-      "bytes": 2630,
-      "sha256": "78ab69f55007734a72b0ed0271d43cc33cf9164c290f4d3a452caf31bb03bb41"
+      "bytes": 3133,
+      "sha256": "bb0fbb6144bf9c5586011eb6d208b6764251f3220042d0b908bf878f879349cb"
     },
     {
       "path": "docs/rules/TESTING_RULES.md",
-      "bytes": 3371,
-      "sha256": "df23619f197e6486a12836d18d93de8097d133dbd4841882e97f4c6b98c48f99"
+      "bytes": 3874,
+      "sha256": "376000d79d5f8d53abdc1e8b62d7f79f3d47f068c9c5dd79a9cc636f15dc5045"
     },
     {
       "path": "tools/test_animation_contract_semantics.py",
       "bytes": 5551,
       "sha256": "1ec8f5095812c5765124d8c60f45b97e2e11957293e3b55d34edf97a0b736a96"
+    },
+    {
+      "path": "tools/test_cross_phase_contracts.py",
+      "bytes": 3732,
+      "sha256": "df2eb2cbf76c005f91d6778f2d3fde2eb630b08836db647ce449d610e946d8a7"
     },
     {
       "path": "tools/validate_agent_pack.py",
@@ -331,6 +407,11 @@
       "path": "tools/validate_contract_pack.py",
       "bytes": 5388,
       "sha256": "6f0b679745f5e6ace56385dc77ac74436fd370cc07e45c84cdbb2bf149c4ba15"
+    },
+    {
+      "path": "tools/validate_implementation_pack.py",
+      "bytes": 2483,
+      "sha256": "297a141c06b8799e05afcaef07d1890f2a2c335548c98a58fe3a348f19b2e047"
     },
     {
       "path": "tools/verify_package_manifest.py",

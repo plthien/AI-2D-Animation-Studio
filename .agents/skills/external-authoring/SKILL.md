@@ -25,3 +25,7 @@ Approved immutable `topic_ideas.v1`, `script.v1`, `shot_plan.v1` and, when P6 re
 ## Mandatory animation-first v1.2 amendment
 
 Use `channel_dna.v2` and separate channel identity hashes; Script is narration-only and ShotPlan has required `shot_purpose`. Empty narration is valid only for visual-only shots with `section_start=section_end`. Director shot performance must match approved ChannelDNA defaults, not prompt hallucinations.
+
+## Mandatory phase implementation authority
+
+Read `docs/implementation/INDEX.md` and the matching full `Pxx_*.md` plan before writing code; run `tools/validate_implementation_pack.py` and `tools/test_cross_phase_contracts.py` as part of this skill. Phase plan adds executable work orders but cannot override Master Spec or normative JSON Schema.

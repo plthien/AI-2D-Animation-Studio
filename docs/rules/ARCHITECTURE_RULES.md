@@ -38,3 +38,7 @@ Use Master Spec §14 and Appendix A for file-level phase deliverables. If work s
 ## Animation-style/hash authority
 
 ChannelDNA v2 owns textual and bounded style defaults. Assets consume the `visual_style_hash`; Director/Motion consume `performance_style_hash` and explicit per-shot performance snapshot; Voice consumes `narration_identity_hash`. Never invalidate approved G-Labs images solely for movement style changes, nor allow a new visual asset to bypass rig QA. Renderer consumes compiled frame snapshots and Spine 4.2 assets, not arbitrary ChannelDNA prose. Rig actual bone list must be checked against approved RigProfile before rendering.
+
+## Implementation-plan authority (v1.3)
+
+Every PR P0–P11 must implement the corresponding `docs/implementation/Pxx_*.md`, report task-by-task proofs in phase QA, and execute `tools/validate_implementation_pack.py` plus `tools/test_cross_phase_contracts.py`. Master Spec §20 controls canonical voice final-extension limits (768 final frames/shot, 23040 final frames maximum); raw voice length in P8 is not the final scheduling authority. Contract collisions are blockers, not choices left to agents.

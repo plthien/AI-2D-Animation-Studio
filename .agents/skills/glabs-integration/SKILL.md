@@ -25,3 +25,7 @@ A live G-Labs authenticated Windows request is a separate **required later accep
 ## Mandatory animation-first v1.2 amendment
 
 For character_parts_atlas/expression_sheet generation, enforce an existing source reference artifact ID and same character lineage. Reference and parts atlas must be independently reviewed; paid G-Labs submission still requires explicit approval.
+
+## Mandatory phase implementation authority
+
+Read `docs/implementation/INDEX.md` and the matching full `Pxx_*.md` plan before writing code; run `tools/validate_implementation_pack.py` and `tools/test_cross_phase_contracts.py` as part of this skill. Phase plan adds executable work orders but cannot override Master Spec or normative JSON Schema.

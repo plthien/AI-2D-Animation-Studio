@@ -26,3 +26,7 @@ Two independent films with identical engine code hashes, zero stale frames and e
 ## Mandatory animation-first v1.2 amendment
 
 Use official Spine-Pixi v8 4.2.x and PixiJS >=8.16 with the matching Spine 4.2 skeleton JSON, WebGL preferred. Do not hardcode exactly 16 emitted bones; verify exact approved `rig_profile.runtime_bone_names`, support approved extras and reject unknown bones. Check Spine runtime license before distributing.
+
+## Mandatory phase implementation authority
+
+Read `docs/implementation/INDEX.md` and the matching full `Pxx_*.md` plan before writing code; run `tools/validate_implementation_pack.py` and `tools/test_cross_phase_contracts.py` as part of this skill. Phase plan adds executable work orders but cannot override Master Spec or normative JSON Schema.

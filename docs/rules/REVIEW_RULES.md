@@ -25,3 +25,7 @@ Include `base_sha`, `head_sha`, `phase`, `upstream_sha`, changed file list, exac
 ## Additional self-review proof: animation-first
 
 Inspect `channel_dna.v2` cross-field and effective animation preset tests, verify that visual hash is not recomputed from performance-only edits, inspect actual rig bone name validation and official Spine 4.2 matched runtime, and verify per-voiced-shot cue completeness with silent-shot sample insertion. Note any YTB V3 fields that were deliberately not ported. `docs/audits/ANIMATION_CONTRACT_AUDIT_v1_2.md` is review scope, not a substitute for running tests.
+
+## Implementation-plan authority (v1.3)
+
+Every PR P0–P11 must implement the corresponding `docs/implementation/Pxx_*.md`, report task-by-task proofs in phase QA, and execute `tools/validate_implementation_pack.py` plus `tools/test_cross_phase_contracts.py`. Master Spec §20 controls canonical voice final-extension limits (768 final frames/shot, 23040 final frames maximum); raw voice length in P8 is not the final scheduling authority. Contract collisions are blockers, not choices left to agents.

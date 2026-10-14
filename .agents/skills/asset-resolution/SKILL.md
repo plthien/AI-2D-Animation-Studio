@@ -25,3 +25,7 @@ No paid G-Labs call triggered by resolver. Every demanded asset has an actionabl
 ## Mandatory animation-first v1.2 amendment
 
 Resolve only `character`, `background`, `prop` asset kinds. Hash visual identity/entity styles/negative constraints, excluding animation/editorial performance; changes to acting do not force image regeneration. Detect rig capability independently.
+
+## Mandatory phase implementation authority
+
+Read `docs/implementation/INDEX.md` and the matching full `Pxx_*.md` plan before writing code; run `tools/validate_implementation_pack.py` and `tools/test_cross_phase_contracts.py` as part of this skill. Phase plan adds executable work orders but cannot override Master Spec or normative JSON Schema.

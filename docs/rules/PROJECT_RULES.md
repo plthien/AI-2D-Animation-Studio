@@ -39,3 +39,7 @@
 ## Animation-first scope (v1.2)
 
 `channel_dna.v2` separates visual style, performance identity, narration identity and editorial identity; asset reuse must not invalidate because acting-only settings changed. Rig final artifact is `rig_manifest.v1` (not `rig_package.v1`). Supported asset kinds are character/background/prop only. One silent visual shot uses `narration_text=""` with zero-length script span; all-silent productions and multi-speaker dialogue remain outside narrated MVP. No engine behavior derived from unstructured creative prose; implement only versioned action DSL and bounded performance presets. See Master Spec §19.
+
+## Implementation-plan authority (v1.3)
+
+Every PR P0–P11 must implement the corresponding `docs/implementation/Pxx_*.md`, report task-by-task proofs in phase QA, and execute `tools/validate_implementation_pack.py` plus `tools/test_cross_phase_contracts.py`. Master Spec §20 controls canonical voice final-extension limits (768 final frames/shot, 23040 final frames maximum); raw voice length in P8 is not the final scheduling authority. Contract collisions are blockers, not choices left to agents.

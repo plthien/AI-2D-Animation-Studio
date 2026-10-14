@@ -27,3 +27,7 @@ A valid JSON skeleton without convincing poses is only structural proof; real G-
 ## Mandatory animation-first v1.2 amendment
 
 Stage 4 output is `rig_manifest.v1`, never `rig_package.v1`. `parts_manifest.v1` stores both source reference and parts atlas artifact IDs+SHA. Skeleton may have extra approved bones; core 16 semantic roles required, runtime must verify all named bones.
+
+## Mandatory phase implementation authority
+
+Read `docs/implementation/INDEX.md` and the matching full `Pxx_*.md` plan before writing code; run `tools/validate_implementation_pack.py` and `tools/test_cross_phase_contracts.py` as part of this skill. Phase plan adds executable work orders but cannot override Master Spec or normative JSON Schema.

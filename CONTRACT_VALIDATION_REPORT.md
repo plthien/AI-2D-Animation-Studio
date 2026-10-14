@@ -1,11 +1,14 @@
-# Animation-first Codex Specification validation — v1.2
+# CODEX specification validation report — v1.3
 
-Date: 2026-10-14. The following commands were run locally against the updated files. These are **specification checks only** and not proof of actual G-Labs, Spine, Kokoro, FFmpeg or Windows production behavior.
+Date: 2026-10-14. Scope: **documentation/contracts only**. Repository app code, Windows, G-Labs, real rigs/Spine runtime and MP4 media have NOT been executed.
 
-- `python tools/validate_contract_pack.py` — exit 0: `PASS 19 schema/example pairs + animation-specific cross-artifact assertions`
-- `python tools/test_animation_contract_semantics.py` — exit 0: `PASS 30 animation-first positive/negative and cross-domain contract assertions`
-- `python tools/validate_agent_pack.py` — exit 0: `PASS 1 AGENTS + 9 skills + 5 rules + authoritative references`
+- `python tools/validate_contract_pack.py`: **PASS**, 19 schema/example pairs and cross-artifact assertions.
+- `python tools/test_animation_contract_semantics.py`: **PASS**, 30 animation-first positive/negative semantic assertions.
+- `python tools/validate_agent_pack.py`: **PASS**, root AGENTS + 9 Skills + 5 Rules.
+- `python tools/validate_implementation_pack.py`: **PASS**, 12 detailed P0–P11 phase plans, mandatory references, Master v1.3.
+- `python tools/test_cross_phase_contracts.py`: **PASS**, 19 cross-phase and voice extension positive/negative assertions.
+- `python tools/verify_package_manifest.py`: **PASS** once manifest is generated.
 
-Changes audited: 19 schema/example pairs; Channel DNA v2; bounded per-shot acting; actor bone set; silent visual shots; atlas/reference source lineage; no unsupported effect; official Spine runtime/license references.
+Cross-phase corrections: VoiceManifest original-film absolute cue timing; raw WAV overrun stored in P8 and safely reconciled in P9; FinalTimeline max768 frames per shot and 23040 total; fresh DB exactly 14 tables; canonical requirement ID hash; P0 `/health` success envelope. See `docs/audits/CONTRACT_PHASE_CONSISTENCY_v1_3.md`.
 
-No application source was implemented as part of this contract revision. Real provider/rig/animation/video acceptance remains NOT_RUN.
+A passed documentation audit is **not** proof of production animation. Manual/live P3/P4/P7/P8/P9/P11 tests remain required and must be marked NOT_RUN until observed.

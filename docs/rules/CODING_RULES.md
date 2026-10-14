@@ -42,3 +42,7 @@ Every changed behavior requires a test; report exact reproducible commands and o
 - `compiled_film` core semantic bone roles number 16; serialized bones are between 16 and 64 distinct approved rig bones. Validate all names against actual skeleton.
 - For silent visual shots: zero-length script range, explicit shot purpose, no VoiceCue, exact silence injected only in final audio assembly.
 - `rig_manifest.v1` is sole rig publication name; effect asset is unsupported until explicitly versioned.
+
+## Implementation-plan authority (v1.3)
+
+Every PR P0–P11 must implement the corresponding `docs/implementation/Pxx_*.md`, report task-by-task proofs in phase QA, and execute `tools/validate_implementation_pack.py` plus `tools/test_cross_phase_contracts.py`. Master Spec §20 controls canonical voice final-extension limits (768 final frames/shot, 23040 final frames maximum); raw voice length in P8 is not the final scheduling authority. Contract collisions are blockers, not choices left to agents.

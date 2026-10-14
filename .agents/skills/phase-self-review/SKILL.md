@@ -27,3 +27,7 @@ PASS requires observed commands/tests and no BLOCKER/HIGH. Incomplete tests must
 ## Mandatory animation-first v1.2 amendment
 
 Audit against `docs/audits/ANIMATION_CONTRACT_AUDIT_v1_2.md`, inspect `docs/contracts/*`, run `tools/test_animation_contract_semantics.py`, and report unresolved license/real-render gates explicitly.
+
+## Mandatory phase implementation authority
+
+Read `docs/implementation/INDEX.md` and the matching full `Pxx_*.md` plan before writing code; run `tools/validate_implementation_pack.py` and `tools/test_cross_phase_contracts.py` as part of this skill. Phase plan adds executable work orders but cannot override Master Spec or normative JSON Schema.

@@ -17,7 +17,7 @@ A conflict involving normative layers 2–4 is a **blocker**. Do not choose an i
 
 1. Verify target repository is `plthien/AI-2D-Animation-Studio`; baseline must be its `main`. Ignore `feat/p0-p1-foundation` and PR #1 completely: do not inspect, cherry-pick, merge, cite as proof, or copy its files.
 2. Read this file, `README_FOR_CODEX.md`, `MASTER_SPEC.md` **including Implementer Appendix A–H**, all five `docs/rules/*.md` files, and `docs/contracts/*`, `docs/audits/ANIMATION_CONTRACT_AUDIT_v1_2.md`, and relevant schemas/examples.
-3. Read the matching skill(s) using `.agents/skills/<name>/SKILL.md`; apply `phase-self-review` on *every* phase.
+3. Read the matching skill(s) using `.agents/skills/<name>/SKILL.md`, **`docs/implementation/INDEX.md` and the requested `docs/implementation/Pxx_*.md` in full**; apply `phase-self-review` on *every* phase.
 4. Run `python tools/validate_contract_pack.py` AND `python tools/test_animation_contract_semantics.py` in a Python 3.12 environment with `jsonschema` installed; do not claim PASS without actual output.
 5. Confirm pinned YTB source `plthien/ytb-ai-studio@393d0eb5516ac8bb8455f859b79bfc64388b128e`; source files copied only if expressly authorized in §1 of Master Spec. YTB must remain unmodified. Record every transplant in `docs/UPSTREAM_PORT_MANIFEST.md` with original path and SHA.
 6. Create a phase-specific feature branch from latest approved base; for P0 use `feat/p0-foundation`. Implement **only the requested phase**, including its specified tests and documentation. Use a distinct PR; never auto-merge.
@@ -62,3 +62,7 @@ When phase crosses boundaries, read *both* owning skills, preserve single-writer
 ## Animation-first contract freeze (v1.2)
 
 `channel_dna.v2` is the only active Channel DNA shape. Channel performance and visual identity have separate content hashes. Director plans carry per-shot performance settings and do not invent unapproved actions. Silent visual shots are legal with empty narration and an empty exact source span; VoiceManifest cues cover voiced shots only. Rig manifest is `rig_manifest.v1`, never `rig_package.v1`; compiled rigs have 16 required semantic bones but up to 64 actual approved bones. Read `MASTER_SPEC.md` §19 and `docs/contracts/ANIMATION_CONTRACT_SEMANTICS.md` before any phase. This amendment is authoritative over prior frozen-plan prose.
+
+## Detailed phase plan gate (v1.3)
+
+Before implementation of P0–P11 read the corresponding `docs/implementation/Pxx_*.md` **entirely**. Stop on any mismatch between plan/API/schema/Master Spec; do not choose an interpretation. For P8/P9, raw voice overruns are held for safe final reconciliation (<=48 additional frames), and `final_timeline` may contain 768 final frames per shot; P0 schema creates 14 tables.

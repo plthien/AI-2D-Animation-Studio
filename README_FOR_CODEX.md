@@ -10,7 +10,8 @@ This repository root contains **specifications and implementation policy only**,
 4. Read `docs/contracts/ANIMATION_CONTRACT_SEMANTICS.md`, `docs/contracts/CHANNEL_DNA_ANIMATION_GUIDE.md`, `docs/audits/ANIMATION_CONTRACT_AUDIT_v1_2.md`, and every `contracts/schemas/*.schema.json` / `contracts/examples/*.json` (19 contracts).
 5. Read phase-relevant `.agents/skills/<skill-name>/SKILL.md`; always apply `.agents/skills/phase-self-review/SKILL.md`.
 6. Run `python tools/validate_contract_pack.py` and `python tools/test_animation_contract_semantics.py`; interpreter must have `jsonschema` available. Do not infer PASS from historical reports.
-7. Follow `MASTER_SPEC.md` Appendix F for execution prompt, starting **P0 ONLY** unless user explicitly changes the phase.
+7. Read `docs/implementation/INDEX.md` and the full `Pxx_*.md` plan for the requested phase; run `python tools/validate_implementation_pack.py` and `python tools/test_cross_phase_contracts.py`.
+8. Follow `MASTER_SPEC.md` Appendix F for execution prompt, starting **P0 ONLY** unless user explicitly changes the phase.
 
 ## Frozen repositories
 
@@ -25,3 +26,5 @@ The schemas determine exact shape; Master Spec supplies semantics; rules govern 
 ## Contents
 
 `AGENTS.md`, `MASTER_SPEC.md`, `README_FOR_CODEX.md`, `docs/contracts/`, `docs/audits/`, `docs/research/`, `docs/rules/` (5 documents), `.agents/skills/` (9 skills), `contracts/schemas/` (19 documents), `contracts/examples/` (19 examples), `tools/validate_contract_pack.py`, generated `PACKAGE_MANIFEST.json` and `CONTRACT_VALIDATION_REPORT.md`.
+
+The **twelve phase plans P0–P11** are mandatory implementation authorities, not optional summaries. Schemas remain authoritative on shape; executable semantic validators prove cross-artifact invariants; phase plans are subordinate to Master Spec and must never override schema by implication.

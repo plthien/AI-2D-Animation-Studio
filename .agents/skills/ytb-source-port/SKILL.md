@@ -26,3 +26,7 @@ P0 ends without imported Scene Asset, voice-first, Ken Burns or YTB old routes. 
 ## Mandatory animation-first v1.2 amendment
 
 Port YTB platform primitives only, NOT YTB ChannelDNA v3/schema or voice-first Scene/Beat contracts. Use new `channel_dna.v2`, strict extra-key rejection and separate visual/performance/narration hashes. Start from latest approved main.
+
+## Mandatory phase implementation authority
+
+Read `docs/implementation/INDEX.md` and the matching full `Pxx_*.md` plan before writing code; run `tools/validate_implementation_pack.py` and `tools/test_cross_phase_contracts.py` as part of this skill. Phase plan adds executable work orders but cannot override Master Spec or normative JSON Schema.

@@ -42,7 +42,7 @@
     "total_frames": {
       "type": "integer",
       "minimum": 24,
-      "maximum": 21600
+      "maximum": 23040
     },
     "shots": {
       "type": "array",
@@ -68,7 +68,7 @@
           "final_frames": {
             "type": "integer",
             "minimum": 24,
-            "maximum": 720
+            "maximum": 768
           },
           "absolute_start_frame": {
             "type": "integer",
