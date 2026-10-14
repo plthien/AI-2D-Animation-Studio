@@ -32,3 +32,4 @@ if not exist ".env" copy /y ".env.example" ".env" >nul
 where ffmpeg.exe >nul 2>&1
 if errorlevel 1 echo Optional readiness notice: FFmpeg was not found on PATH. Final video export is not part of P0.
 echo Setup complete. Run start.bat.
+exit /b 0

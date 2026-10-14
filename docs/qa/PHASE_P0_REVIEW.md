@@ -10,7 +10,7 @@
 
 | Work order | Requirement and implementation | Evidence |
 |---|---|---|
-| P0.01 Dependency lock and bootstrap | Pinned Python/npm dependencies, environment template, ignored local data, Windows setup/start scripts, local-first README. | `setup.bat`, `start.bat`, `requirements.txt`, `package.json`, `package-lock.json`, `.env.example`, `.gitignore`, `README.md`; `tests/platform/test_bootstrap_files.py`; Node 22/npm 11, Python 3.12 verified. `npm ci` completed: 142 packages added. Direct `setup.bat`/`start.bat` invocation: **NOT_RUN**. |
+| P0.01 Dependency lock and bootstrap | Pinned Python/npm dependencies, environment template, ignored local data, Windows setup/start scripts, local-first README. | `setup.bat`, `start.bat`, `requirements.txt`, `package.json`, `package-lock.json`, `.env.example`, `.gitignore`, `README.md`; `tests/platform/test_bootstrap_files.py`; Node 22/npm 11, Python 3.12 verified. Direct `setup.bat` completed with exit code 0, installing 142 packages and building the UI. Direct `start.bat` smoke returned HTTP 200 from `/health` with disposable database/artifact paths. |
 | P0.02 Core transplant | Rewritten neutral core/config/SQLite/artifact/job primitives with source provenance. | `app/core/`, `app/db/`, `app/infrastructure/sqlite.py`, `app/repositories/`, `app/services/`, `app/platform/jobs/`; `docs/UPSTREAM_PORT_MANIFEST.md`; Python tests. No source file copied byte-for-byte. |
 | P0.03 New schema | Static initial Alembic migration creates the 14 required product tables; SQLite connections enable WAL and foreign keys. | `app/db/models.py`, `migrations/versions/0001_initial.py`, `tests/platform/test_migration.py`, `tests/platform/test_models.py`; fresh migration and `alembic check` pass. Product-table count 14; `foreign_keys=1`, `journal_mode=wal`. |
 | P0.04 Platform application | FastAPI health, channel/ChannelDNA, project and stage states, jobs/artifact projections, shared-origin static UI serving. | `app/main.py`, `app/api/`, `app/modules/platform/`; API tests; live HTTP smoke passed for health, channel create, ChannelDNA v2, project creation, stage gating, `/` and SPA route hosting, and unknown API 404. |
@@ -33,6 +33,8 @@
 - `python -m alembic check` — PASS: no new upgrade operations detected.
 - Fresh DB inspection — PASS: 14 product tables, SQLite foreign keys enabled on app connections, WAL mode.
 - Live disposable-server HTTP smoke — PASS: health, channel create, valid ChannelDNA v2, project creation, exact seven-stage order and authoring-only readiness, static root/SPA hosting, and unknown API 404.
+- `cmd.exe /d /c call "<repo>\setup.bat"` — PASS, exit code 0; printed the optional FFmpeg readiness notice and `Setup complete`.
+- `start.bat` — PASS: started the loopback app; `/health` returned `{"data":{"status":"ok","schema_version":"1"}}`. The smoke used disposable `workspace/p0_startbat_smoke.sqlite` and artifact paths; the test server was stopped afterward.
 - `git diff --check` — PASS (only a Git line-ending normalization warning for README).
 - `npm audit --json` — **BLOCKING FINDING**: Vite 5.4.21 is within advisories GHSA-fx2h-pf6j-xcff (high) and GHSA-67mh-4wv8-2f99 (moderate via esbuild); npm reports Vite 8.3.4 as the available fix, a breaking major upgrade. The supported app launch path builds with Vite and serves static output through FastAPI; it does not start the Vite development server. This reduces exposure in the shipped runtime path but does not clear the dependency audit gate.
 
@@ -43,7 +45,7 @@
 - Channel/project ownership, immutable artifact bytes, expected-head CAS, traversal handling, malformed/duplicate JSON and downstream stage blocking have unit/API coverage.
 - Upstream modules coupled to legacy SceneAsset or v4 timing are excluded and recorded in the port manifest.
 - A browser screenshot/manual visual review was not required for this phase; no rig, motion or renderer is implemented.
-- Direct `setup.bat` and `start.bat` invocations were **NOT_RUN**. Their locked dependency/build actions and live FastAPI hosting were validated separately.
+- The supported startup script opens the local browser after launching the server; the app's root/SPA response was verified with the separate live HTTP smoke. No screenshot artifact was captured.
 - No live provider, Spine runtime, media render, paid task, or future phase acceptance is claimed or applicable to P0.
 
 ## Changed-file scope
