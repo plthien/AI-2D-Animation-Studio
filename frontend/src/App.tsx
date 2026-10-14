@@ -30,6 +30,7 @@ export default function App(){
  const [shotIdx,setShotIdx]=useState(0);
  const [doc,setDoc]=useState<Doc>('film');
  const [draft,setDraft]=useState('{}');
+ const [dirtyDoc,setDirtyDoc]=useState(false);
  const [brief,setBrief]=useState('A funny five-shot 2D animation with clear cause and effect.');
  const [loading,setLoading]=useState(false);
  const [notice,setNotice]=useState('');
@@ -50,7 +51,7 @@ export default function App(){
  };
  useEffect(()=>{get<{ok:boolean}>('/health').then(x=>setBackend(x.ok)).catch(()=>setBackend(false));list().catch(err)},[]);
  useEffect(()=>{if(pid)load(pid).catch(err)},[pid]);
- useEffect(()=>{setDraft(shown(doc==='film'?film:doc==='catalog'?catalog:motions))},[doc,film,catalog,motions]);
+ useEffect(()=>{if(!dirtyDoc)setDraft(shown(doc==='film'?film:doc==='catalog'?catalog:motions))},[doc,film,catalog,motions,dirtyDoc]);
  useEffect(()=>{
   if(!job||!['queued','running'].includes(job.status))return;
   const timer=window.setInterval(()=>get<Job>('/studio/jobs/'+job.id).then(setJob).catch(err),2000);
@@ -62,9 +63,9 @@ export default function App(){
   await list();setPid(item.id);setView('director');success('Project created. Add required media before render.');
  });
  const save=(kind:Doc,value:unknown)=>work(async()=>{
-  await put(endpoint+'/'+pid+'/documents/'+kind,value);await load(pid);success(kind+' saved and validated.');
+  await put(endpoint+'/'+pid+'/documents/'+kind,value);setDirtyDoc(false);await load(pid);success(kind+' saved and validated.');
  });
- const selectProject=(id:string)=>{setPid(id);setShotIdx(0);setView('director');setJob(null)};
+ const selectProject=(id:string)=>{setPid(id);setShotIdx(0);setView('director');setJob(null);setDirtyDoc(false)};
  const uploadPath=(path:string,file:File)=>work(async()=>{
   const parts=path.split('/');
   const url=parts[0]==='rigs'?endpoint+'/'+pid+'/rigs/'+parts[1]+'/'+parts[2]:endpoint+'/'+pid+'/assets/'+parts[0]+'/'+parts[1];
@@ -85,6 +86,7 @@ export default function App(){
   await navigator.clipboard.writeText(prompt);success('Director prompt copied for manual ChatGPT/DeepSeek authoring.');
  });
  const selected=film?.shots[shotIdx];
+ const stageFlags=[Boolean(film&&catalog&&motions),Boolean(catalog&&Object.keys(catalog.rigs).length&&files.some(f=>f.path.startsWith('rigs/'))),Boolean(catalog&&Object.values(catalog.backgrounds).every(a=>files.some(f=>f.path===a.image))),Boolean(motions&&Object.keys(motions).length>0),Boolean(film&&film.shots.every(s=>!s.narration||files.some(f=>f.path==='voices/'+s.narration?.wav))),Boolean(preflight?.ready)];
  const missing=preflight?.missing_assets??[];
  const running=job?.status==='queued'||job?.status==='running';
  const primary=preflight?.ready===true;
@@ -109,7 +111,7 @@ export default function App(){
     <section className="panel"><h2>Projects on this computer</h2><div className="list">{projects.map(p=><button key={p.id} className="item spread" onClick={()=>selectProject(p.id)} style={{color:'inherit',textAlign:'left'}}><span><b>{p.name}</b><p className="tiny muted">{p.template} · {p.created_at.slice(0,10)}</p></span><Activity size={17}/></button>)}{projects.length===0&&<p className="muted">No projects yet.</p>}</div></section>
    </div>}
    {view==='director'&&pid&&film&&catalog&&<div className="stack">
-    <div className="steps">{['Director','Rig','Background','Motion','Voice','Render'].map((step,i)=><div key={step} className={'step '+(i===0?'active':'')}><b>{i+1} · {step}</b><span>{i===0?'Story and shots':i===1?'Spine character':i===2?'Artwork PNG':i===3?'MotionPlan':i===4?'WAV input':'MP4 output'}</span></div>)}</div>
+    <div className="steps">{['Director','Rig','Background','Motion','Voice','Render'].map((step,i)=><button type="button" key={step} onClick={()=>setView(i===5?'render':i===0?'director':'assets')} className={'step '+(stageFlags[i]?'active':'')}><b>{i+1} · {step} {stageFlags[i]?'✓':'·'}</b><span>{i===0?'Story and shots':i===1?'Spine character':i===2?'Artwork PNG':i===3?'MotionPlan':i===4?'WAV input':'MP4 output'}</span></button>)}</div>
     <div className="dashboard"><div className="metric"><div className="eyebrow">Shots</div><b>{film.shots.length}</b></div><div className="metric"><div className="eyebrow">Duration</div><b>{(itemCount/24).toFixed(1)}s</b></div><div className="metric"><div className="eyebrow">Resolution</div><b>{film.width}×{film.height}</b></div></div>
     <section className="panel"><div className="spread"><h2>Storyboard</h2><span className="pill">Select shot to edit</span></div><div className="shotgrid">{film.shots.map((s,i)=>{
      const image=catalog.backgrounds[s.background_id]?.image;const ready=files.some(x=>x.path===image);
@@ -131,9 +133,9 @@ export default function App(){
      <p className="muted small">Motion: {selected.actors.map(a=>a.actor_id+' / '+a.rig_id+' / '+a.motion_id).join(', ')}</p>
     </section>}
     <section className="panel"><h2>Manual ChatGPT / DeepSeek handoff</h2><label className="field">Creative brief<textarea rows={2} value={brief} onChange={e=>setBrief(e.target.value)}/></label><div className="row" style={{marginTop:12}}><Btn click={exportPrompt}><Copy size={14}/> Copy Director prompt</Btn><span className="small muted">Import returned film, catalog and motions JSON below; no LLM API used.</span></div></section>
-    <section className="panel"><div className="spread"><h2>JSON editor / Import</h2><div className="row">{(['film','catalog','motions'] as Doc[]).map(k=><button key={k} className={'btn '+(doc===k?'primary':'ghost')} onClick={()=>setDoc(k)}>{k}</button>)}</div></div>
-     <textarea aria-label="Director JSON" spellCheck={false} className="code" value={draft} onChange={e=>setDraft(e.target.value)}/>
-     <div className="row" style={{marginTop:12}}><Btn primary disabled={loading} click={()=>{try{void save(doc,JSON.parse(draft))}catch(e){err(e)}}}><Save size={14}/> Validate and save</Btn><Btn click={()=>void work(async()=>{await load(pid);success('Reloaded source files.')})}><RefreshCcw size={14}/> Reload</Btn></div></section>
+    <section className="panel"><div className="spread"><h2>JSON editor / Import</h2><div className="row">{(['film','catalog','motions'] as Doc[]).map(k=><button key={k} className={'btn '+(doc===k?'primary':'ghost')} onClick={()=>{if(dirtyDoc&&!window.confirm('Discard unsaved JSON changes?'))return;setDirtyDoc(false);setDoc(k);setDraft(shown(k==='film'?film:k==='catalog'?catalog:motions))}}>{k}</button>)}</div></div>
+     <textarea aria-label="Director JSON" spellCheck={false} className="code" value={draft} onChange={e=>{setDraft(e.target.value);setDirtyDoc(true)}}/>
+     <div className="row" style={{marginTop:12}}><Btn primary disabled={loading} click={()=>{try{void save(doc,JSON.parse(draft))}catch(e){err(e)}}}><Save size={14}/> Validate and save {dirtyDoc?'* ':''}</Btn><Btn click={()=>void work(async()=>{if(dirtyDoc&&!window.confirm('Discard unsaved JSON changes?'))return;setDirtyDoc(false);await load(pid);success('Reloaded source files.')})}><RefreshCcw size={14}/> Reload</Btn></div></section>
    </div>}
    {view==='assets'&&pid&&<div className="stack">
     <section className="panel"><div className="spread"><h2>Required assets</h2><Btn click={()=>void work(async()=>{await load(pid);success('Assets checked.')})}><RefreshCcw size={14}/> Recheck</Btn></div>
