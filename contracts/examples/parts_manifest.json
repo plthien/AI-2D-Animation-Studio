@@ -1,0 +1,209 @@
+{
+  "schema_version": "parts_manifest.v1",
+  "artifact_id": "art_88888888888888888888888888888888",
+  "source_atlas_sha256": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "reference_sha256": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "canvas": {
+    "width": 768,
+    "height": 1024
+  },
+  "parts": [
+    {
+      "component_id": "cmp_0",
+      "semantic_role": "torso",
+      "mask_sha256": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "image_artifact_id": "art_99999999999999999999999999999999",
+      "bbox_px": {
+        "x": 0,
+        "y": 0,
+        "width": 24,
+        "height": 55
+      },
+      "area_px": 200,
+      "approved": true
+    },
+    {
+      "component_id": "cmp_1",
+      "semantic_role": "head",
+      "mask_sha256": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "image_artifact_id": "art_99999999999999999999999999999999",
+      "bbox_px": {
+        "x": 3,
+        "y": 8,
+        "width": 24,
+        "height": 55
+      },
+      "area_px": 200,
+      "approved": true
+    },
+    {
+      "component_id": "cmp_2",
+      "semantic_role": "left_upper_arm",
+      "mask_sha256": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "image_artifact_id": "art_99999999999999999999999999999999",
+      "bbox_px": {
+        "x": 6,
+        "y": 16,
+        "width": 24,
+        "height": 55
+      },
+      "area_px": 200,
+      "approved": true
+    },
+    {
+      "component_id": "cmp_3",
+      "semantic_role": "left_forearm",
+      "mask_sha256": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "image_artifact_id": "art_99999999999999999999999999999999",
+      "bbox_px": {
+        "x": 9,
+        "y": 24,
+        "width": 24,
+        "height": 55
+      },
+      "area_px": 200,
+      "approved": true
+    },
+    {
+      "component_id": "cmp_4",
+      "semantic_role": "left_hand",
+      "mask_sha256": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "image_artifact_id": "art_99999999999999999999999999999999",
+      "bbox_px": {
+        "x": 12,
+        "y": 32,
+        "width": 24,
+        "height": 55
+      },
+      "area_px": 200,
+      "approved": true
+    },
+    {
+      "component_id": "cmp_5",
+      "semantic_role": "right_upper_arm",
+      "mask_sha256": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "image_artifact_id": "art_99999999999999999999999999999999",
+      "bbox_px": {
+        "x": 15,
+        "y": 40,
+        "width": 24,
+        "height": 55
+      },
+      "area_px": 200,
+      "approved": true
+    },
+    {
+      "component_id": "cmp_6",
+      "semantic_role": "right_forearm",
+      "mask_sha256": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "image_artifact_id": "art_99999999999999999999999999999999",
+      "bbox_px": {
+        "x": 18,
+        "y": 48,
+        "width": 24,
+        "height": 55
+      },
+      "area_px": 200,
+      "approved": true
+    },
+    {
+      "component_id": "cmp_7",
+      "semantic_role": "right_hand",
+      "mask_sha256": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "image_artifact_id": "art_99999999999999999999999999999999",
+      "bbox_px": {
+        "x": 21,
+        "y": 56,
+        "width": 24,
+        "height": 55
+      },
+      "area_px": 200,
+      "approved": true
+    },
+    {
+      "component_id": "cmp_8",
+      "semantic_role": "left_thigh",
+      "mask_sha256": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "image_artifact_id": "art_99999999999999999999999999999999",
+      "bbox_px": {
+        "x": 24,
+        "y": 64,
+        "width": 24,
+        "height": 55
+      },
+      "area_px": 200,
+      "approved": true
+    },
+    {
+      "component_id": "cmp_9",
+      "semantic_role": "left_shin",
+      "mask_sha256": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "image_artifact_id": "art_99999999999999999999999999999999",
+      "bbox_px": {
+        "x": 27,
+        "y": 72,
+        "width": 24,
+        "height": 55
+      },
+      "area_px": 200,
+      "approved": true
+    },
+    {
+      "component_id": "cmp_10",
+      "semantic_role": "left_foot",
+      "mask_sha256": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "image_artifact_id": "art_99999999999999999999999999999999",
+      "bbox_px": {
+        "x": 30,
+        "y": 80,
+        "width": 24,
+        "height": 55
+      },
+      "area_px": 200,
+      "approved": true
+    },
+    {
+      "component_id": "cmp_11",
+      "semantic_role": "right_thigh",
+      "mask_sha256": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "image_artifact_id": "art_99999999999999999999999999999999",
+      "bbox_px": {
+        "x": 33,
+        "y": 88,
+        "width": 24,
+        "height": 55
+      },
+      "area_px": 200,
+      "approved": true
+    },
+    {
+      "component_id": "cmp_12",
+      "semantic_role": "right_shin",
+      "mask_sha256": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "image_artifact_id": "art_99999999999999999999999999999999",
+      "bbox_px": {
+        "x": 36,
+        "y": 96,
+        "width": 24,
+        "height": 55
+      },
+      "area_px": 200,
+      "approved": true
+    },
+    {
+      "component_id": "cmp_13",
+      "semantic_role": "right_foot",
+      "mask_sha256": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "image_artifact_id": "art_99999999999999999999999999999999",
+      "bbox_px": {
+        "x": 39,
+        "y": 104,
+        "width": 24,
+        "height": 55
+      },
+      "area_px": 200,
+      "approved": true
+    }
+  ],
+  "reviewed": true
+}

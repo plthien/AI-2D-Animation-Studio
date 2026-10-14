@@ -1,0 +1,138 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": "voice_manifest.v1"
+    },
+    "artifact_id": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^art_[0-9a-f]{32}$"
+    },
+    "source_hash": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^sha256:[0-9a-f]{64}$"
+    },
+    "project_id": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^prj_[0-9a-f]{32}$"
+    },
+    "compiled_film_artifact_id": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^art_[0-9a-f]{32}$"
+    },
+    "provider_key": {
+      "type": "string",
+      "minLength": 1,
+      "enum": [
+        "kokoro_local",
+        "elevenlabs",
+        "manual_import"
+      ]
+    },
+    "voice_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "alignment_status": {
+      "type": "string",
+      "minLength": 1,
+      "enum": [
+        "verified_words",
+        "unavailable"
+      ]
+    },
+    "cues": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "shot_id": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^shot_[a-z0-9_]+$"
+          },
+          "wav_artifact_id": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^art_[0-9a-f]{32}$"
+          },
+          "wav_sha256": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^sha256:[0-9a-f]{64}$"
+          },
+          "start_frame": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "start_sample": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "duration_samples": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "word_timings": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "word": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "start_sample": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "end_sample": {
+                  "type": "integer",
+                  "minimum": 1
+                }
+              },
+              "required": [
+                "word",
+                "start_sample",
+                "end_sample"
+              ]
+            },
+            "minItems": 0
+          }
+        },
+        "required": [
+          "shot_id",
+          "wav_artifact_id",
+          "wav_sha256",
+          "start_frame",
+          "start_sample",
+          "duration_samples",
+          "word_timings"
+        ]
+      },
+      "minItems": 1,
+      "maxItems": 30
+    }
+  },
+  "required": [
+    "schema_version",
+    "artifact_id",
+    "source_hash",
+    "project_id",
+    "compiled_film_artifact_id",
+    "provider_key",
+    "voice_id",
+    "alignment_status",
+    "cues"
+  ],
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ai-2d-animation-studio.local/contracts/schemas/voice_manifest.schema.json",
+  "title": "voice_manifest.v1"
+}

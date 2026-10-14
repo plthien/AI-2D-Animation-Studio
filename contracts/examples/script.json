@@ -1,0 +1,14 @@
+{
+  "schema_version": "script.v1",
+  "artifact_id": "art_66666666666666666666666666666666",
+  "source_hash": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "project_id": "prj_22222222222222222222222222222222",
+  "sections": [
+    {
+      "section_id": "intro",
+      "narration_text": "He found a jar.",
+      "story_intent": "The actor discovers a jar"
+    }
+  ],
+  "full_narration": "He found a jar."
+}

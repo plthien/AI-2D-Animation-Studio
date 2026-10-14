@@ -1,0 +1,169 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": "final_timeline.v1"
+    },
+    "artifact_id": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^art_[0-9a-f]{32}$"
+    },
+    "source_hash": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^sha256:[0-9a-f]{64}$"
+    },
+    "project_id": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^prj_[0-9a-f]{32}$"
+    },
+    "voice_manifest_artifact_id": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^art_[0-9a-f]{32}$"
+    },
+    "compiled_film_artifact_id": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^art_[0-9a-f]{32}$"
+    },
+    "fps": {
+      "const": 24
+    },
+    "width": {
+      "const": 1280
+    },
+    "height": {
+      "const": 720
+    },
+    "total_frames": {
+      "type": "integer",
+      "minimum": 24,
+      "maximum": 21600
+    },
+    "shots": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "shot_id": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^shot_[a-z0-9_]+$"
+          },
+          "compiled_shot_sha256": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^sha256:[0-9a-f]{64}$"
+          },
+          "original_frames": {
+            "type": "integer",
+            "minimum": 24,
+            "maximum": 720
+          },
+          "final_frames": {
+            "type": "integer",
+            "minimum": 24,
+            "maximum": 720
+          },
+          "absolute_start_frame": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "extension_frames": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 48
+          },
+          "frame_sequence_manifest_artifact_id": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^art_[0-9a-f]{32}$"
+          }
+        },
+        "required": [
+          "shot_id",
+          "compiled_shot_sha256",
+          "original_frames",
+          "final_frames",
+          "absolute_start_frame",
+          "extension_frames",
+          "frame_sequence_manifest_artifact_id"
+        ]
+      },
+      "minItems": 1,
+      "maxItems": 30
+    },
+    "audio": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "voice_artifact_id": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "^art_[0-9a-f]{32}$"
+        },
+        "wav_sha256": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "^sha256:[0-9a-f]{64}$"
+        },
+        "sample_count": {
+          "type": "integer",
+          "minimum": 48000
+        },
+        "sample_rate_hz": {
+          "const": 48000
+        }
+      },
+      "required": [
+        "voice_artifact_id",
+        "wav_sha256",
+        "sample_count",
+        "sample_rate_hz"
+      ]
+    },
+    "output": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "codec": {
+          "const": "h264"
+        },
+        "pixel_format": {
+          "const": "yuv420p"
+        },
+        "audio_codec": {
+          "const": "aac"
+        }
+      },
+      "required": [
+        "codec",
+        "pixel_format",
+        "audio_codec"
+      ]
+    }
+  },
+  "required": [
+    "schema_version",
+    "artifact_id",
+    "source_hash",
+    "project_id",
+    "voice_manifest_artifact_id",
+    "compiled_film_artifact_id",
+    "fps",
+    "width",
+    "height",
+    "total_frames",
+    "shots",
+    "audio",
+    "output"
+  ],
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ai-2d-animation-studio.local/contracts/schemas/final_timeline.schema.json",
+  "title": "final_timeline.v1"
+}

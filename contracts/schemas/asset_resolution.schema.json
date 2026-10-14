@@ -1,0 +1,124 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": "asset_resolution.v1"
+    },
+    "artifact_id": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^art_[0-9a-f]{32}$"
+    },
+    "source_hash": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^sha256:[0-9a-f]{64}$"
+    },
+    "asset_requirements_artifact_id": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^art_[0-9a-f]{32}$"
+    },
+    "shot_plan_artifact_id": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^art_[0-9a-f]{32}$"
+    },
+    "channel_id": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^chn_[0-9a-f]{32}$"
+    },
+    "decisions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "requirement_id": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^req_[0-9a-f]{16}$"
+          },
+          "status": {
+            "type": "string",
+            "minLength": 1,
+            "enum": [
+              "ready",
+              "generation_required",
+              "rig_required",
+              "motion_incompatible"
+            ]
+          },
+          "asset_version_id": {
+            "oneOf": [
+              {
+                "type": "string",
+                "minLength": 1,
+                "pattern": "^av_[0-9a-f]{32}$"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "rig_version_id": {
+            "oneOf": [
+              {
+                "type": "string",
+                "minLength": 1,
+                "pattern": "^rv_[0-9a-f]{32}$"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "candidate_asset_version_ids": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1,
+              "pattern": "^av_[0-9a-f]{32}$"
+            },
+            "minItems": 0,
+            "maxItems": 100,
+            "uniqueItems": true
+          },
+          "reasons": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            },
+            "minItems": 0,
+            "maxItems": 20
+          }
+        },
+        "required": [
+          "requirement_id",
+          "status",
+          "asset_version_id",
+          "rig_version_id",
+          "candidate_asset_version_ids",
+          "reasons"
+        ]
+      },
+      "minItems": 1,
+      "maxItems": 120
+    }
+  },
+  "required": [
+    "schema_version",
+    "artifact_id",
+    "source_hash",
+    "asset_requirements_artifact_id",
+    "shot_plan_artifact_id",
+    "channel_id",
+    "decisions"
+  ],
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ai-2d-animation-studio.local/contracts/schemas/asset_resolution.schema.json",
+  "title": "asset_resolution.v1"
+}

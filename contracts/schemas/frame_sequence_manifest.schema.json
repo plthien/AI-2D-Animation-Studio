@@ -1,0 +1,86 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": "frame_sequence_manifest.v1"
+    },
+    "artifact_id": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^art_[0-9a-f]{32}$"
+    },
+    "compiled_film_artifact_id": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^art_[0-9a-f]{32}$"
+    },
+    "shot_id": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^shot_[a-z0-9_]+$"
+    },
+    "width": {
+      "const": 1280
+    },
+    "height": {
+      "const": 720
+    },
+    "fps": {
+      "const": 24
+    },
+    "frame_count": {
+      "type": "integer",
+      "minimum": 24,
+      "maximum": 720
+    },
+    "frames": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "frame": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "filename": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^shot_[0-9]{6}\\.png$"
+          },
+          "sha256": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^sha256:[0-9a-f]{64}$"
+          },
+          "nonblank": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "frame",
+          "filename",
+          "sha256",
+          "nonblank"
+        ]
+      },
+      "minItems": 24,
+      "maxItems": 720
+    }
+  },
+  "required": [
+    "schema_version",
+    "artifact_id",
+    "compiled_film_artifact_id",
+    "shot_id",
+    "width",
+    "height",
+    "fps",
+    "frame_count",
+    "frames"
+  ],
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ai-2d-animation-studio.local/contracts/schemas/frame_sequence_manifest.schema.json",
+  "title": "frame_sequence_manifest.v1"
+}

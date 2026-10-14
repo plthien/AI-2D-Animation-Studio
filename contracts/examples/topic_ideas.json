@@ -1,0 +1,14 @@
+{
+  "schema_version": "topic_ideas.v1",
+  "artifact_id": "art_22222222222222222222222222222222",
+  "source_hash": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "project_id": "prj_22222222222222222222222222222222",
+  "ideas": [
+    {
+      "idea_id": "honey_jar",
+      "title": "The Honey Jar",
+      "hook": "A very bad idea at a beehive",
+      "summary": "The actor discovers a jar."
+    }
+  ]
+}

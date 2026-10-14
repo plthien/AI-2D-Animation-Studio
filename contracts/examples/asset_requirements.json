@@ -1,0 +1,44 @@
+{
+  "schema_version": "asset_requirements.v1",
+  "artifact_id": "art_77777777777777777777777777777777",
+  "source_hash": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "shot_plan_artifact_id": "art_33333333333333333333333333333333",
+  "channel_id": "chn_11111111111111111111111111111111",
+  "requirements": [
+    {
+      "requirement_id": "req_171e3180899f622b",
+      "kind": "background",
+      "semantic_key": "forest",
+      "view": "base",
+      "style_hash": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "usage_shot_ids": [
+        "shot_001"
+      ],
+      "required_actions": []
+    },
+    {
+      "requirement_id": "req_eaa04c71ed8274d4",
+      "kind": "character",
+      "semantic_key": "ancient_man",
+      "view": "side",
+      "style_hash": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "usage_shot_ids": [
+        "shot_001"
+      ],
+      "required_actions": [
+        "look"
+      ]
+    },
+    {
+      "requirement_id": "req_993ebe462eea7f4d",
+      "kind": "prop",
+      "semantic_key": "honey_jar",
+      "view": "base",
+      "style_hash": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "usage_shot_ids": [
+        "shot_001"
+      ],
+      "required_actions": []
+    }
+  ]
+}

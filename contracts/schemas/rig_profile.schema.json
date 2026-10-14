@@ -1,0 +1,854 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": "rig_profile.v1"
+    },
+    "rig_id": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^rig_[0-9a-f]{32}$"
+    },
+    "rig_version_id": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^rv_[0-9a-f]{32}$"
+    },
+    "asset_version_id": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^av_[0-9a-f]{32}$"
+    },
+    "skeleton_sha256": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^sha256:[0-9a-f]{64}$"
+    },
+    "atlas_sha256": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^sha256:[0-9a-f]{64}$"
+    },
+    "atlas_image_sha256": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^sha256:[0-9a-f]{64}$"
+    },
+    "view": {
+      "type": "string",
+      "minLength": 1,
+      "enum": [
+        "front",
+        "three_quarter",
+        "side"
+      ]
+    },
+    "reference_canvas": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "width": {
+          "type": "integer",
+          "minimum": 64,
+          "maximum": 8192
+        },
+        "height": {
+          "type": "integer",
+          "minimum": 64,
+          "maximum": 8192
+        }
+      },
+      "required": [
+        "width",
+        "height"
+      ]
+    },
+    "world_height_m": {
+      "type": "number",
+      "maximum": 5,
+      "exclusiveMinimum": 0
+    },
+    "rest_height_px": {
+      "type": "number",
+      "exclusiveMinimum": 0
+    },
+    "bone_roles": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "root": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "^[a-z][a-z0-9_]*$"
+        },
+        "pelvis": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "^[a-z][a-z0-9_]*$"
+        },
+        "torso": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "^[a-z][a-z0-9_]*$"
+        },
+        "head": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "^[a-z][a-z0-9_]*$"
+        },
+        "left_upper_arm": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "^[a-z][a-z0-9_]*$"
+        },
+        "left_forearm": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "^[a-z][a-z0-9_]*$"
+        },
+        "left_hand": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "^[a-z][a-z0-9_]*$"
+        },
+        "right_upper_arm": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "^[a-z][a-z0-9_]*$"
+        },
+        "right_forearm": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "^[a-z][a-z0-9_]*$"
+        },
+        "right_hand": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "^[a-z][a-z0-9_]*$"
+        },
+        "left_thigh": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "^[a-z][a-z0-9_]*$"
+        },
+        "left_shin": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "^[a-z][a-z0-9_]*$"
+        },
+        "left_foot": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "^[a-z][a-z0-9_]*$"
+        },
+        "right_thigh": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "^[a-z][a-z0-9_]*$"
+        },
+        "right_shin": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "^[a-z][a-z0-9_]*$"
+        },
+        "right_foot": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "^[a-z][a-z0-9_]*$"
+        }
+      },
+      "required": [
+        "root",
+        "pelvis",
+        "torso",
+        "head",
+        "left_upper_arm",
+        "left_forearm",
+        "left_hand",
+        "right_upper_arm",
+        "right_forearm",
+        "right_hand",
+        "left_thigh",
+        "left_shin",
+        "left_foot",
+        "right_thigh",
+        "right_shin",
+        "right_foot"
+      ]
+    },
+    "joint_positions_px": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "pelvis": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "x": {
+              "type": "number"
+            },
+            "y": {
+              "type": "number"
+            }
+          },
+          "required": [
+            "x",
+            "y"
+          ]
+        },
+        "neck": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "x": {
+              "type": "number"
+            },
+            "y": {
+              "type": "number"
+            }
+          },
+          "required": [
+            "x",
+            "y"
+          ]
+        },
+        "left_shoulder": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "x": {
+              "type": "number"
+            },
+            "y": {
+              "type": "number"
+            }
+          },
+          "required": [
+            "x",
+            "y"
+          ]
+        },
+        "left_elbow": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "x": {
+              "type": "number"
+            },
+            "y": {
+              "type": "number"
+            }
+          },
+          "required": [
+            "x",
+            "y"
+          ]
+        },
+        "left_wrist": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "x": {
+              "type": "number"
+            },
+            "y": {
+              "type": "number"
+            }
+          },
+          "required": [
+            "x",
+            "y"
+          ]
+        },
+        "left_hip": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "x": {
+              "type": "number"
+            },
+            "y": {
+              "type": "number"
+            }
+          },
+          "required": [
+            "x",
+            "y"
+          ]
+        },
+        "left_knee": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "x": {
+              "type": "number"
+            },
+            "y": {
+              "type": "number"
+            }
+          },
+          "required": [
+            "x",
+            "y"
+          ]
+        },
+        "left_ankle": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "x": {
+              "type": "number"
+            },
+            "y": {
+              "type": "number"
+            }
+          },
+          "required": [
+            "x",
+            "y"
+          ]
+        },
+        "right_shoulder": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "x": {
+              "type": "number"
+            },
+            "y": {
+              "type": "number"
+            }
+          },
+          "required": [
+            "x",
+            "y"
+          ]
+        },
+        "right_elbow": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "x": {
+              "type": "number"
+            },
+            "y": {
+              "type": "number"
+            }
+          },
+          "required": [
+            "x",
+            "y"
+          ]
+        },
+        "right_wrist": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "x": {
+              "type": "number"
+            },
+            "y": {
+              "type": "number"
+            }
+          },
+          "required": [
+            "x",
+            "y"
+          ]
+        },
+        "right_hip": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "x": {
+              "type": "number"
+            },
+            "y": {
+              "type": "number"
+            }
+          },
+          "required": [
+            "x",
+            "y"
+          ]
+        },
+        "right_knee": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "x": {
+              "type": "number"
+            },
+            "y": {
+              "type": "number"
+            }
+          },
+          "required": [
+            "x",
+            "y"
+          ]
+        },
+        "right_ankle": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "x": {
+              "type": "number"
+            },
+            "y": {
+              "type": "number"
+            }
+          },
+          "required": [
+            "x",
+            "y"
+          ]
+        }
+      },
+      "required": [
+        "pelvis",
+        "neck",
+        "left_shoulder",
+        "left_elbow",
+        "left_wrist",
+        "left_hip",
+        "left_knee",
+        "left_ankle",
+        "right_shoulder",
+        "right_elbow",
+        "right_wrist",
+        "right_hip",
+        "right_knee",
+        "right_ankle"
+      ]
+    },
+    "rest_matrices": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "root": {
+          "type": "array",
+          "items": {
+            "type": "number"
+          },
+          "minItems": 6,
+          "maxItems": 6
+        },
+        "pelvis": {
+          "type": "array",
+          "items": {
+            "type": "number"
+          },
+          "minItems": 6,
+          "maxItems": 6
+        },
+        "torso": {
+          "type": "array",
+          "items": {
+            "type": "number"
+          },
+          "minItems": 6,
+          "maxItems": 6
+        },
+        "head": {
+          "type": "array",
+          "items": {
+            "type": "number"
+          },
+          "minItems": 6,
+          "maxItems": 6
+        },
+        "left_upper_arm": {
+          "type": "array",
+          "items": {
+            "type": "number"
+          },
+          "minItems": 6,
+          "maxItems": 6
+        },
+        "left_forearm": {
+          "type": "array",
+          "items": {
+            "type": "number"
+          },
+          "minItems": 6,
+          "maxItems": 6
+        },
+        "left_hand": {
+          "type": "array",
+          "items": {
+            "type": "number"
+          },
+          "minItems": 6,
+          "maxItems": 6
+        },
+        "right_upper_arm": {
+          "type": "array",
+          "items": {
+            "type": "number"
+          },
+          "minItems": 6,
+          "maxItems": 6
+        },
+        "right_forearm": {
+          "type": "array",
+          "items": {
+            "type": "number"
+          },
+          "minItems": 6,
+          "maxItems": 6
+        },
+        "right_hand": {
+          "type": "array",
+          "items": {
+            "type": "number"
+          },
+          "minItems": 6,
+          "maxItems": 6
+        },
+        "left_thigh": {
+          "type": "array",
+          "items": {
+            "type": "number"
+          },
+          "minItems": 6,
+          "maxItems": 6
+        },
+        "left_shin": {
+          "type": "array",
+          "items": {
+            "type": "number"
+          },
+          "minItems": 6,
+          "maxItems": 6
+        },
+        "left_foot": {
+          "type": "array",
+          "items": {
+            "type": "number"
+          },
+          "minItems": 6,
+          "maxItems": 6
+        },
+        "right_thigh": {
+          "type": "array",
+          "items": {
+            "type": "number"
+          },
+          "minItems": 6,
+          "maxItems": 6
+        },
+        "right_shin": {
+          "type": "array",
+          "items": {
+            "type": "number"
+          },
+          "minItems": 6,
+          "maxItems": 6
+        },
+        "right_foot": {
+          "type": "array",
+          "items": {
+            "type": "number"
+          },
+          "minItems": 6,
+          "maxItems": 6
+        }
+      },
+      "required": [
+        "root",
+        "pelvis",
+        "torso",
+        "head",
+        "left_upper_arm",
+        "left_forearm",
+        "left_hand",
+        "right_upper_arm",
+        "right_forearm",
+        "right_hand",
+        "left_thigh",
+        "left_shin",
+        "left_foot",
+        "right_thigh",
+        "right_shin",
+        "right_foot"
+      ],
+      "description": "Affine [a,b,c,d,tx,ty]: rig_x=a*local_x+c*local_y+tx; rig_y=b*local_x+d*local_y+ty"
+    },
+    "chains": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "left_arm": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "root": {
+              "type": "string",
+              "minLength": 1
+            },
+            "mid": {
+              "type": "string",
+              "minLength": 1
+            },
+            "end": {
+              "type": "string",
+              "minLength": 1
+            },
+            "upper_length_px": {
+              "type": "number",
+              "exclusiveMinimum": 5
+            },
+            "lower_length_px": {
+              "type": "number",
+              "exclusiveMinimum": 5
+            },
+            "bend_sign": {
+              "enum": [
+                -1,
+                1
+              ]
+            }
+          },
+          "required": [
+            "root",
+            "mid",
+            "end",
+            "upper_length_px",
+            "lower_length_px",
+            "bend_sign"
+          ]
+        },
+        "right_arm": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "root": {
+              "type": "string",
+              "minLength": 1
+            },
+            "mid": {
+              "type": "string",
+              "minLength": 1
+            },
+            "end": {
+              "type": "string",
+              "minLength": 1
+            },
+            "upper_length_px": {
+              "type": "number",
+              "exclusiveMinimum": 5
+            },
+            "lower_length_px": {
+              "type": "number",
+              "exclusiveMinimum": 5
+            },
+            "bend_sign": {
+              "enum": [
+                -1,
+                1
+              ]
+            }
+          },
+          "required": [
+            "root",
+            "mid",
+            "end",
+            "upper_length_px",
+            "lower_length_px",
+            "bend_sign"
+          ]
+        },
+        "left_leg": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "root": {
+              "type": "string",
+              "minLength": 1
+            },
+            "mid": {
+              "type": "string",
+              "minLength": 1
+            },
+            "end": {
+              "type": "string",
+              "minLength": 1
+            },
+            "upper_length_px": {
+              "type": "number",
+              "exclusiveMinimum": 5
+            },
+            "lower_length_px": {
+              "type": "number",
+              "exclusiveMinimum": 5
+            },
+            "bend_sign": {
+              "enum": [
+                -1,
+                1
+              ]
+            }
+          },
+          "required": [
+            "root",
+            "mid",
+            "end",
+            "upper_length_px",
+            "lower_length_px",
+            "bend_sign"
+          ]
+        },
+        "right_leg": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "root": {
+              "type": "string",
+              "minLength": 1
+            },
+            "mid": {
+              "type": "string",
+              "minLength": 1
+            },
+            "end": {
+              "type": "string",
+              "minLength": 1
+            },
+            "upper_length_px": {
+              "type": "number",
+              "exclusiveMinimum": 5
+            },
+            "lower_length_px": {
+              "type": "number",
+              "exclusiveMinimum": 5
+            },
+            "bend_sign": {
+              "enum": [
+                -1,
+                1
+              ]
+            }
+          },
+          "required": [
+            "root",
+            "mid",
+            "end",
+            "upper_length_px",
+            "lower_length_px",
+            "bend_sign"
+          ]
+        }
+      },
+      "required": [
+        "left_arm",
+        "right_arm",
+        "left_leg",
+        "right_leg"
+      ]
+    },
+    "sockets": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "left_hand": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "x": {
+              "type": "number"
+            },
+            "y": {
+              "type": "number"
+            }
+          },
+          "required": [
+            "x",
+            "y"
+          ]
+        },
+        "right_hand": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "x": {
+              "type": "number"
+            },
+            "y": {
+              "type": "number"
+            }
+          },
+          "required": [
+            "x",
+            "y"
+          ]
+        }
+      },
+      "required": [
+        "left_hand",
+        "right_hand"
+      ]
+    },
+    "supported_actions": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "enum": [
+          "idle",
+          "walk_to",
+          "look_at",
+          "reach_for",
+          "grab",
+          "carry_to",
+          "place_at",
+          "point_at",
+          "react"
+        ]
+      },
+      "minItems": 1,
+      "maxItems": 9,
+      "uniqueItems": true
+    },
+    "expressions": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "enum": [
+          "neutral",
+          "happy",
+          "surprised",
+          "angry"
+        ]
+      },
+      "minItems": 1,
+      "maxItems": 4,
+      "uniqueItems": true
+    }
+  },
+  "required": [
+    "schema_version",
+    "rig_id",
+    "rig_version_id",
+    "asset_version_id",
+    "skeleton_sha256",
+    "atlas_sha256",
+    "atlas_image_sha256",
+    "view",
+    "reference_canvas",
+    "world_height_m",
+    "rest_height_px",
+    "bone_roles",
+    "joint_positions_px",
+    "rest_matrices",
+    "chains",
+    "sockets",
+    "supported_actions",
+    "expressions"
+  ],
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ai-2d-animation-studio.local/contracts/schemas/rig_profile.schema.json",
+  "title": "rig_profile.v1"
+}

@@ -1,0 +1,714 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": "animation_plan.v1"
+    },
+    "artifact_id": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^art_[0-9a-f]{32}$"
+    },
+    "source_hash": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^sha256:[0-9a-f]{64}$"
+    },
+    "project_id": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^prj_[0-9a-f]{32}$"
+    },
+    "shot_plan_artifact_id": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^art_[0-9a-f]{32}$"
+    },
+    "asset_resolution_artifact_id": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^art_[0-9a-f]{32}$"
+    },
+    "shots": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "shot_id": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^shot_[a-z0-9_]+$"
+          },
+          "duration_frames": {
+            "type": "integer",
+            "minimum": 24,
+            "maximum": 720
+          },
+          "actions": {
+            "type": "array",
+            "items": {
+              "oneOf": [
+                {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "action_id": {
+                      "type": "string",
+                      "minLength": 1,
+                      "pattern": "^act_[a-z0-9_]+$"
+                    },
+                    "actor_id": {
+                      "type": "string",
+                      "minLength": 1,
+                      "pattern": "^actor_[a-z0-9_]+$"
+                    },
+                    "kind": {
+                      "const": "idle"
+                    },
+                    "track": {
+                      "const": "locomotion"
+                    },
+                    "start_frame": {
+                      "type": "integer",
+                      "minimum": 0
+                    },
+                    "end_frame": {
+                      "type": "integer",
+                      "minimum": 1
+                    },
+                    "params": {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "properties": {},
+                      "required": []
+                    }
+                  },
+                  "required": [
+                    "action_id",
+                    "actor_id",
+                    "kind",
+                    "track",
+                    "start_frame",
+                    "end_frame",
+                    "params"
+                  ]
+                },
+                {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "action_id": {
+                      "type": "string",
+                      "minLength": 1,
+                      "pattern": "^act_[a-z0-9_]+$"
+                    },
+                    "actor_id": {
+                      "type": "string",
+                      "minLength": 1,
+                      "pattern": "^actor_[a-z0-9_]+$"
+                    },
+                    "kind": {
+                      "const": "walk_to"
+                    },
+                    "track": {
+                      "const": "locomotion"
+                    },
+                    "start_frame": {
+                      "type": "integer",
+                      "minimum": 0
+                    },
+                    "end_frame": {
+                      "type": "integer",
+                      "minimum": 1
+                    },
+                    "params": {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "properties": {
+                        "target_world": {
+                          "type": "object",
+                          "additionalProperties": false,
+                          "properties": {
+                            "x": {
+                              "type": "number"
+                            },
+                            "y": {
+                              "type": "number"
+                            }
+                          },
+                          "required": [
+                            "x",
+                            "y"
+                          ]
+                        },
+                        "speed_mps": {
+                          "type": "number",
+                          "minimum": 0.3,
+                          "maximum": 1.6
+                        }
+                      },
+                      "required": [
+                        "target_world",
+                        "speed_mps"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "action_id",
+                    "actor_id",
+                    "kind",
+                    "track",
+                    "start_frame",
+                    "end_frame",
+                    "params"
+                  ]
+                },
+                {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "action_id": {
+                      "type": "string",
+                      "minLength": 1,
+                      "pattern": "^act_[a-z0-9_]+$"
+                    },
+                    "actor_id": {
+                      "type": "string",
+                      "minLength": 1,
+                      "pattern": "^actor_[a-z0-9_]+$"
+                    },
+                    "kind": {
+                      "const": "look_at"
+                    },
+                    "track": {
+                      "const": "gaze"
+                    },
+                    "start_frame": {
+                      "type": "integer",
+                      "minimum": 0
+                    },
+                    "end_frame": {
+                      "type": "integer",
+                      "minimum": 1
+                    },
+                    "params": {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "properties": {
+                        "target_world": {
+                          "type": "object",
+                          "additionalProperties": false,
+                          "properties": {
+                            "x": {
+                              "type": "number"
+                            },
+                            "y": {
+                              "type": "number"
+                            }
+                          },
+                          "required": [
+                            "x",
+                            "y"
+                          ]
+                        }
+                      },
+                      "required": [
+                        "target_world"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "action_id",
+                    "actor_id",
+                    "kind",
+                    "track",
+                    "start_frame",
+                    "end_frame",
+                    "params"
+                  ]
+                },
+                {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "action_id": {
+                      "type": "string",
+                      "minLength": 1,
+                      "pattern": "^act_[a-z0-9_]+$"
+                    },
+                    "actor_id": {
+                      "type": "string",
+                      "minLength": 1,
+                      "pattern": "^actor_[a-z0-9_]+$"
+                    },
+                    "kind": {
+                      "const": "reach_for"
+                    },
+                    "track": {
+                      "const": "upper_body"
+                    },
+                    "start_frame": {
+                      "type": "integer",
+                      "minimum": 0
+                    },
+                    "end_frame": {
+                      "type": "integer",
+                      "minimum": 1
+                    },
+                    "params": {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "properties": {
+                        "prop_id": {
+                          "type": "string",
+                          "minLength": 1,
+                          "pattern": "^prop_[a-z0-9_]+$"
+                        },
+                        "hand": {
+                          "enum": [
+                            "left",
+                            "right"
+                          ]
+                        }
+                      },
+                      "required": [
+                        "prop_id",
+                        "hand"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "action_id",
+                    "actor_id",
+                    "kind",
+                    "track",
+                    "start_frame",
+                    "end_frame",
+                    "params"
+                  ]
+                },
+                {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "action_id": {
+                      "type": "string",
+                      "minLength": 1,
+                      "pattern": "^act_[a-z0-9_]+$"
+                    },
+                    "actor_id": {
+                      "type": "string",
+                      "minLength": 1,
+                      "pattern": "^actor_[a-z0-9_]+$"
+                    },
+                    "kind": {
+                      "const": "grab"
+                    },
+                    "track": {
+                      "const": "interaction"
+                    },
+                    "start_frame": {
+                      "type": "integer",
+                      "minimum": 0
+                    },
+                    "end_frame": {
+                      "type": "integer",
+                      "minimum": 1
+                    },
+                    "params": {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "properties": {
+                        "prop_id": {
+                          "type": "string",
+                          "minLength": 1,
+                          "pattern": "^prop_[a-z0-9_]+$"
+                        },
+                        "hand": {
+                          "enum": [
+                            "left",
+                            "right"
+                          ]
+                        }
+                      },
+                      "required": [
+                        "prop_id",
+                        "hand"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "action_id",
+                    "actor_id",
+                    "kind",
+                    "track",
+                    "start_frame",
+                    "end_frame",
+                    "params"
+                  ]
+                },
+                {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "action_id": {
+                      "type": "string",
+                      "minLength": 1,
+                      "pattern": "^act_[a-z0-9_]+$"
+                    },
+                    "actor_id": {
+                      "type": "string",
+                      "minLength": 1,
+                      "pattern": "^actor_[a-z0-9_]+$"
+                    },
+                    "kind": {
+                      "const": "carry_to"
+                    },
+                    "track": {
+                      "const": "upper_body"
+                    },
+                    "start_frame": {
+                      "type": "integer",
+                      "minimum": 0
+                    },
+                    "end_frame": {
+                      "type": "integer",
+                      "minimum": 1
+                    },
+                    "params": {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "properties": {
+                        "prop_id": {
+                          "type": "string",
+                          "minLength": 1,
+                          "pattern": "^prop_[a-z0-9_]+$"
+                        },
+                        "hand": {
+                          "enum": [
+                            "left",
+                            "right"
+                          ]
+                        },
+                        "target_world": {
+                          "type": "object",
+                          "additionalProperties": false,
+                          "properties": {
+                            "x": {
+                              "type": "number"
+                            },
+                            "y": {
+                              "type": "number"
+                            }
+                          },
+                          "required": [
+                            "x",
+                            "y"
+                          ]
+                        }
+                      },
+                      "required": [
+                        "prop_id",
+                        "hand",
+                        "target_world"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "action_id",
+                    "actor_id",
+                    "kind",
+                    "track",
+                    "start_frame",
+                    "end_frame",
+                    "params"
+                  ]
+                },
+                {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "action_id": {
+                      "type": "string",
+                      "minLength": 1,
+                      "pattern": "^act_[a-z0-9_]+$"
+                    },
+                    "actor_id": {
+                      "type": "string",
+                      "minLength": 1,
+                      "pattern": "^actor_[a-z0-9_]+$"
+                    },
+                    "kind": {
+                      "const": "place_at"
+                    },
+                    "track": {
+                      "const": "interaction"
+                    },
+                    "start_frame": {
+                      "type": "integer",
+                      "minimum": 0
+                    },
+                    "end_frame": {
+                      "type": "integer",
+                      "minimum": 1
+                    },
+                    "params": {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "properties": {
+                        "prop_id": {
+                          "type": "string",
+                          "minLength": 1,
+                          "pattern": "^prop_[a-z0-9_]+$"
+                        },
+                        "hand": {
+                          "enum": [
+                            "left",
+                            "right"
+                          ]
+                        },
+                        "target_world": {
+                          "type": "object",
+                          "additionalProperties": false,
+                          "properties": {
+                            "x": {
+                              "type": "number"
+                            },
+                            "y": {
+                              "type": "number"
+                            }
+                          },
+                          "required": [
+                            "x",
+                            "y"
+                          ]
+                        }
+                      },
+                      "required": [
+                        "prop_id",
+                        "hand",
+                        "target_world"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "action_id",
+                    "actor_id",
+                    "kind",
+                    "track",
+                    "start_frame",
+                    "end_frame",
+                    "params"
+                  ]
+                },
+                {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "action_id": {
+                      "type": "string",
+                      "minLength": 1,
+                      "pattern": "^act_[a-z0-9_]+$"
+                    },
+                    "actor_id": {
+                      "type": "string",
+                      "minLength": 1,
+                      "pattern": "^actor_[a-z0-9_]+$"
+                    },
+                    "kind": {
+                      "const": "point_at"
+                    },
+                    "track": {
+                      "const": "upper_body"
+                    },
+                    "start_frame": {
+                      "type": "integer",
+                      "minimum": 0
+                    },
+                    "end_frame": {
+                      "type": "integer",
+                      "minimum": 1
+                    },
+                    "params": {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "properties": {
+                        "target_world": {
+                          "type": "object",
+                          "additionalProperties": false,
+                          "properties": {
+                            "x": {
+                              "type": "number"
+                            },
+                            "y": {
+                              "type": "number"
+                            }
+                          },
+                          "required": [
+                            "x",
+                            "y"
+                          ]
+                        },
+                        "hand": {
+                          "enum": [
+                            "left",
+                            "right"
+                          ]
+                        }
+                      },
+                      "required": [
+                        "target_world",
+                        "hand"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "action_id",
+                    "actor_id",
+                    "kind",
+                    "track",
+                    "start_frame",
+                    "end_frame",
+                    "params"
+                  ]
+                },
+                {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "action_id": {
+                      "type": "string",
+                      "minLength": 1,
+                      "pattern": "^act_[a-z0-9_]+$"
+                    },
+                    "actor_id": {
+                      "type": "string",
+                      "minLength": 1,
+                      "pattern": "^actor_[a-z0-9_]+$"
+                    },
+                    "kind": {
+                      "const": "react"
+                    },
+                    "track": {
+                      "const": "expression"
+                    },
+                    "start_frame": {
+                      "type": "integer",
+                      "minimum": 0
+                    },
+                    "end_frame": {
+                      "type": "integer",
+                      "minimum": 1
+                    },
+                    "params": {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "properties": {
+                        "expression": {
+                          "type": "string",
+                          "minLength": 1,
+                          "enum": [
+                            "neutral",
+                            "happy",
+                            "surprised",
+                            "angry"
+                          ]
+                        }
+                      },
+                      "required": [
+                        "expression"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "action_id",
+                    "actor_id",
+                    "kind",
+                    "track",
+                    "start_frame",
+                    "end_frame",
+                    "params"
+                  ]
+                }
+              ]
+            },
+            "minItems": 1,
+            "maxItems": 50
+          },
+          "camera_keyframes": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "frame": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "camera": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "center_world": {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "properties": {
+                        "x": {
+                          "type": "number"
+                        },
+                        "y": {
+                          "type": "number"
+                        }
+                      },
+                      "required": [
+                        "x",
+                        "y"
+                      ]
+                    },
+                    "zoom": {
+                      "type": "number",
+                      "maximum": 5,
+                      "exclusiveMinimum": 0
+                    }
+                  },
+                  "required": [
+                    "center_world",
+                    "zoom"
+                  ]
+                }
+              },
+              "required": [
+                "frame",
+                "camera"
+              ]
+            },
+            "minItems": 1,
+            "maxItems": 50
+          }
+        },
+        "required": [
+          "shot_id",
+          "duration_frames",
+          "actions",
+          "camera_keyframes"
+        ]
+      },
+      "minItems": 1,
+      "maxItems": 30
+    }
+  },
+  "required": [
+    "schema_version",
+    "artifact_id",
+    "source_hash",
+    "project_id",
+    "shot_plan_artifact_id",
+    "asset_resolution_artifact_id",
+    "shots"
+  ],
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ai-2d-animation-studio.local/contracts/schemas/animation_plan.schema.json",
+  "title": "animation_plan.v1"
+}

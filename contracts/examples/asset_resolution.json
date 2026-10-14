@@ -1,0 +1,46 @@
+{
+  "schema_version": "asset_resolution.v1",
+  "artifact_id": "art_44444444444444444444444444444444",
+  "source_hash": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "asset_requirements_artifact_id": "art_77777777777777777777777777777777",
+  "shot_plan_artifact_id": "art_33333333333333333333333333333333",
+  "channel_id": "chn_11111111111111111111111111111111",
+  "decisions": [
+    {
+      "requirement_id": "req_171e3180899f622b",
+      "status": "ready",
+      "asset_version_id": "av_bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "rig_version_id": null,
+      "candidate_asset_version_ids": [
+        "av_bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+      ],
+      "reasons": [
+        "Exact approved style and capability match"
+      ]
+    },
+    {
+      "requirement_id": "req_eaa04c71ed8274d4",
+      "status": "ready",
+      "asset_version_id": "av_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "rig_version_id": "rv_88888888888888888888888888888888",
+      "candidate_asset_version_ids": [
+        "av_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+      ],
+      "reasons": [
+        "Exact approved style and capability match"
+      ]
+    },
+    {
+      "requirement_id": "req_993ebe462eea7f4d",
+      "status": "ready",
+      "asset_version_id": "av_cccccccccccccccccccccccccccccccc",
+      "rig_version_id": null,
+      "candidate_asset_version_ids": [
+        "av_cccccccccccccccccccccccccccccccc"
+      ],
+      "reasons": [
+        "Exact approved style and capability match"
+      ]
+    }
+  ]
+}

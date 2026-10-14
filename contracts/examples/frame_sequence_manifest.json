@@ -1,0 +1,300 @@
+{
+  "schema_version": "frame_sequence_manifest.v1",
+  "artifact_id": "art_ffffffffffffffffffffffffffffffff",
+  "compiled_film_artifact_id": "art_cccccccccccccccccccccccccccccccc",
+  "shot_id": "shot_001",
+  "width": 1280,
+  "height": 720,
+  "fps": 24,
+  "frame_count": 48,
+  "frames": [
+    {
+      "frame": 0,
+      "filename": "shot_000000.png",
+      "sha256": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "nonblank": true
+    },
+    {
+      "frame": 1,
+      "filename": "shot_000001.png",
+      "sha256": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "nonblank": true
+    },
+    {
+      "frame": 2,
+      "filename": "shot_000002.png",
+      "sha256": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "nonblank": true
+    },
+    {
+      "frame": 3,
+      "filename": "shot_000003.png",
+      "sha256": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "nonblank": true
+    },
+    {
+      "frame": 4,
+      "filename": "shot_000004.png",
+      "sha256": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "nonblank": true
+    },
+    {
+      "frame": 5,
+      "filename": "shot_000005.png",
+      "sha256": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "nonblank": true
+    },
+    {
+      "frame": 6,
+      "filename": "shot_000006.png",
+      "sha256": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "nonblank": true
+    },
+    {
+      "frame": 7,
+      "filename": "shot_000007.png",
+      "sha256": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "nonblank": true
+    },
+    {
+      "frame": 8,
+      "filename": "shot_000008.png",
+      "sha256": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "nonblank": true
+    },
+    {
+      "frame": 9,
+      "filename": "shot_000009.png",
+      "sha256": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "nonblank": true
+    },
+    {
+      "frame": 10,
+      "filename": "shot_000010.png",
+      "sha256": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "nonblank": true
+    },
+    {
+      "frame": 11,
+      "filename": "shot_000011.png",
+      "sha256": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "nonblank": true
+    },
+    {
+      "frame": 12,
+      "filename": "shot_000012.png",
+      "sha256": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "nonblank": true
+    },
+    {
+      "frame": 13,
+      "filename": "shot_000013.png",
+      "sha256": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "nonblank": true
+    },
+    {
+      "frame": 14,
+      "filename": "shot_000014.png",
+      "sha256": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "nonblank": true
+    },
+    {
+      "frame": 15,
+      "filename": "shot_000015.png",
+      "sha256": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "nonblank": true
+    },
+    {
+      "frame": 16,
+      "filename": "shot_000016.png",
+      "sha256": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "nonblank": true
+    },
+    {
+      "frame": 17,
+      "filename": "shot_000017.png",
+      "sha256": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "nonblank": true
+    },
+    {
+      "frame": 18,
+      "filename": "shot_000018.png",
+      "sha256": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "nonblank": true
+    },
+    {
+      "frame": 19,
+      "filename": "shot_000019.png",
+      "sha256": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "nonblank": true
+    },
+    {
+      "frame": 20,
+      "filename": "shot_000020.png",
+      "sha256": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "nonblank": true
+    },
+    {
+      "frame": 21,
+      "filename": "shot_000021.png",
+      "sha256": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "nonblank": true
+    },
+    {
+      "frame": 22,
+      "filename": "shot_000022.png",
+      "sha256": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "nonblank": true
+    },
+    {
+      "frame": 23,
+      "filename": "shot_000023.png",
+      "sha256": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "nonblank": true
+    },
+    {
+      "frame": 24,
+      "filename": "shot_000024.png",
+      "sha256": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "nonblank": true
+    },
+    {
+      "frame": 25,
+      "filename": "shot_000025.png",
+      "sha256": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "nonblank": true
+    },
+    {
+      "frame": 26,
+      "filename": "shot_000026.png",
+      "sha256": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "nonblank": true
+    },
+    {
+      "frame": 27,
+      "filename": "shot_000027.png",
+      "sha256": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "nonblank": true
+    },
+    {
+      "frame": 28,
+      "filename": "shot_000028.png",
+      "sha256": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "nonblank": true
+    },
+    {
+      "frame": 29,
+      "filename": "shot_000029.png",
+      "sha256": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "nonblank": true
+    },
+    {
+      "frame": 30,
+      "filename": "shot_000030.png",
+      "sha256": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "nonblank": true
+    },
+    {
+      "frame": 31,
+      "filename": "shot_000031.png",
+      "sha256": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "nonblank": true
+    },
+    {
+      "frame": 32,
+      "filename": "shot_000032.png",
+      "sha256": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "nonblank": true
+    },
+    {
+      "frame": 33,
+      "filename": "shot_000033.png",
+      "sha256": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "nonblank": true
+    },
+    {
+      "frame": 34,
+      "filename": "shot_000034.png",
+      "sha256": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "nonblank": true
+    },
+    {
+      "frame": 35,
+      "filename": "shot_000035.png",
+      "sha256": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "nonblank": true
+    },
+    {
+      "frame": 36,
+      "filename": "shot_000036.png",
+      "sha256": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "nonblank": true
+    },
+    {
+      "frame": 37,
+      "filename": "shot_000037.png",
+      "sha256": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "nonblank": true
+    },
+    {
+      "frame": 38,
+      "filename": "shot_000038.png",
+      "sha256": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "nonblank": true
+    },
+    {
+      "frame": 39,
+      "filename": "shot_000039.png",
+      "sha256": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "nonblank": true
+    },
+    {
+      "frame": 40,
+      "filename": "shot_000040.png",
+      "sha256": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "nonblank": true
+    },
+    {
+      "frame": 41,
+      "filename": "shot_000041.png",
+      "sha256": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "nonblank": true
+    },
+    {
+      "frame": 42,
+      "filename": "shot_000042.png",
+      "sha256": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "nonblank": true
+    },
+    {
+      "frame": 43,
+      "filename": "shot_000043.png",
+      "sha256": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "nonblank": true
+    },
+    {
+      "frame": 44,
+      "filename": "shot_000044.png",
+      "sha256": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "nonblank": true
+    },
+    {
+      "frame": 45,
+      "filename": "shot_000045.png",
+      "sha256": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "nonblank": true
+    },
+    {
+      "frame": 46,
+      "filename": "shot_000046.png",
+      "sha256": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "nonblank": true
+    },
+    {
+      "frame": 47,
+      "filename": "shot_000047.png",
+      "sha256": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "nonblank": true
+    }
+  ]
+}

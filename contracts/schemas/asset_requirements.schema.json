@@ -1,0 +1,127 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": "asset_requirements.v1"
+    },
+    "artifact_id": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^art_[0-9a-f]{32}$"
+    },
+    "source_hash": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^sha256:[0-9a-f]{64}$"
+    },
+    "shot_plan_artifact_id": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^art_[0-9a-f]{32}$"
+    },
+    "channel_id": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^chn_[0-9a-f]{32}$"
+    },
+    "requirements": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "requirement_id": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^req_[0-9a-f]{16}$"
+          },
+          "kind": {
+            "type": "string",
+            "minLength": 1,
+            "enum": [
+              "character",
+              "background",
+              "prop",
+              "effect"
+            ]
+          },
+          "semantic_key": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^[a-z][a-z0-9_]{1,63}$"
+          },
+          "view": {
+            "type": "string",
+            "minLength": 1,
+            "enum": [
+              "front",
+              "three_quarter",
+              "side",
+              "base"
+            ]
+          },
+          "style_hash": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^sha256:[0-9a-f]{64}$"
+          },
+          "usage_shot_ids": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1,
+              "pattern": "^shot_[a-z0-9_]+$"
+            },
+            "minItems": 1,
+            "maxItems": 30,
+            "uniqueItems": true
+          },
+          "required_actions": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1,
+              "enum": [
+                "idle",
+                "walk",
+                "look",
+                "reach",
+                "grab",
+                "carry",
+                "place",
+                "point",
+                "react"
+              ]
+            },
+            "minItems": 0,
+            "maxItems": 9,
+            "uniqueItems": true
+          }
+        },
+        "required": [
+          "requirement_id",
+          "kind",
+          "semantic_key",
+          "view",
+          "style_hash",
+          "usage_shot_ids",
+          "required_actions"
+        ]
+      },
+      "minItems": 1,
+      "maxItems": 120
+    }
+  },
+  "required": [
+    "schema_version",
+    "artifact_id",
+    "source_hash",
+    "shot_plan_artifact_id",
+    "channel_id",
+    "requirements"
+  ],
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ai-2d-animation-studio.local/contracts/schemas/asset_requirements.schema.json",
+  "title": "asset_requirements.v1"
+}

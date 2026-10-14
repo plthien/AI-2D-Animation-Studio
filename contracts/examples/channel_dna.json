@@ -1,0 +1,30 @@
+{
+  "schema_version": "channel_dna.v1",
+  "artifact_id": "art_11111111111111111111111111111111",
+  "channel_id": "chn_11111111111111111111111111111111",
+  "channel": {
+    "name": "Sample Channel",
+    "language": "en",
+    "niche": "cartoon comedy",
+    "audience": "general"
+  },
+  "visual_identity": {
+    "medium": "flat hand-drawn 2D",
+    "linework": "flat hand-drawn 2D",
+    "rendering": "flat hand-drawn 2D",
+    "palette": "flat hand-drawn 2D",
+    "shape_language": "flat hand-drawn 2D",
+    "texture": "flat hand-drawn 2D",
+    "editorial_language": "flat hand-drawn 2D"
+  },
+  "narration": {
+    "wpm_min": 140,
+    "wpm_max": 180,
+    "style": "dry light comedy"
+  },
+  "render": {
+    "width": 1280,
+    "height": 720,
+    "fps": 24
+  }
+}

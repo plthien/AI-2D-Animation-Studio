@@ -1,0 +1,136 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": "asset_version.v1"
+    },
+    "asset_id": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^ast_[0-9a-f]{32}$"
+    },
+    "asset_version_id": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^av_[0-9a-f]{32}$"
+    },
+    "channel_id": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^chn_[0-9a-f]{32}$"
+    },
+    "kind": {
+      "type": "string",
+      "minLength": 1,
+      "enum": [
+        "character",
+        "background",
+        "prop",
+        "effect"
+      ]
+    },
+    "semantic_key": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^[a-z][a-z0-9_]{1,63}$"
+    },
+    "view": {
+      "type": "string",
+      "minLength": 1,
+      "enum": [
+        "front",
+        "three_quarter",
+        "side",
+        "base"
+      ]
+    },
+    "style_hash": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^sha256:[0-9a-f]{64}$"
+    },
+    "image_artifact_id": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^art_[0-9a-f]{32}$"
+    },
+    "image_sha256": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^sha256:[0-9a-f]{64}$"
+    },
+    "width_px": {
+      "type": "integer",
+      "minimum": 32,
+      "maximum": 8192
+    },
+    "height_px": {
+      "type": "integer",
+      "minimum": 32,
+      "maximum": 8192
+    },
+    "world_width_m": {
+      "type": "number",
+      "exclusiveMinimum": 0
+    },
+    "world_height_m": {
+      "type": "number",
+      "exclusiveMinimum": 0
+    },
+    "grip_socket_px": {
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "x": {
+              "type": "number"
+            },
+            "y": {
+              "type": "number"
+            }
+          },
+          "required": [
+            "x",
+            "y"
+          ]
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "status": {
+      "type": "string",
+      "minLength": 1,
+      "enum": [
+        "draft",
+        "needs_review",
+        "approved",
+        "rejected"
+      ]
+    }
+  },
+  "required": [
+    "schema_version",
+    "asset_id",
+    "asset_version_id",
+    "channel_id",
+    "kind",
+    "semantic_key",
+    "view",
+    "style_hash",
+    "image_artifact_id",
+    "image_sha256",
+    "width_px",
+    "height_px",
+    "world_width_m",
+    "world_height_m",
+    "grip_socket_px",
+    "status"
+  ],
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ai-2d-animation-studio.local/contracts/schemas/asset_version.schema.json",
+  "title": "asset_version.v1"
+}

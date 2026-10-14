@@ -1,0 +1,147 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": "channel_dna.v1"
+    },
+    "artifact_id": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^art_[0-9a-f]{32}$"
+    },
+    "channel_id": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^chn_[0-9a-f]{32}$"
+    },
+    "channel": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "language": {
+          "type": "string",
+          "minLength": 1
+        },
+        "niche": {
+          "type": "string",
+          "minLength": 1
+        },
+        "audience": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "required": [
+        "name",
+        "language",
+        "niche",
+        "audience"
+      ]
+    },
+    "visual_identity": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "medium": {
+          "type": "string",
+          "minLength": 1
+        },
+        "linework": {
+          "type": "string",
+          "minLength": 1
+        },
+        "rendering": {
+          "type": "string",
+          "minLength": 1
+        },
+        "palette": {
+          "type": "string",
+          "minLength": 1
+        },
+        "shape_language": {
+          "type": "string",
+          "minLength": 1
+        },
+        "texture": {
+          "type": "string",
+          "minLength": 1
+        },
+        "editorial_language": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "required": [
+        "medium",
+        "linework",
+        "rendering",
+        "palette",
+        "shape_language",
+        "texture",
+        "editorial_language"
+      ]
+    },
+    "narration": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "wpm_min": {
+          "type": "integer",
+          "minimum": 80,
+          "maximum": 299
+        },
+        "wpm_max": {
+          "type": "integer",
+          "minimum": 81,
+          "maximum": 300
+        },
+        "style": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "required": [
+        "wpm_min",
+        "wpm_max",
+        "style"
+      ]
+    },
+    "render": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "width": {
+          "const": 1280
+        },
+        "height": {
+          "const": 720
+        },
+        "fps": {
+          "const": 24
+        }
+      },
+      "required": [
+        "width",
+        "height",
+        "fps"
+      ]
+    }
+  },
+  "required": [
+    "schema_version",
+    "artifact_id",
+    "channel_id",
+    "channel",
+    "visual_identity",
+    "narration",
+    "render"
+  ],
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ai-2d-animation-studio.local/contracts/schemas/channel_dna.schema.json",
+  "title": "channel_dna.v1"
+}

@@ -1,0 +1,144 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": "rig_layout.v1"
+    },
+    "artifact_id": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^art_[0-9a-f]{32}$"
+    },
+    "parts_manifest_artifact_id": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^art_[0-9a-f]{32}$"
+    },
+    "reference_sha256": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^sha256:[0-9a-f]{64}$"
+    },
+    "canvas": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "width": {
+          "type": "integer",
+          "minimum": 64,
+          "maximum": 8192
+        },
+        "height": {
+          "type": "integer",
+          "minimum": 64,
+          "maximum": 8192
+        }
+      },
+      "required": [
+        "width",
+        "height"
+      ]
+    },
+    "parts": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "semantic_role": {
+            "type": "string",
+            "minLength": 1,
+            "enum": [
+              "torso",
+              "head",
+              "left_upper_arm",
+              "left_forearm",
+              "left_hand",
+              "right_upper_arm",
+              "right_forearm",
+              "right_hand",
+              "left_thigh",
+              "left_shin",
+              "left_foot",
+              "right_thigh",
+              "right_shin",
+              "right_foot"
+            ]
+          },
+          "component_id": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^cmp_[a-z0-9_]+$"
+          },
+          "x": {
+            "type": "number"
+          },
+          "y": {
+            "type": "number"
+          },
+          "scale": {
+            "type": "number",
+            "exclusiveMinimum": 0
+          },
+          "rotation_deg": {
+            "type": "number",
+            "minimum": -180,
+            "maximum": 180
+          },
+          "z_index": {
+            "type": "integer",
+            "minimum": -100,
+            "maximum": 100
+          },
+          "placement_method": {
+            "type": "string",
+            "minLength": 1,
+            "enum": [
+              "sift_ransac",
+              "template_match",
+              "manual"
+            ]
+          },
+          "confidence": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1
+          }
+        },
+        "required": [
+          "semantic_role",
+          "component_id",
+          "x",
+          "y",
+          "scale",
+          "rotation_deg",
+          "z_index",
+          "placement_method",
+          "confidence"
+        ]
+      },
+      "minItems": 14,
+      "maxItems": 14
+    },
+    "draw_order_reviewed": {
+      "const": true
+    },
+    "placements_reviewed": {
+      "const": true
+    }
+  },
+  "required": [
+    "schema_version",
+    "artifact_id",
+    "parts_manifest_artifact_id",
+    "reference_sha256",
+    "canvas",
+    "parts",
+    "draw_order_reviewed",
+    "placements_reviewed"
+  ],
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ai-2d-animation-studio.local/contracts/schemas/rig_layout.schema.json",
+  "title": "rig_layout.v1"
+}

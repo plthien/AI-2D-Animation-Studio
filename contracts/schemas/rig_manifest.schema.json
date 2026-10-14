@@ -1,0 +1,134 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": "rig_manifest.v1"
+    },
+    "artifact_id": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^art_[0-9a-f]{32}$"
+    },
+    "rig_id": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^rig_[0-9a-f]{32}$"
+    },
+    "rig_version_id": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^rv_[0-9a-f]{32}$"
+    },
+    "asset_version_id": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^av_[0-9a-f]{32}$"
+    },
+    "parts_manifest_artifact_id": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^art_[0-9a-f]{32}$"
+    },
+    "rig_layout_artifact_id": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^art_[0-9a-f]{32}$"
+    },
+    "rig_joints_artifact_id": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^art_[0-9a-f]{32}$"
+    },
+    "layout_sha256": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^sha256:[0-9a-f]{64}$"
+    },
+    "joints_sha256": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^sha256:[0-9a-f]{64}$"
+    },
+    "spine_json_artifact_id": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^art_[0-9a-f]{32}$"
+    },
+    "atlas_text_artifact_id": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^art_[0-9a-f]{32}$"
+    },
+    "atlas_png_artifact_id": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^art_[0-9a-f]{32}$"
+    },
+    "rig_profile_artifact_id": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^art_[0-9a-f]{32}$"
+    },
+    "qc_report_artifact_id": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^art_[0-9a-f]{32}$"
+    },
+    "draw_order": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "semantic_role": {
+            "type": "string",
+            "minLength": 1
+          },
+          "z_index": {
+            "type": "integer",
+            "minimum": -100,
+            "maximum": 100
+          }
+        },
+        "required": [
+          "semantic_role",
+          "z_index"
+        ]
+      },
+      "minItems": 14,
+      "maxItems": 14
+    },
+    "status": {
+      "type": "string",
+      "minLength": 1,
+      "enum": [
+        "needs_review",
+        "approved",
+        "rejected"
+      ]
+    }
+  },
+  "required": [
+    "schema_version",
+    "artifact_id",
+    "rig_id",
+    "rig_version_id",
+    "asset_version_id",
+    "parts_manifest_artifact_id",
+    "rig_layout_artifact_id",
+    "rig_joints_artifact_id",
+    "layout_sha256",
+    "joints_sha256",
+    "spine_json_artifact_id",
+    "atlas_text_artifact_id",
+    "atlas_png_artifact_id",
+    "rig_profile_artifact_id",
+    "qc_report_artifact_id",
+    "draw_order",
+    "status"
+  ],
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ai-2d-animation-studio.local/contracts/schemas/rig_manifest.schema.json",
+  "title": "rig_manifest.v1"
+}

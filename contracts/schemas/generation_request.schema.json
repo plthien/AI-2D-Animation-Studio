@@ -1,0 +1,97 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": "generation_request.v1"
+    },
+    "project_id": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^prj_[0-9a-f]{32}$"
+    },
+    "asset_id": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^ast_[0-9a-f]{32}$"
+    },
+    "asset_version_id": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^av_[0-9a-f]{32}$"
+    },
+    "generation_kind": {
+      "type": "string",
+      "minLength": 1,
+      "enum": [
+        "character_reference",
+        "character_parts_atlas",
+        "background",
+        "prop",
+        "expression_sheet"
+      ]
+    },
+    "model": {
+      "type": "string",
+      "minLength": 1,
+      "enum": [
+        "nano_banana_2",
+        "nano_banana_pro"
+      ]
+    },
+    "aspect_ratio": {
+      "type": "string",
+      "minLength": 1,
+      "enum": [
+        "1:1",
+        "3:4",
+        "4:3",
+        "9:16",
+        "16:9"
+      ]
+    },
+    "prompt": {
+      "type": "string",
+      "minLength": 1
+    },
+    "negative_prompt": {
+      "type": "string",
+      "minLength": 0
+    },
+    "reference_image_artifact_id": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "^art_[0-9a-f]{32}$"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "confirm_spend": {
+      "const": true
+    },
+    "candidate_count": {
+      "const": 1
+    }
+  },
+  "required": [
+    "schema_version",
+    "project_id",
+    "asset_id",
+    "asset_version_id",
+    "generation_kind",
+    "model",
+    "aspect_ratio",
+    "prompt",
+    "negative_prompt",
+    "reference_image_artifact_id",
+    "confirm_spend",
+    "candidate_count"
+  ],
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ai-2d-animation-studio.local/contracts/schemas/generation_request.schema.json",
+  "title": "generation_request.v1"
+}

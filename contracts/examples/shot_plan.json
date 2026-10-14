@@ -1,0 +1,60 @@
+{
+  "schema_version": "shot_plan.v1",
+  "artifact_id": "art_33333333333333333333333333333333",
+  "source_hash": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "project_id": "prj_22222222222222222222222222222222",
+  "script_artifact_id": "art_66666666666666666666666666666666",
+  "shots": [
+    {
+      "shot_id": "shot_001",
+      "order": 1,
+      "section_id": "intro",
+      "section_start": 0,
+      "section_end": 15,
+      "narration_text": "He found a jar.",
+      "duration_frames": 48,
+      "background_key": "forest",
+      "location_key": "forest",
+      "actors": [
+        {
+          "actor_id": "actor_a",
+          "character_key": "ancient_man",
+          "view": "side",
+          "initial_world": {
+            "x": -1.0,
+            "y": 0.0
+          },
+          "initial_face": "neutral"
+        }
+      ],
+      "props": [
+        {
+          "prop_id": "prop_jar",
+          "prop_key": "honey_jar",
+          "initial_world": {
+            "x": 0.0,
+            "y": 0.85
+          },
+          "owner_actor_id": null,
+          "owner_hand": null
+        }
+      ],
+      "story_actions": [
+        {
+          "actor_id": "actor_a",
+          "kind": "look",
+          "target_prop_id": "prop_jar",
+          "target_world": null
+        }
+      ],
+      "camera": {
+        "center_world": {
+          "x": 0,
+          "y": 1.5
+        },
+        "zoom": 1.0
+      },
+      "continuity": "continuous"
+    }
+  ]
+}

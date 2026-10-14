@@ -1,0 +1,149 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": "parts_manifest.v1"
+    },
+    "artifact_id": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^art_[0-9a-f]{32}$"
+    },
+    "source_atlas_sha256": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^sha256:[0-9a-f]{64}$"
+    },
+    "reference_sha256": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^sha256:[0-9a-f]{64}$"
+    },
+    "canvas": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "width": {
+          "type": "integer",
+          "minimum": 64,
+          "maximum": 8192
+        },
+        "height": {
+          "type": "integer",
+          "minimum": 64,
+          "maximum": 8192
+        }
+      },
+      "required": [
+        "width",
+        "height"
+      ]
+    },
+    "parts": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "component_id": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^cmp_[a-z0-9_]+$"
+          },
+          "semantic_role": {
+            "type": "string",
+            "minLength": 1,
+            "enum": [
+              "torso",
+              "head",
+              "left_upper_arm",
+              "left_forearm",
+              "left_hand",
+              "right_upper_arm",
+              "right_forearm",
+              "right_hand",
+              "left_thigh",
+              "left_shin",
+              "left_foot",
+              "right_thigh",
+              "right_shin",
+              "right_foot"
+            ]
+          },
+          "mask_sha256": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^sha256:[0-9a-f]{64}$"
+          },
+          "image_artifact_id": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^art_[0-9a-f]{32}$"
+          },
+          "bbox_px": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "x": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "y": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "width": {
+                "type": "integer",
+                "minimum": 1
+              },
+              "height": {
+                "type": "integer",
+                "minimum": 1
+              }
+            },
+            "required": [
+              "x",
+              "y",
+              "width",
+              "height"
+            ]
+          },
+          "area_px": {
+            "type": "integer",
+            "minimum": 64
+          },
+          "approved": {
+            "const": true
+          }
+        },
+        "required": [
+          "component_id",
+          "semantic_role",
+          "mask_sha256",
+          "image_artifact_id",
+          "bbox_px",
+          "area_px",
+          "approved"
+        ]
+      },
+      "minItems": 14,
+      "maxItems": 14
+    },
+    "reviewed": {
+      "const": true
+    }
+  },
+  "required": [
+    "schema_version",
+    "artifact_id",
+    "source_atlas_sha256",
+    "reference_sha256",
+    "canvas",
+    "parts",
+    "reviewed"
+  ],
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ai-2d-animation-studio.local/contracts/schemas/parts_manifest.schema.json",
+  "title": "parts_manifest.v1"
+}

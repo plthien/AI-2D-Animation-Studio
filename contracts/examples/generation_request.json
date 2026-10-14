@@ -1,0 +1,14 @@
+{
+  "schema_version": "generation_request.v1",
+  "project_id": "prj_22222222222222222222222222222222",
+  "asset_id": "ast_99999999999999999999999999999999",
+  "asset_version_id": "av_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "generation_kind": "character_parts_atlas",
+  "model": "nano_banana_2",
+  "aspect_ratio": "3:4",
+  "prompt": "Fourteen distinct transparent body regions for the approved character.",
+  "negative_prompt": "text watermark background merge",
+  "reference_image_artifact_id": "art_99999999999999999999999999999999",
+  "confirm_spend": true,
+  "candidate_count": 1
+}

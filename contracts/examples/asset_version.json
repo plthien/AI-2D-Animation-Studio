@@ -1,0 +1,18 @@
+{
+  "schema_version": "asset_version.v1",
+  "asset_id": "ast_99999999999999999999999999999999",
+  "asset_version_id": "av_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "channel_id": "chn_11111111111111111111111111111111",
+  "kind": "character",
+  "semantic_key": "ancient_man",
+  "view": "side",
+  "style_hash": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "image_artifact_id": "art_99999999999999999999999999999999",
+  "image_sha256": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "width_px": 768,
+  "height_px": 1024,
+  "world_width_m": 0.8,
+  "world_height_m": 1.7,
+  "grip_socket_px": null,
+  "status": "approved"
+}

@@ -1,0 +1,42 @@
+{
+  "schema_version": "animation_plan.v1",
+  "artifact_id": "art_55555555555555555555555555555555",
+  "source_hash": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "project_id": "prj_22222222222222222222222222222222",
+  "shot_plan_artifact_id": "art_33333333333333333333333333333333",
+  "asset_resolution_artifact_id": "art_44444444444444444444444444444444",
+  "shots": [
+    {
+      "shot_id": "shot_001",
+      "duration_frames": 48,
+      "actions": [
+        {
+          "action_id": "act_look_1",
+          "actor_id": "actor_a",
+          "kind": "look_at",
+          "track": "gaze",
+          "start_frame": 0,
+          "end_frame": 48,
+          "params": {
+            "target_world": {
+              "x": 0,
+              "y": 0.85
+            }
+          }
+        }
+      ],
+      "camera_keyframes": [
+        {
+          "frame": 0,
+          "camera": {
+            "center_world": {
+              "x": 0,
+              "y": 1.5
+            },
+            "zoom": 1.0
+          }
+        }
+      ]
+    }
+  ]
+}

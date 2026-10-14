@@ -1,0 +1,168 @@
+{
+  "schema_version": "rig_layout.v1",
+  "artifact_id": "art_11111111111111111111111111111111",
+  "parts_manifest_artifact_id": "art_88888888888888888888888888888888",
+  "reference_sha256": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "canvas": {
+    "width": 768,
+    "height": 1024
+  },
+  "parts": [
+    {
+      "semantic_role": "torso",
+      "component_id": "cmp_0",
+      "x": 0.0,
+      "y": 0.0,
+      "scale": 1.0,
+      "rotation_deg": 0,
+      "z_index": 0,
+      "placement_method": "manual",
+      "confidence": 1.0
+    },
+    {
+      "semantic_role": "head",
+      "component_id": "cmp_1",
+      "x": 2.0,
+      "y": 3.0,
+      "scale": 1.0,
+      "rotation_deg": 0,
+      "z_index": 1,
+      "placement_method": "manual",
+      "confidence": 1.0
+    },
+    {
+      "semantic_role": "left_upper_arm",
+      "component_id": "cmp_2",
+      "x": 4.0,
+      "y": 6.0,
+      "scale": 1.0,
+      "rotation_deg": 0,
+      "z_index": 2,
+      "placement_method": "manual",
+      "confidence": 1.0
+    },
+    {
+      "semantic_role": "left_forearm",
+      "component_id": "cmp_3",
+      "x": 6.0,
+      "y": 9.0,
+      "scale": 1.0,
+      "rotation_deg": 0,
+      "z_index": 3,
+      "placement_method": "manual",
+      "confidence": 1.0
+    },
+    {
+      "semantic_role": "left_hand",
+      "component_id": "cmp_4",
+      "x": 8.0,
+      "y": 12.0,
+      "scale": 1.0,
+      "rotation_deg": 0,
+      "z_index": 4,
+      "placement_method": "manual",
+      "confidence": 1.0
+    },
+    {
+      "semantic_role": "right_upper_arm",
+      "component_id": "cmp_5",
+      "x": 10.0,
+      "y": 15.0,
+      "scale": 1.0,
+      "rotation_deg": 0,
+      "z_index": 5,
+      "placement_method": "manual",
+      "confidence": 1.0
+    },
+    {
+      "semantic_role": "right_forearm",
+      "component_id": "cmp_6",
+      "x": 12.0,
+      "y": 18.0,
+      "scale": 1.0,
+      "rotation_deg": 0,
+      "z_index": 6,
+      "placement_method": "manual",
+      "confidence": 1.0
+    },
+    {
+      "semantic_role": "right_hand",
+      "component_id": "cmp_7",
+      "x": 14.0,
+      "y": 21.0,
+      "scale": 1.0,
+      "rotation_deg": 0,
+      "z_index": 7,
+      "placement_method": "manual",
+      "confidence": 1.0
+    },
+    {
+      "semantic_role": "left_thigh",
+      "component_id": "cmp_8",
+      "x": 16.0,
+      "y": 24.0,
+      "scale": 1.0,
+      "rotation_deg": 0,
+      "z_index": 8,
+      "placement_method": "manual",
+      "confidence": 1.0
+    },
+    {
+      "semantic_role": "left_shin",
+      "component_id": "cmp_9",
+      "x": 18.0,
+      "y": 27.0,
+      "scale": 1.0,
+      "rotation_deg": 0,
+      "z_index": 9,
+      "placement_method": "manual",
+      "confidence": 1.0
+    },
+    {
+      "semantic_role": "left_foot",
+      "component_id": "cmp_10",
+      "x": 20.0,
+      "y": 30.0,
+      "scale": 1.0,
+      "rotation_deg": 0,
+      "z_index": 10,
+      "placement_method": "manual",
+      "confidence": 1.0
+    },
+    {
+      "semantic_role": "right_thigh",
+      "component_id": "cmp_11",
+      "x": 22.0,
+      "y": 33.0,
+      "scale": 1.0,
+      "rotation_deg": 0,
+      "z_index": 11,
+      "placement_method": "manual",
+      "confidence": 1.0
+    },
+    {
+      "semantic_role": "right_shin",
+      "component_id": "cmp_12",
+      "x": 24.0,
+      "y": 36.0,
+      "scale": 1.0,
+      "rotation_deg": 0,
+      "z_index": 12,
+      "placement_method": "manual",
+      "confidence": 1.0
+    },
+    {
+      "semantic_role": "right_foot",
+      "component_id": "cmp_13",
+      "x": 26.0,
+      "y": 39.0,
+      "scale": 1.0,
+      "rotation_deg": 0,
+      "z_index": 13,
+      "placement_method": "manual",
+      "confidence": 1.0
+    }
+  ],
+  "draw_order_reviewed": true,
+  "placements_reviewed": true
+}

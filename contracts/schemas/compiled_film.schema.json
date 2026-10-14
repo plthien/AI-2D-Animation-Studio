@@ -1,0 +1,340 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": "compiled_film.v1"
+    },
+    "artifact_id": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^art_[0-9a-f]{32}$"
+    },
+    "source_hash": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^sha256:[0-9a-f]{64}$"
+    },
+    "project_id": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^prj_[0-9a-f]{32}$"
+    },
+    "source_ids": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "shot_plan_artifact_id": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "^art_[0-9a-f]{32}$"
+        },
+        "asset_resolution_artifact_id": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "^art_[0-9a-f]{32}$"
+        },
+        "animation_plan_artifact_id": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "^art_[0-9a-f]{32}$"
+        }
+      },
+      "required": [
+        "shot_plan_artifact_id",
+        "asset_resolution_artifact_id",
+        "animation_plan_artifact_id"
+      ]
+    },
+    "fps": {
+      "const": 24
+    },
+    "width": {
+      "const": 1280
+    },
+    "height": {
+      "const": 720
+    },
+    "total_frames": {
+      "type": "integer",
+      "minimum": 24,
+      "maximum": 21600
+    },
+    "shots": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "shot_id": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^shot_[a-z0-9_]+$"
+          },
+          "start_frame": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "duration_frames": {
+            "type": "integer",
+            "minimum": 24,
+            "maximum": 720
+          },
+          "end_frame_exclusive": {
+            "type": "integer",
+            "minimum": 24
+          },
+          "location_key": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^[a-z][a-z0-9_]{1,63}$"
+          },
+          "background_asset_version_id": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^av_[0-9a-f]{32}$"
+          },
+          "frames": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "frame": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "actors": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "properties": {
+                      "actor_id": {
+                        "type": "string",
+                        "minLength": 1,
+                        "pattern": "^actor_[a-z0-9_]+$"
+                      },
+                      "rig_version_id": {
+                        "type": "string",
+                        "minLength": 1,
+                        "pattern": "^rv_[0-9a-f]{32}$"
+                      },
+                      "root_world": {
+                        "type": "object",
+                        "additionalProperties": false,
+                        "properties": {
+                          "x": {
+                            "type": "number"
+                          },
+                          "y": {
+                            "type": "number"
+                          }
+                        },
+                        "required": [
+                          "x",
+                          "y"
+                        ]
+                      },
+                      "expression": {
+                        "type": "string",
+                        "minLength": 1,
+                        "enum": [
+                          "neutral",
+                          "happy",
+                          "surprised",
+                          "angry"
+                        ]
+                      },
+                      "bones": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "additionalProperties": false,
+                          "properties": {
+                            "bone_name": {
+                              "type": "string",
+                              "minLength": 1
+                            },
+                            "x_px": {
+                              "type": "number"
+                            },
+                            "y_px": {
+                              "type": "number"
+                            },
+                            "rotation_deg": {
+                              "type": "number"
+                            },
+                            "scale_x": {
+                              "type": "number",
+                              "exclusiveMinimum": 0
+                            },
+                            "scale_y": {
+                              "type": "number",
+                              "exclusiveMinimum": 0
+                            }
+                          },
+                          "required": [
+                            "bone_name",
+                            "x_px",
+                            "y_px",
+                            "rotation_deg",
+                            "scale_x",
+                            "scale_y"
+                          ]
+                        },
+                        "minItems": 16,
+                        "maxItems": 16
+                      }
+                    },
+                    "required": [
+                      "actor_id",
+                      "rig_version_id",
+                      "root_world",
+                      "expression",
+                      "bones"
+                    ]
+                  },
+                  "minItems": 1,
+                  "maxItems": 2
+                },
+                "props": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "properties": {
+                      "prop_id": {
+                        "type": "string",
+                        "minLength": 1,
+                        "pattern": "^prop_[a-z0-9_]+$"
+                      },
+                      "asset_version_id": {
+                        "type": "string",
+                        "minLength": 1,
+                        "pattern": "^av_[0-9a-f]{32}$"
+                      },
+                      "world_position": {
+                        "type": "object",
+                        "additionalProperties": false,
+                        "properties": {
+                          "x": {
+                            "type": "number"
+                          },
+                          "y": {
+                            "type": "number"
+                          }
+                        },
+                        "required": [
+                          "x",
+                          "y"
+                        ]
+                      },
+                      "rotation_deg": {
+                        "type": "number"
+                      },
+                      "owner_actor_id": {
+                        "oneOf": [
+                          {
+                            "type": "string",
+                            "minLength": 1,
+                            "pattern": "^actor_[a-z0-9_]+$"
+                          },
+                          {
+                            "type": "null"
+                          }
+                        ]
+                      },
+                      "owner_hand": {
+                        "enum": [
+                          "left",
+                          "right",
+                          null
+                        ]
+                      }
+                    },
+                    "required": [
+                      "prop_id",
+                      "asset_version_id",
+                      "world_position",
+                      "rotation_deg",
+                      "owner_actor_id",
+                      "owner_hand"
+                    ]
+                  },
+                  "minItems": 0,
+                  "maxItems": 3
+                },
+                "camera": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "center_world": {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "properties": {
+                        "x": {
+                          "type": "number"
+                        },
+                        "y": {
+                          "type": "number"
+                        }
+                      },
+                      "required": [
+                        "x",
+                        "y"
+                      ]
+                    },
+                    "zoom": {
+                      "type": "number",
+                      "maximum": 5,
+                      "exclusiveMinimum": 0
+                    }
+                  },
+                  "required": [
+                    "center_world",
+                    "zoom"
+                  ]
+                }
+              },
+              "required": [
+                "frame",
+                "actors",
+                "props",
+                "camera"
+              ]
+            },
+            "minItems": 24,
+            "maxItems": 720
+          }
+        },
+        "required": [
+          "shot_id",
+          "start_frame",
+          "duration_frames",
+          "end_frame_exclusive",
+          "location_key",
+          "background_asset_version_id",
+          "frames"
+        ]
+      },
+      "minItems": 1,
+      "maxItems": 30
+    }
+  },
+  "required": [
+    "schema_version",
+    "artifact_id",
+    "source_hash",
+    "project_id",
+    "source_ids",
+    "fps",
+    "width",
+    "height",
+    "total_frames",
+    "shots"
+  ],
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ai-2d-animation-studio.local/contracts/schemas/compiled_film.schema.json",
+  "title": "compiled_film.v1"
+}

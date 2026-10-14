@@ -1,0 +1,346 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": "shot_plan.v1"
+    },
+    "artifact_id": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^art_[0-9a-f]{32}$"
+    },
+    "source_hash": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^sha256:[0-9a-f]{64}$"
+    },
+    "project_id": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^prj_[0-9a-f]{32}$"
+    },
+    "script_artifact_id": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^art_[0-9a-f]{32}$"
+    },
+    "shots": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "shot_id": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^shot_[a-z0-9_]+$"
+          },
+          "order": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 30
+          },
+          "section_id": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^[a-z][a-z0-9_]{1,63}$"
+          },
+          "section_start": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "section_end": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "narration_text": {
+            "type": "string",
+            "minLength": 1
+          },
+          "duration_frames": {
+            "type": "integer",
+            "minimum": 24,
+            "maximum": 720
+          },
+          "background_key": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^[a-z][a-z0-9_]{1,63}$"
+          },
+          "location_key": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^[a-z][a-z0-9_]{1,63}$"
+          },
+          "actors": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "actor_id": {
+                  "type": "string",
+                  "minLength": 1,
+                  "pattern": "^actor_[a-z0-9_]+$"
+                },
+                "character_key": {
+                  "type": "string",
+                  "minLength": 1,
+                  "pattern": "^[a-z][a-z0-9_]{1,63}$"
+                },
+                "view": {
+                  "type": "string",
+                  "minLength": 1,
+                  "enum": [
+                    "front",
+                    "three_quarter",
+                    "side"
+                  ]
+                },
+                "initial_world": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "x": {
+                      "type": "number"
+                    },
+                    "y": {
+                      "type": "number"
+                    }
+                  },
+                  "required": [
+                    "x",
+                    "y"
+                  ]
+                },
+                "initial_face": {
+                  "type": "string",
+                  "minLength": 1,
+                  "enum": [
+                    "neutral",
+                    "happy",
+                    "surprised",
+                    "angry"
+                  ]
+                }
+              },
+              "required": [
+                "actor_id",
+                "character_key",
+                "view",
+                "initial_world",
+                "initial_face"
+              ]
+            },
+            "minItems": 1,
+            "maxItems": 2
+          },
+          "props": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "prop_id": {
+                  "type": "string",
+                  "minLength": 1,
+                  "pattern": "^prop_[a-z0-9_]+$"
+                },
+                "prop_key": {
+                  "type": "string",
+                  "minLength": 1,
+                  "pattern": "^[a-z][a-z0-9_]{1,63}$"
+                },
+                "initial_world": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "x": {
+                      "type": "number"
+                    },
+                    "y": {
+                      "type": "number"
+                    }
+                  },
+                  "required": [
+                    "x",
+                    "y"
+                  ]
+                },
+                "owner_actor_id": {
+                  "oneOf": [
+                    {
+                      "type": "string",
+                      "minLength": 1,
+                      "pattern": "^actor_[a-z0-9_]+$"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "owner_hand": {
+                  "enum": [
+                    "left",
+                    "right",
+                    null
+                  ]
+                }
+              },
+              "required": [
+                "prop_id",
+                "prop_key",
+                "initial_world",
+                "owner_actor_id",
+                "owner_hand"
+              ]
+            },
+            "minItems": 0,
+            "maxItems": 3
+          },
+          "story_actions": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "actor_id": {
+                  "type": "string",
+                  "minLength": 1,
+                  "pattern": "^actor_[a-z0-9_]+$"
+                },
+                "kind": {
+                  "type": "string",
+                  "minLength": 1,
+                  "enum": [
+                    "idle",
+                    "walk",
+                    "look",
+                    "reach",
+                    "grab",
+                    "carry",
+                    "place",
+                    "point",
+                    "react"
+                  ]
+                },
+                "target_prop_id": {
+                  "oneOf": [
+                    {
+                      "type": "string",
+                      "minLength": 1,
+                      "pattern": "^prop_[a-z0-9_]+$"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "target_world": {
+                  "oneOf": [
+                    {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "properties": {
+                        "x": {
+                          "type": "number"
+                        },
+                        "y": {
+                          "type": "number"
+                        }
+                      },
+                      "required": [
+                        "x",
+                        "y"
+                      ]
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                }
+              },
+              "required": [
+                "actor_id",
+                "kind",
+                "target_prop_id",
+                "target_world"
+              ]
+            },
+            "minItems": 1,
+            "maxItems": 50
+          },
+          "camera": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "center_world": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "x": {
+                    "type": "number"
+                  },
+                  "y": {
+                    "type": "number"
+                  }
+                },
+                "required": [
+                  "x",
+                  "y"
+                ]
+              },
+              "zoom": {
+                "type": "number",
+                "maximum": 5,
+                "exclusiveMinimum": 0
+              }
+            },
+            "required": [
+              "center_world",
+              "zoom"
+            ]
+          },
+          "continuity": {
+            "type": "string",
+            "minLength": 1,
+            "enum": [
+              "continuous",
+              "cut"
+            ]
+          }
+        },
+        "required": [
+          "shot_id",
+          "order",
+          "section_id",
+          "section_start",
+          "section_end",
+          "narration_text",
+          "duration_frames",
+          "background_key",
+          "location_key",
+          "actors",
+          "props",
+          "story_actions",
+          "camera",
+          "continuity"
+        ]
+      },
+      "minItems": 1,
+      "maxItems": 30
+    }
+  },
+  "required": [
+    "schema_version",
+    "artifact_id",
+    "source_hash",
+    "project_id",
+    "script_artifact_id",
+    "shots"
+  ],
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ai-2d-animation-studio.local/contracts/schemas/shot_plan.schema.json",
+  "title": "shot_plan.v1"
+}

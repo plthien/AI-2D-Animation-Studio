@@ -1,0 +1,29 @@
+{
+  "schema_version": "qc_report.v1",
+  "artifact_id": "art_55555555555555555555555555555555",
+  "source_hash": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "project_id": "prj_22222222222222222222222222222222",
+  "target_artifact_id": "art_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "status": "review_required",
+  "metrics": [
+    {
+      "name": "wrist_error",
+      "value": 0.002,
+      "unit": "meters",
+      "max_allowed": 0.005,
+      "passed": true
+    }
+  ],
+  "gates": [
+    {
+      "code": "RIG_VISUAL_REVIEW",
+      "status": "warn",
+      "details": "Requires human screenshot approval"
+    }
+  ],
+  "manual_review": {
+    "required": true,
+    "approved": false,
+    "review_notes": ""
+  }
+}

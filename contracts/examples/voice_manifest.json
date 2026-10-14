@@ -1,0 +1,21 @@
+{
+  "schema_version": "voice_manifest.v1",
+  "artifact_id": "art_bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+  "source_hash": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "project_id": "prj_22222222222222222222222222222222",
+  "compiled_film_artifact_id": "art_cccccccccccccccccccccccccccccccc",
+  "provider_key": "manual_import",
+  "voice_id": "manual",
+  "alignment_status": "unavailable",
+  "cues": [
+    {
+      "shot_id": "shot_001",
+      "wav_artifact_id": "art_dddddddddddddddddddddddddddddddd",
+      "wav_sha256": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "start_frame": 0,
+      "start_sample": 0,
+      "duration_samples": 72000,
+      "word_timings": []
+    }
+  ]
+}

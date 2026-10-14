@@ -1,0 +1,69 @@
+{
+  "schema_version": "rig_joints.v1",
+  "artifact_id": "art_22222222222222222222222222222222",
+  "rig_layout_artifact_id": "art_11111111111111111111111111111111",
+  "reference_sha256": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "canvas": {
+    "width": 768,
+    "height": 1024
+  },
+  "joints_px": {
+    "pelvis": {
+      "x": 300.0,
+      "y": 300.0
+    },
+    "neck": {
+      "x": 300.0,
+      "y": 300.0
+    },
+    "left_shoulder": {
+      "x": 300.0,
+      "y": 300.0
+    },
+    "left_elbow": {
+      "x": 300.0,
+      "y": 300.0
+    },
+    "left_wrist": {
+      "x": 300.0,
+      "y": 300.0
+    },
+    "left_hip": {
+      "x": 300.0,
+      "y": 300.0
+    },
+    "left_knee": {
+      "x": 300.0,
+      "y": 300.0
+    },
+    "left_ankle": {
+      "x": 300.0,
+      "y": 300.0
+    },
+    "right_shoulder": {
+      "x": 300.0,
+      "y": 300.0
+    },
+    "right_elbow": {
+      "x": 300.0,
+      "y": 300.0
+    },
+    "right_wrist": {
+      "x": 300.0,
+      "y": 300.0
+    },
+    "right_hip": {
+      "x": 300.0,
+      "y": 300.0
+    },
+    "right_knee": {
+      "x": 300.0,
+      "y": 300.0
+    },
+    "right_ankle": {
+      "x": 300.0,
+      "y": 300.0
+    }
+  },
+  "reviewed": true
+}

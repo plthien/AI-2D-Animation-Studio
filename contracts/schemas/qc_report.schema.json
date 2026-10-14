@@ -1,0 +1,141 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": "qc_report.v1"
+    },
+    "artifact_id": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^art_[0-9a-f]{32}$"
+    },
+    "source_hash": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^sha256:[0-9a-f]{64}$"
+    },
+    "project_id": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^prj_[0-9a-f]{32}$"
+    },
+    "target_artifact_id": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^art_[0-9a-f]{32}$"
+    },
+    "status": {
+      "type": "string",
+      "minLength": 1,
+      "enum": [
+        "technical_only",
+        "passed",
+        "failed",
+        "review_required"
+      ]
+    },
+    "metrics": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 1
+          },
+          "value": {
+            "type": "number"
+          },
+          "unit": {
+            "type": "string",
+            "minLength": 1
+          },
+          "max_allowed": {
+            "type": "number"
+          },
+          "passed": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "name",
+          "value",
+          "unit",
+          "max_allowed",
+          "passed"
+        ]
+      },
+      "minItems": 0
+    },
+    "gates": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "code": {
+            "type": "string",
+            "minLength": 1
+          },
+          "status": {
+            "type": "string",
+            "minLength": 1,
+            "enum": [
+              "pass",
+              "warn",
+              "fail",
+              "not_run"
+            ]
+          },
+          "details": {
+            "type": "string",
+            "minLength": 0
+          }
+        },
+        "required": [
+          "code",
+          "status",
+          "details"
+        ]
+      },
+      "minItems": 1
+    },
+    "manual_review": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "required": {
+          "type": "boolean"
+        },
+        "approved": {
+          "type": "boolean"
+        },
+        "review_notes": {
+          "type": "string",
+          "minLength": 0
+        }
+      },
+      "required": [
+        "required",
+        "approved",
+        "review_notes"
+      ]
+    }
+  },
+  "required": [
+    "schema_version",
+    "artifact_id",
+    "source_hash",
+    "project_id",
+    "target_artifact_id",
+    "status",
+    "metrics",
+    "gates",
+    "manual_review"
+  ],
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ai-2d-animation-studio.local/contracts/schemas/qc_report.schema.json",
+  "title": "qc_report.v1"
+}
