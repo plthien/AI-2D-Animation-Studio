@@ -3,6 +3,9 @@ from __future__ import annotations
 import os
 from pathlib import Path
 from fastapi import FastAPI, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
+from studio.workspace_api import router as workspace_router, REPO
 from pydantic import BaseModel, Field
 from studio.glabs import GlabsClient, ImageRequest
 from studio.handoff import AnimationPlan, export_task, export_motion_task, export_film_task, export_film_v2_task
@@ -150,3 +153,18 @@ async def film_v2_export(request: HandoffRequest) -> dict:
         return {"mode":"manual","schema_version":"film.v2","path":str(path)}
     except ValueError as exc:
         raise HTTPException(status_code=422,detail=str(exc)) from exc
+
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://127.0.0.1:5173", "http://localhost:5173"],
+    allow_methods=["GET", "POST", "PUT"],
+    allow_headers=["Content-Type"],
+)
+app.include_router(workspace_router)
+
+# Mount LAST so API routes remain authoritative. Build with npm run build
+# in frontend/ and launch one local backend service with python -m studio.
+_frontend = REPO / "frontend" / "dist"
+if _frontend.is_dir():
+    app.mount("/", StaticFiles(directory=str(_frontend), html=True), name="ui")
