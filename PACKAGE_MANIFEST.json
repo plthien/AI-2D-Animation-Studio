@@ -11,7 +11,7 @@
   "skills": 9,
   "rules": 5,
   "phase_plans": 12,
-  "file_count": 81,
+  "file_count": 83,
   "files": [
     {
       "path": ".agents/skills/asset-resolution/SKILL.md",
@@ -295,8 +295,8 @@
     },
     {
       "path": "docs/implementation/P0_FOUNDATION.md",
-      "bytes": 8170,
-      "sha256": "582261e1499611b250e286c0da256970de593c0e2c890612ea13eb871112cbc3"
+      "bytes": 8863,
+      "sha256": "ac80d552986846a851e4f1131fa6aa457e6af460e05a52a4497a59fcacb27791"
     },
     {
       "path": "docs/implementation/P10_PRODUCTION_UI_QC.md",
@@ -384,6 +384,11 @@
       "sha256": "376000d79d5f8d53abdc1e8b62d7f79f3d47f068c9c5dd79a9cc636f15dc5045"
     },
     {
+      "path": "tools/requirements-validation.txt",
+      "bytes": 99,
+      "sha256": "def16f0da63509d27e41e0cdead568d59591226c17821126679234b040b91be4"
+    },
+    {
       "path": "tools/test_animation_contract_semantics.py",
       "bytes": 5551,
       "sha256": "1ec8f5095812c5765124d8c60f45b97e2e11957293e3b55d34edf97a0b736a96"
@@ -392,6 +397,11 @@
       "path": "tools/test_cross_phase_contracts.py",
       "bytes": 3732,
       "sha256": "df2eb2cbf76c005f91d6778f2d3fde2eb630b08836db647ce449d610e946d8a7"
+    },
+    {
+      "path": "tools/test_manifest_verifier.py",
+      "bytes": 2531,
+      "sha256": "4b9e7a79b4f1c121cc124163dd0f245ec6abb4399430277c6e0eee4e083bb6d9"
     },
     {
       "path": "tools/validate_agent_pack.py",
@@ -415,8 +425,8 @@
     },
     {
       "path": "tools/verify_package_manifest.py",
-      "bytes": 837,
-      "sha256": "fa5172b4c6ea9f9845cb314bec7c2d59c3b29be1bac81a972b17477a5be68d88"
+      "bytes": 2158,
+      "sha256": "71b4270903309a9fe6da27fc3713c9e8fc5a8ff4532ba9c6ecfafed7e20658a3"
     }
   ]
 }

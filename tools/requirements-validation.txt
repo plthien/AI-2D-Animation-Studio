@@ -1,0 +1,2 @@
+# Only for specification/JSON Schema preflight; not the P0 application runtime.
+jsonschema==4.26.0
