@@ -21,7 +21,7 @@ from pathlib import Path
 
 from fastapi import APIRouter, HTTPException, UploadFile, File
 from fastapi.responses import FileResponse
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, ValidationError
 from PIL import Image
 
 from studio.film_v2 import AssetCatalog, FilmPlanV2, compile_film_v2
@@ -195,17 +195,20 @@ def get_document(project_id: str, kind: str) -> dict:
 def save_document(project_id: str, kind: str, payload: dict) -> dict:
     if kind not in KINDS:
         raise HTTPException(404, "Unknown director document")
-    if kind == "film":
-        FilmPlanV2.model_validate(payload)
-    elif kind == "catalog":
-        AssetCatalog.model_validate(payload)
-    else:
-        if len(payload) > 120:
-            raise HTTPException(422, "Too many motions")
-        for name, value in payload.items():
-            if not ID.fullmatch(name):
-                raise HTTPException(422, "Unsafe motion ID")
-            MotionPlan.model_validate(value)
+    try:
+        if kind == "film":
+            FilmPlanV2.model_validate(payload)
+        elif kind == "catalog":
+            AssetCatalog.model_validate(payload)
+        else:
+            if len(payload) > 120:
+                raise HTTPException(422, "Too many motions")
+            for name, value in payload.items():
+                if not ID.fullmatch(name):
+                    raise HTTPException(422, "Unsafe motion ID")
+                MotionPlan.model_validate(value)
+    except ValidationError as exc:
+        raise HTTPException(422, detail=exc.errors(include_url=False)) from exc
     _atomic_json(_project(project_id) / f"{kind}.json", payload)
     return {"saved": True, "kind": kind}
 
