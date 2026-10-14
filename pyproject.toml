@@ -4,9 +4,9 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "ai-2d-animation-studio"
-version = "0.1.0"
+version = "0.2.0"
 requires-python = ">=3.11"
-dependencies = ["fastapi>=0.115,<1", "uvicorn>=0.30,<1", "httpx>=0.27,<1", "pydantic>=2.8,<3", "Pillow>=10,<13"]
+dependencies = ["fastapi>=0.115,<1", "uvicorn>=0.30,<1", "httpx>=0.27,<1", "pydantic>=2.8,<3", "Pillow>=10,<13", "python-multipart>=0.0.9,<1"]
 
 [project.optional-dependencies]
 rig = ["opencv-python-headless>=4.8,<5", "numpy>=1.26,<3"]
@@ -22,7 +22,7 @@ addopts = "-q"
 [tool.coverage.run]
 branch = true
 source = ["studio"]
-omit = ["studio/api.py", "studio/__main__.py"]
+omit = ["studio/api.py", "studio/__main__.py", "studio/workspace_api.py"]
 
 [tool.coverage.report]
 show_missing = true
