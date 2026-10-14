@@ -6,6 +6,7 @@ existing PixiJS browser loader uses runtime/fixtures as a shared staging area.
 """
 from __future__ import annotations
 
+import io
 import json
 import os
 import re
@@ -232,8 +233,21 @@ async def upload_asset(project_id: str, category: str, name: str, file: UploadFi
     data = await file.read(MAX_ASSET_BYTES + 1)
     if not data or len(data) > MAX_ASSET_BYTES:
         raise HTTPException(413, "Asset empty or exceeds 32 MB limit")
-    if suffix == ".png" and not data.startswith(b"\x89PNG\r\n\x1a\n"):
-        raise HTTPException(422, "Not a PNG image")
+    if suffix == ".png":
+        # Normalize G-Labs PNG/JPEG/WebP outputs to the catalog's PNG contract.
+        try:
+            with Image.open(io.BytesIO(data)) as image:
+                if image.format not in {"PNG", "JPEG", "WEBP"}:
+                    raise ValueError("Only PNG, JPEG and WebP images are supported")
+                if image.width * image.height > 24_000_000:
+                    raise ValueError("Image pixel count exceeds safety limit")
+                image.load()
+                normalized = image.convert("RGBA") if image.has_transparency_data else image.convert("RGB")
+                stream = io.BytesIO()
+                normalized.save(stream, format="PNG")
+                data = stream.getvalue()
+        except Exception as exc:
+            raise HTTPException(422, f"Invalid PNG/JPEG/WebP media: {exc}") from exc
     if suffix == ".wav" and not (data.startswith(b"RIFF") and data[8:12] == b"WAVE"):
         raise HTTPException(422, "Not a WAV audio file")
     dest = root / category / name

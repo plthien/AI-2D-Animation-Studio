@@ -97,3 +97,17 @@ def test_story_b_import_and_motion_boundary(client):
     assert client.get(root+"/preflight").json()["frames"]==504
     assert client.post(root+"/assets/voices/../invalid.wav",
         files={"file":("x.wav",wav(),"audio/wav")}).status_code in (404,422)
+
+
+def test_jpeg_asset_normalized_to_png_for_film_catalog(client):
+    project_id=make_project(client)
+    jpg=BytesIO()
+    Image.new("RGB",(640,480),"#2c899a").save(jpg,format="JPEG")
+    url=f"/studio/projects/{project_id}"
+    result=client.post(url+"/assets/backgrounds/cafe_evening.png",
+      files={"file":("glabs-result.jpg",jpg.getvalue(),"image/jpeg")})
+    assert result.status_code==200
+    response=client.get(url+"/media/backgrounds/cafe_evening.png")
+    assert response.status_code==200 and response.content.startswith(b"\x89PNG\r\n\x1a\n")
+    with Image.open(BytesIO(response.content)) as im:
+        assert im.size==(640,480) and im.format=="PNG"
