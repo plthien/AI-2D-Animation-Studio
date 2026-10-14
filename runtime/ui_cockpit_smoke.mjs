@@ -7,14 +7,13 @@ const browser=await chromium.launch({headless:true,args:['--use-gl=angle','--use
 try{
  const page=await browser.newPage({viewport:{width:1440,height:920},deviceScaleFactor:1});
  await page.goto('http://127.0.0.1:8000',{waitUntil:'networkidle'});
- await page.getByRole('heading',{name:'Projects'}).waitFor({timeout:20000});
+ await page.getByRole('heading',{name:'Projects',exact:true}).waitFor({timeout:20000});
  await page.getByRole('button',{name:'Create project'}).click();
  await page.getByRole('heading',{name:'Director Studio'}).waitFor();
  await page.getByText('Storyboard',{exact:true}).waitFor();
  await page.getByText('Shot inspector',{exact:true}).waitFor();
  await page.getByRole('button',{name:'Asset Library'}).click();
  await page.getByRole('heading',{name:'Required assets'}).waitFor();
- await page.getByText('Missing: ',{exact:false}).count();
  await page.getByRole('button',{name:'Render & Review'}).click();
  await page.getByRole('heading',{name:'Preflight / Quality gates'}).waitFor();
  const banner=await page.getByText('Cannot render until asset, motion, voice and timeline checks pass.').count();
